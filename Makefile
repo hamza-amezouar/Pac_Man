@@ -1,8 +1,8 @@
 install:
-	uv sync
+	@uv sync
 run:
-	uv run python3 -m game
+	@uv run python3 -m folder
 debug:
-	uv run python3 -m pdb
+	@uv run python3 -m pdb
 clean:
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
