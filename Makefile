@@ -1,7 +1,7 @@
 install:
 	@uv sync
 run:
-	@uv run python3 -m folder
+	@uv run python3 -m src
 debug:
 	@uv run python3 -m pdb
 clean:
