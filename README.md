@@ -39,3 +39,29 @@ pacman_project/
   - **`engine/`**: Handles the game loop and state management transitions.
   - **`models/`**: Defines business logic, game entities (Pacman, Ghosts, Maze), and game state.
   - **`views/`**: Handles UI rendering and graphics interface.
+
+
+
+
+
+  parcing :
+
+               config.json
+                  │
+                  ▼
+          Read JSON dictionary
+                  │
+                  ▼
+        Validate each setting
+           using Pydantic
+                  │
+        ┌─────────┴─────────┐
+        │                   │
+      valid               invalid
+        │                   │
+        ▼                   ▼
+   use given value     warning + default
+        │                   │
+        └─────────┬─────────┘
+                  ▼
+          Final configuration
