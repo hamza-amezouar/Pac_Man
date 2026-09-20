@@ -1,8 +1,8 @@
 import pygame
 import time
-from PIL import Image, ImageSequence
+from .load_gifs import load_gif_frames
 
-class MenuManager:
+class DrawSplash:
     def __init__(self, WIDTH, HEIGHT):
         self.width = WIDTH
         self.height = HEIGHT
@@ -20,9 +20,10 @@ class MenuManager:
             "blue": (33, 33, 222),
             "warm_peach": (222, 161, 133),
             "red": (253, 1, 0),
-            "green": (0, 255, 1)
+            "green": (0, 255, 1),
+            "yellow_dark": (223, 124, 0)
             }
-    def pacgums_splash(self, x, y, number):
+    def draw_pacgums(self, x, y, number):
 
         x = 1240
         while number > 0:
@@ -30,27 +31,17 @@ class MenuManager:
             pygame.draw.circle(self.screen, self.colors['yellow'], (x, y + 25), radius=3)
             number -= 1
 
-    def pacman_splash(self, x, y, step, image):
+    def draw_pacman(self, x, y, step, image):
         x += step - 360
         if x >= 1430:
             return True
         self.screen.blit(pygame.transform.scale(image, (30, 30)), (x, y + 10))
         return False
 
-    def ghost_spalsh(self, x, y, step, image):
+    def draw_ghosts(self, x, y, step, image):
 
         x += step - 360
         self.screen.blit(pygame.transform.scale(image, (30, 30)), (x, y + 10))
-
-    def load_gif_frames(self, gif_path):
-    
-        git = Image.open(gif_path)
-        frames = []
-        for frame in ImageSequence.Iterator(git):
-            frame_rgba = frame.convert("RGBA")
-            pygame_image = pygame.image.fromstring(frame_rgba.tobytes(), frame_rgba.size, "RGBA")
-            frames.append(pygame_image)
-        return frames
 
     def show_splash(self):
 
@@ -60,15 +51,15 @@ class MenuManager:
         yellow_frame = 0
         blue_frame = 0
         red_frame = 0
-        step = 20
+        walk_speed = 20
         nb_pacgum = 26
-        pacman_frames = self.load_gif_frames('./assists/images/pacman.gif')
-        yellow_ghost = self.load_gif_frames('./assists/images/yellowghost.gif')
-        blue_ghost = self.load_gif_frames('./assists/images/blueghost.gif')
-        red_ghost = self.load_gif_frames('./assists/images/redghost.gif')
+        pacman_frames = load_gif_frames('./assists/images/pacman.gif')
+        yellow_ghost = load_gif_frames('./assists/images/yellowghost.gif')
+        blue_ghost = load_gif_frames('./assists/images/blueghost.gif')
+        red_ghost = load_gif_frames('./assists/images/redghost.gif')
         while self.view_splash:
             keys = pygame.key.get_pressed()
-            self.screen.fill(self.colors["yellow"])
+            self.screen.fill(self.colors["yellow_dark"])
             pac_image = pacman_frames[pacman_frame]
             pacman_frame = (pacman_frame + 1) % len(pacman_frames)
             yellow_frame = (yellow_frame + 1) % len(yellow_ghost)
@@ -79,13 +70,13 @@ class MenuManager:
                 (center_x - 489 // 2, center_y + 6,
                  489, 39), border_radius=4)
 
-            if step >= 100:
-                self.ghost_spalsh(center_x, center_y, step - 60, yellow_ghost[yellow_frame])
-                self.ghost_spalsh(center_x, center_y, step - 110, blue_ghost[blue_frame])
-                self.ghost_spalsh(center_x, center_y, step - 160, red_ghost[red_frame])
+            if walk_speed >= 100:
+                self.draw_ghosts(center_x, center_y, walk_speed - 60, yellow_ghost[yellow_frame])
+                self.draw_ghosts(center_x, center_y, walk_speed - 110, blue_ghost[blue_frame])
+                self.draw_ghosts(center_x, center_y, walk_speed - 160, red_ghost[red_frame])
                 nb_pacgum -= 1
-            self.pacgums_splash(center_x, center_y, nb_pacgum)
-            if self.pacman_splash( center_x, center_y, step, pac_image):
+            self.draw_pacgums(center_x, center_y, nb_pacgum)
+            if self.draw_pacman( center_x, center_y, walk_speed, pac_image):
                 break
             pygame.draw.rect(
                 self.screen, self.colors["blue"],
@@ -93,19 +84,19 @@ class MenuManager:
                 width=6, border_radius=10)
 
             pygame.draw.rect(
-                self.screen, self.colors["yellow"],
+                self.screen, self.colors["yellow_dark"],
                 (center_x - 520, center_y - 17, 270, 70))
             pygame.draw.rect(
-                self.screen, self.colors["yellow"],
+                self.screen, self.colors["yellow_dark"],
                 (center_x + 250, center_y - 17, 270, 70))
             pygame.display.update()
             time.sleep(0.2)
-            step += 20
+            walk_speed += 20
             
 
     def show_main_menu(self):
         pass
 
 
-engine =  MenuManager(1920, 1080)
+engine =  DrawSplash(1920, 1080)
 engine.show_splash()

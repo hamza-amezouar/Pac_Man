@@ -10,6 +10,7 @@ pacman_project/
 ├── README.md                # In English as required
 ├── .gitignore
 ├── project_management/      # Documentation & project management folder (Gantt, Risk Analysis...)
+├── assests/                 # audios and images and videos
 └── src/
     ├── __init__.py
     ├── main.py              # Execution entry point
