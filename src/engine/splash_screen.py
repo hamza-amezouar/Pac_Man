@@ -3,26 +3,13 @@ import time
 from .load_gifs import load_gif_frames
 
 class DrawSplash:
-    def __init__(self, WIDTH, HEIGHT):
+    def __init__(self, WIDTH, HEIGHT, screen, colors):
         self.width = WIDTH
         self.height = HEIGHT
         self.view_splash = True
-        pygame.init()
-        pygame.mixer.init()
-        pygame.mixer.music.load("./assists/audios/background.mp3")
-        pygame.mixer.music.play(-1)
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen = screen
 
-        self.colors = {
-            "yellow": (255, 255, 0),
-            "black": (0, 0, 0),
-            "deep_blue": (25, 25, 166),
-            "blue": (33, 33, 222),
-            "warm_peach": (222, 161, 133),
-            "red": (253, 1, 0),
-            "green": (0, 255, 1),
-            "yellow_dark": (223, 124, 0)
-            }
+        self.colors = colors
     def draw_pacgums(self, x, y, number):
 
         x = 1240
@@ -58,7 +45,6 @@ class DrawSplash:
         blue_ghost = load_gif_frames('./assists/images/blueghost.gif')
         red_ghost = load_gif_frames('./assists/images/redghost.gif')
         while self.view_splash:
-            keys = pygame.key.get_pressed()
             self.screen.fill(self.colors["yellow_dark"])
             pac_image = pacman_frames[pacman_frame]
             pacman_frame = (pacman_frame + 1) % len(pacman_frames)
@@ -66,7 +52,7 @@ class DrawSplash:
             blue_frame = (blue_frame + 1) % len(blue_ghost)
             red_frame = (red_frame + 1) % len(red_ghost)
             pygame.draw.rect(
-                self.screen, self.colors["black"],
+                self.screen, self.colors["dark"],
                 (center_x - 489 // 2, center_y + 6,
                  489, 39), border_radius=4)
 
@@ -98,5 +84,3 @@ class DrawSplash:
         pass
 
 
-engine =  DrawSplash(1920, 1080)
-engine.show_splash()
