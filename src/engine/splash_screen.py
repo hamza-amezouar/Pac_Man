@@ -45,6 +45,9 @@ class DrawSplash:
         blue_ghost = load_gif_frames('./assists/images/blueghost.gif')
         red_ghost = load_gif_frames('./assists/images/redghost.gif')
         while self.view_splash:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
             self.screen.fill(self.colors["yellow_dark"])
             pac_image = pacman_frames[pacman_frame]
             pacman_frame = (pacman_frame + 1) % len(pacman_frames)
@@ -55,7 +58,6 @@ class DrawSplash:
                 self.screen, self.colors["dark"],
                 (center_x - 489 // 2, center_y + 6,
                  489, 39), border_radius=4)
-
             if walk_speed >= 100:
                 self.draw_ghosts(center_x, center_y, walk_speed - 60, yellow_ghost[yellow_frame])
                 self.draw_ghosts(center_x, center_y, walk_speed - 110, blue_ghost[blue_frame])
