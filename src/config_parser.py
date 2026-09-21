@@ -1,11 +1,15 @@
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, model_validator
 from pathlib import Path
 from typing import Dict, Union
 import json
 
 default_conf = {
     "highscore_filename": "highscore.json",
-    "level": [],
+    "level": [{
+        "width": 20,
+        "height": 15,
+        "pacgum": 42
+    } for _ in range(10)],
     "lives": 3,
     "pacgum": 42,
     "points_per_pacgum": 10,
@@ -14,6 +18,19 @@ default_conf = {
     "seed": 42,
     "level_max_time": 90
 }
+
+
+class level(BaseModel):
+    width: int = Field(ge=9)
+    height: int = Field(ge=7)
+    pacgum: int = Field(gt=0)
+
+    @model_validator(mode="after")
+    def check_pacgum_pacgum(self):
+        if self.pacgum > (self.width * self.height) - 19:
+            raise ValueError(f"pacgum={self.pacgum} is too large; "
+                             f"maximum is {self.width * self.height - 19}")
+        return self
 
 
 class Validate(BaseModel):
@@ -73,8 +90,7 @@ class Parce:
             data = self.read_data(path)
             data_valid = Validate(**data)
             return data_valid.model_dump()
-             
-            
+
         except ValidationError as e:
             for error in e.errors():
                 e_key = (error["loc"][0])
@@ -82,12 +98,10 @@ class Parce:
                 msg = (error["msg"])
 
                 if e_key in default_conf.keys():
-                    print(f"⚠️  Warning: Your input {e_key}: {input} this {msg}")
+                    print(
+                        f"⚠️  Warning: Your input {e_key}: {input} this {msg}")
                     print(f"-> Using default: {default_conf[e_key]}\n")
                     data[e_key] = default_conf[e_key]
 
             data_valid = Validate(**data)
         return data_valid.model_dump()
-
-                
-

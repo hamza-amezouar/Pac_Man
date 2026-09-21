@@ -18,6 +18,6 @@ def get_data()-> dict:
 if __name__ == "__main__":
     data = get_data()
     print(data)
-    # with open("result.json")
-    # json.dumps(str(data), indent=4)
+    with open("result.json",'w') as f:
+        json.dump(data,f, indent=2)
     print("next")

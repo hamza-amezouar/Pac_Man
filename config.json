@@ -1,12 +1,9 @@
-#dafdsf
-#faf
-
 
 {
 
 
     "highscore_filename":1,
-    "level":[],
+    "level":1,
     "lives": -13,
     "pacgum": 42,
     "points_per_pacgum" : 10,
