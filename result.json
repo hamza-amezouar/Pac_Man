@@ -4,7 +4,7 @@
     {
       "width": 20,
       "height": 15,
-      "pacgum": 42
+      "pacgum": 45
     },
     {
       "width": 20,
@@ -52,7 +52,7 @@
       "pacgum": 42
     }
   ],
-  "lives": 3,
+  "lives": 13,
   "pacgum": 42,
   "points_per_pacgum": 10,
   "points_per_super_pacgum": 50,

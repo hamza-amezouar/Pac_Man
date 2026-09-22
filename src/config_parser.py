@@ -3,6 +3,11 @@ from pathlib import Path
 from typing import Dict, Union
 import json
 
+yellow = "\033[33m"
+white = "\033[0m"
+green = "\033[32m"
+red = "\033[31m"
+
 default_conf = {
     "highscore_filename": "highscore.json",
     "level": [{
@@ -20,7 +25,7 @@ default_conf = {
 }
 
 
-class level(BaseModel):
+class Level(BaseModel):
     width: int = Field(ge=9)
     height: int = Field(ge=7)
     pacgum: int = Field(gt=0)
@@ -35,7 +40,7 @@ class level(BaseModel):
 
 class Validate(BaseModel):
     highscore_filename: str
-    level: list
+    level: list[Level]
     lives: int = Field(gt=0)
     pacgum: int = Field(gt=0)
     points_per_pacgum: int = Field(gt=0)
@@ -50,20 +55,26 @@ class Parce:
     def extract_data(self, path: str) -> str | None:
         try:
             if Path(path).suffix != ".json":
-                print(f"⚠️  Warning: {path} is not a suffix '.json' file.")
-                return None
+                print(
+                    f"{yellow}❌  Error: {path} is not a suffix '.json' file.{white}"
+                )
+                print(f"{green}->  Usage: python3 pac-man.py config.json{white}")
+                exit(1)
 
             lines = []
             with open(path, "r") as f:
                 for line in f:
                     if line.strip().startswith('#') or not line.strip():
                         continue
+                    if '#' in line:
+                        line = line.split('#')[0].strip()
                     lines.append(line)
             return ("".join(lines))
 
-        except FileNotFoundError as e:
-            print(f"⚠️  Warning: {path} File not found {e}")
-            return None
+        except FileNotFoundError:
+            print(f"{red}❌  Error: {path} File not found{white}")
+            print(f"{green}->  Usage: python3 pac-man.py config.json{white}")
+            exit(1)
 
     def read_data(self, path: str) -> dict:
 
@@ -71,16 +82,19 @@ class Parce:
             parse_data = self.extract_data(path)
 
             if parse_data is None:
+                print(f"{green}-> Using default: {default_conf}\n{white}")
                 return default_conf
 
             data = json.loads(parse_data)
 
         except json.JSONDecodeError as e:
-            print(f"⚠️  Warning: is not valid JSON {e}")
+            print(f"{yellow}⚠️  Warning: is not valid JSON {e}{white}")
+            print(f"{green}-> Using default: {default_conf}\n{white}")
             return default_conf
 
         except Exception as e:
-            print(f"⚠️  Warning: {e}")
+            print(f"{yellow}⚠️  Warning: {e}{white}")
+            print(f"{green}-> Using default: {default_conf}\n{white}")
             return default_conf
 
         return data
@@ -88,6 +102,15 @@ class Parce:
     def parse_data(self, path: str):
         try:
             data = self.read_data(path)
+
+            if len(data["level"]) < 10:
+                print(
+                    f"{yellow}⚠️  Warning:  You entered {len(data['level'])} levels. "
+                    f"The game must consist of at least 10 levels.{white}")
+                print(
+                    f"{green}-> Using default: {default_conf['level']}\n{white}"
+                )
+
             data_valid = Validate(**data)
             return data_valid.model_dump()
 
@@ -96,12 +119,17 @@ class Parce:
                 e_key = (error["loc"][0])
                 input = error["input"]
                 msg = (error["msg"])
-
+        
                 if e_key in default_conf.keys():
                     print(
-                        f"⚠️  Warning: Your input {e_key}: {input} this {msg}")
-                    print(f"-> Using default: {default_conf[e_key]}\n")
+                        f"{yellow}⚠️  Warning: Your input {e_key}: {input} this {msg}{white}"
+                    )
+                    print(
+                        f"{green}-> Using default: {default_conf[e_key]}\n{white}"
+                    )
                     data[e_key] = default_conf[e_key]
+                
+
 
             data_valid = Validate(**data)
         return data_valid.model_dump()

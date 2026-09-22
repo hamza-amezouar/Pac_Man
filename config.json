@@ -1,16 +1,64 @@
 
 {
-
-
-    "highscore_filename":1,
-    "level":1,
-    "lives": -13,
-    "pacgum": 42,
+    "highscore_filename":"highscore.json",
+    "lives":13,
+    "pacum": 42,
     "points_per_pacgum" : 10,
     "points_per_super_pacgum" : 50,
     "points_per_ghost" : 200,
     "seed" : 42,
     "level_max_time": 90,
-    "hello":"ahmed"
+    "level": [
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 45
+    },
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+     {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+     {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+     {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    },
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 42
+    }
+    ]
 }
 
