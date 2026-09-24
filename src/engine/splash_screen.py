@@ -48,7 +48,7 @@ class DrawSplash:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-            self.screen.fill(self.colors["yellow_dark"])
+            self.screen.fill(self.colors["deep_blue"])
             pac_image = pacman_frames[pacman_frame]
             pacman_frame = (pacman_frame + 1) % len(pacman_frames)
             yellow_frame = (yellow_frame + 1) % len(yellow_ghost)
@@ -67,22 +67,16 @@ class DrawSplash:
             if self.draw_pacman( center_x, center_y, walk_speed, pac_image):
                 break
             pygame.draw.rect(
-                self.screen, self.colors["blue"],
+                self.screen, self.colors["yellow"],
                 (center_x - 500 // 2, center_y, 500, 50),
                 width=6, border_radius=10)
 
             pygame.draw.rect(
-                self.screen, self.colors["yellow_dark"],
+                self.screen, self.colors["deep_blue"],
                 (center_x - 520, center_y - 17, 270, 70))
             pygame.draw.rect(
-                self.screen, self.colors["yellow_dark"],
+                self.screen, self.colors["deep_blue"],
                 (center_x + 250, center_y - 17, 270, 70))
             pygame.display.update()
-            time.sleep(0.2)
             walk_speed += 20
-            
-
-    def show_main_menu(self):
-        pass
-
-
+            pygame.time.wait(100)

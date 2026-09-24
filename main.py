@@ -2,6 +2,7 @@ import time
 
 import pygame
 from src.engine.splash_screen import DrawSplash
+from src.engine.main_menu import  Draw_main
 
 class Engine:
     def __init__(self, width, height):
@@ -9,6 +10,7 @@ class Engine:
         self.height = height
         pygame.init()
         pygame.mixer.init()
+        pygame.font.init()
         pygame.mixer.music.load("./assists/audios/background.mp3")
         pygame.mixer.music.play(-1)
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -21,18 +23,20 @@ class Engine:
             "warm_peach": (222, 161, 133),
             "red": (253, 1, 0),
             "green": (0, 255, 1),
-            "yellow_dark": (223, 124, 0)
+            "yellow_dark": (223, 124, 0),
+            "main": (0, 0, 36),
+            "buttons": (0, 14, 90)
             }
         self.draw_splash = DrawSplash(self.width, self.height, self.screen, self.colors)
+        self.draw_main =  Draw_main(self.width, self.height, self.screen, self.colors)
 
     def run_engine(self):
         while self.running:
+            self.draw_splash.show_splash()
+            self.draw_main.Draw_menu()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-            self.draw_splash.show_splash()
-            self.screen.fill(self.colors["dark"])
-            pygame.display.update()
             time.sleep(20)
             break
 
