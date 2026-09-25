@@ -1,10 +1,10 @@
-import time
-
 import pygame
 from src.engine.splash_screen import DrawSplash
-from src.engine.main_menu import  Draw_main
+from src.engine.main_menu import Draw_main
+
 
 class Engine:
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
@@ -25,10 +25,16 @@ class Engine:
             "green": (0, 255, 1),
             "yellow_dark": (223, 124, 0),
             "main": (0, 0, 36),
-            "buttons": (0, 14, 90)
-            }
-        self.draw_splash = DrawSplash(self.width, self.height, self.screen, self.colors)
-        self.draw_main =  Draw_main(self.width, self.height, self.screen, self.colors)
+            "buttons": (0, 14, 90),
+            "gray": (142, 151, 160),
+            "white": (255, 255, 255),
+            "blue_light": (37, 150, 190),
+            "background": (0, 0, 26)
+        }
+        self.draw_splash = DrawSplash(self.width, self.height, self.screen,
+                                      self.colors)
+        self.draw_main = Draw_main(self.width, self.height, self.screen,
+                                   self.colors)
 
     def run_engine(self):
         while self.running:
@@ -37,8 +43,7 @@ class Engine:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-            time.sleep(20)
-            break
+
 
 engine = Engine(1920, 1080)
 
