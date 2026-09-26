@@ -21,7 +21,12 @@
     {
       "width": 20,
       "height": 15,
-      "pacgum": 42
+      "pacgum": 20
+    },
+    {
+      "width": 20,
+      "height": 15,
+      "pacgum": 20
     },
     {
       "width": 20,
@@ -29,13 +34,8 @@
       "pacgum": 42
     },
     {
-      "width": 20,
-      "height": 15,
-      "pacgum": 42
-    },
-    {
-      "width": 20,
-      "height": 15,
+      "width": 10,
+      "height": 7,
       "pacgum": 42
     },
     {

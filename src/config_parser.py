@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, ValidationError, model_validator
 from pathlib import Path
 from typing import Dict, Any
 import json
+import sys
 
 yellow = "\033[33m"
 white = "\033[0m"
@@ -210,13 +211,9 @@ class Parce:
             data = self.read_data(path)
 
             if "level" not in data:
-                print(
-                    f"{yellow}⚠️  Warning: 'level' is missing.{white}"
-                )
-                print(
-                    f"{green}-> Using default levels: "
-                    f"{default_conf['level']}\n{white}"
-                )
+                print(f"{yellow}⚠️  Warning: 'level' is missing.{white}")
+                print(f"{green}-> Using default levels: "
+                      f"{default_conf['level']}\n{white}")
                 data["level"] = default_conf["level"]
 
             if not isinstance(data["level"], list) or not data['level']:
@@ -271,3 +268,14 @@ class Parce:
             data_valid = Validate(**data)
 
         return data_valid.model_dump()
+
+    def get_data(self) -> Dict[str, Any]:
+        if len(sys.argv) <= 1:
+            print(f"❌  {red}Error: Configuration file is required{white}")
+            print(f"{green}->  Usage: python3 pac-man.py config.json{white}")
+            exit(1)
+
+        else:
+            data = self.parse_data(sys.argv[1])
+
+        return data
