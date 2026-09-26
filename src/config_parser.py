@@ -188,7 +188,7 @@ class Parce:
                       f"   Invalid configuration for '{e_key}{white}'\n"
                       f"{green}→  Using default value: "
                       f"{e_key}={default_conf['level'][i][e_key]}\n{white}")
-                data['level'][i][e_key] = default_conf["level"][i][e_key]
+                data['level'][i][e_key] = default_conf["level"][0][e_key]
 
             parce_level = Level(**level)
 
@@ -242,8 +242,8 @@ class Parce:
                     print(f"{yellow}⚠️  Warning: Your Level {i + 1}"
                           f" is Invalid.{white}")
                     print(f"{green}-> Adding default level"
-                          f"{default_conf['level'][i]}\n{white}")
-                    data["level"][i] = default_conf["level"][i]
+                          f"{default_conf['level'][0]}\n{white}")
+                    data["level"][i] = default_conf["level"][0]
 
                 self.check_levels(i, data["level"][i], data)
             data_valid = Validate(**data)

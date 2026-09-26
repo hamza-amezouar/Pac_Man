@@ -1,15 +1,15 @@
 
 {
     
-    "highscore_filename": 123,
+    "highscore_filename": "fd.json",
 
-    "lives": -5,
-    "pacgum": -10,
-    "points_per_pacgum": 0,
-    "points_per_super_pacgum": -50,
-    "points_per_ghost": "hello",
-    "seed": null,
-    "level_max_time": 0,
+    "lives": 5,
+    "pacgum": 10,
+    "points_per_pacgum": 10,
+    "points_per_super_pacgum": 50,
+    "points_per_ghost": 14,
+    "seed": 55,
+    "level_max_time": 90,
 
  
     "hello": "unknown key",
@@ -18,7 +18,6 @@
     
     "level": [
         12,
-    
     
         {
             "width": 20,
@@ -44,7 +43,7 @@
         {
             "width": 20,
             "height": 15,
-            "pacgum": -10
+            "pacgum": 10
         },
 
        
@@ -53,27 +52,32 @@
             "height": 7,
             "pacgum": 100
         },
-
-        
-        {
-            "width": "hello",
-            "height": [],
-            "pacgum": {}
-        },
-
         
         {
             "width": 20,
             "height": 15,
-            "pacgum": 42,
-            "unknown_key": "should be ignored",
-            "another_unknown_key": 123
+            "pacgum": 42
         },
-
-        
         {
+            "width": 20,
             "height": 15,
             "pacgum": 42
-        }
+        },
+          {
+            "width": 20,
+            "height": 15,
+            "pacgum": 42
+        },
+          {
+            "width": 20,
+            "height": 15,
+            "pacgum": 42
+        },
+        {
+            "width": 20,
+            "height": 15,
+            "pacgum": 42
+        },
+        13
     ]
 }
