@@ -39,3 +39,70 @@ pacman_project/
   - **`engine/`**: Handles the game loop and state management transitions.
   - **`models/`**: Defines business logic, game entities (Pacman, Ghosts, Maze), and game state.
   - **`views/`**: Handles UI rendering and graphics interface.
+
+
+
+
+
+**Parsing:**
+parser has 4 main stages:
+-  config.json
+1. Extract / clean the file
+2. Convert JSON text → Python data
+3. Validate + repair invalid configuration
+4. Return a clean validated configuration
+
+```
+          config.json
+                │
+                ▼
+          extract_data()
+                │
+                ▼
+          remove comments
+                │
+                ▼
+           json.loads()
+                │
+                ▼
+            read_data()
+                │
+                ▼
+        ┌────────────────┐
+        │  parse_data()  │
+        └────────────────┘
+                │
+   ┌────────────┼────────────────┐
+   ▼            ▼                ▼
+level list    < 10 levels    bad level
+  check       → add          → replace
+    │            │                 │
+    └────────────┼─────────────────┘
+                 ▼
+            check_levels()
+                 │
+                 ▼
+           Validate(**data)
+            
+        Validate model checks:
+              highscore_filename: The name of the high-score file.
+              lives: The number of lives for the player.
+              pacgum: The number of pac-gums in the game.
+              points_per_pacgum: The points given for one pac-gum.
+              points_per_super_pacgum: The points given for one super pac-gum.
+              points_per_ghost: The points given for one ghost.
+              seed: The seed used to create random values.
+              level_max_time: The maximum time allowed for one level.
+              level: The list of game levels. It must contain at least 10 levels.
+                 │
+        ┌────────┴──────────┐
+        ▼                   ▼
+      valid               invalid
+        │                    │
+        ▼                    ▼
+  model_dump()          use default 
+                 │
+                 ▼
+          clean configuration
+
+```
