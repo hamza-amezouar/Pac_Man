@@ -44,7 +44,3 @@ class Engine:
                 if event.type == pygame.QUIT:
                     pygame.quit()
 
-
-engine = Engine(1920, 1080)
-
-engine.run_engine()

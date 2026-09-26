@@ -1,0 +1,79 @@
+
+{
+    
+    "highscore_filename": 123,
+
+    "lives": -5,
+    "pacgum": -10,
+    "points_per_pacgum": 0,
+    "points_per_super_pacgum": -50,
+    "points_per_ghost": "hello",
+    "seed": null,
+    "level_max_time": 0,
+
+ 
+    "hello": "unknown key",
+    "random_value": 12345,
+
+    
+    "level": [
+        12,
+    
+    
+        {
+            "width": 20,
+            "height": 15,
+            "pacgum": 42
+        },
+
+        
+        {
+            "width": 5,
+            "height": 15,
+            "pacgum": 20
+        },
+
+        
+        {
+            "width": 20,
+            "height": 3,
+            "pacgum": 20
+        },
+
+       
+        {
+            "width": 20,
+            "height": 15,
+            "pacgum": -10
+        },
+
+       
+        {
+            "width": 10,
+            "height": 7,
+            "pacgum": 100
+        },
+
+        
+        {
+            "width": "hello",
+            "height": [],
+            "pacgum": {}
+        },
+
+        
+        {
+            "width": 20,
+            "height": 15,
+            "pacgum": 42,
+            "unknown_key": "should be ignored",
+            "another_unknown_key": 123
+        },
+
+        
+        {
+            "height": 15,
+            "pacgum": 42
+        }
+    ]
+}
