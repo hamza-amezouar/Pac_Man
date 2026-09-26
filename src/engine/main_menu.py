@@ -29,9 +29,9 @@ class Draw_main:
         start = self.width // 2
         if start + step >= self.width:
             return True
-        pygame.draw.rect(self.screen, self.colors["background"],
+        pygame.draw.rect(self.screen, self.colors["blue_light"],
                          (start + step, 0, start, self.height))
-        pygame.draw.rect(self.screen, self.colors["background"],
+        pygame.draw.rect(self.screen, self.colors["blue_light"],
                          (0 - step, 0, start, self.height))
         return False
 
@@ -62,19 +62,19 @@ class Draw_main:
                 if button.collidepoint(mouse):
                     is_hover = True
                     pygame.draw.rect(self.screen,
-                                     self.colors['yellow'],
+                                     self.colors['yellow_dark'],
                                      button,
                                      border_radius=20)
                 else:
                     pygame.draw.rect(self.screen, self.colors['yellow'],
-                                     button)
+                                     button, border_radius=10)
             if is_hover:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         else:
             for button in self.buttons:
-                pygame.draw.rect(self.screen, self.colors['yellow'], button)
+                pygame.draw.rect(self.screen, self.colors['yellow'], button, border_radius=10)
 
         start_game_font = self.menu_font.render("START GAME", True,
                                                 self.colors['deep_blue'])

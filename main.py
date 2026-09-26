@@ -28,7 +28,7 @@ class Engine:
             "buttons": (0, 14, 90),
             "gray": (142, 151, 160),
             "white": (255, 255, 255),
-            "blue_light": (37, 150, 190),
+            "blue_light": (0, 0, 71),
             "background": (0, 0, 26)
         }
         self.draw_splash = DrawSplash(self.width, self.height, self.screen,
