@@ -7,6 +7,7 @@ class DrawSplash:
     Handles the rendering and animation sequence for the game splash screen.
     Displays animated sprites including Pac-Man, ghosts, and pac-gums.
     """
+
     def __init__(self, WIDTH, HEIGHT, screen, colors):
         """
         Initializes splash screen dimensions, target display screen, and color theme.
@@ -15,7 +16,7 @@ class DrawSplash:
         self.height = HEIGHT
         self.view_splash = True
         self.screen = screen
-
+        self.loading = pygame.font.Font(None, 30)
         self.colors = colors
 
     def draw_pacgums(self, x, y, number):
@@ -49,6 +50,25 @@ class DrawSplash:
         x += step - 360
         self.screen.blit(pygame.transform.scale(image, (30, 30)), (x, y + 10))
 
+    def draw_loading(self, number):
+        loading_surface = self.loading.render("loading", True,
+                                              self.colors["white"])
+        loading_rect = loading_surface.get_rect()
+        loading_rect.center = (self.width // 2, self.height // 2 - 20)
+        self.screen.blit(loading_surface, loading_rect)
+        pygame.draw.circle(self.screen, self.colors["gray"],
+                           (self.width // 2 + 45, self.height // 2 - 20), 3)
+        pygame.draw.circle(self.screen, self.colors["gray"],
+                           (self.width // 2 + 60, self.height // 2 - 20), 3)
+        pygame.draw.circle(self.screen, self.colors["gray"],
+                           (self.width // 2 + 75, self.height // 2 - 20), 3)
+        step = 45
+        for i in range(number):
+            pygame.draw.circle(self.screen, self.colors["white"],
+                               (self.width // 2 + step, self.height // 2 - 20),
+                               3)
+            step += 15
+
     def show_splash(self):
         """
         Runs the splash screen main animation loop, handling frame updates,
@@ -62,6 +82,7 @@ class DrawSplash:
         red_frame = 0
         walk_speed = 20
         nb_pacgum = 26
+        number = 0
         pacman_frames = load_gif_frames('./assists/images/pacman.gif')
         yellow_ghost = load_gif_frames('./assists/images/yellowghost.gif')
         blue_ghost = load_gif_frames('./assists/images/blueghost.gif')
@@ -101,6 +122,10 @@ class DrawSplash:
                              (center_x - 520, center_y - 17, 270, 70))
             pygame.draw.rect(self.screen, self.colors["blue_light"],
                              (center_x + 250, center_y - 17, 270, 70))
+            self.draw_loading(number)
             pygame.display.update()
             walk_speed += 20
-            pygame.time.wait(180)
+            number += 1
+            if number == 4:
+                number = 0
+            pygame.time.wait(150)
