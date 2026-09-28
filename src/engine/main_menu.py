@@ -16,7 +16,7 @@ class Draw_main:
         self.colors = colors
         self.bg_image = pygame.image.load('./assists/images/background.png')
         self.background = pygame.transform.scale(self.bg_image,
-                                                 (1920, 1080)).convert()
+                                                 (self.width, self.height)).convert()
         self.menu_font = pygame.font.Font(
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 30)
         self.buttons = []
@@ -137,8 +137,8 @@ class Draw_main:
                         for button in self.buttons:
                             if button.collidepoint(event.pos):
                                 if button == self.buttons[3]:
-                                    exit(0)
-                                if button == self.buttons[0]:
-                                    print("c")
+                                    return 0
+                                if button == self.buttons[1]:
+                                    return 1
             self.Draw_buttons_menu(mouse_pos)
             pygame.display.update()
