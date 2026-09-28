@@ -92,8 +92,19 @@ class Draw_highscores:
             rank += 1
             current_image = (current_image + 1) % len(profiles)
 
-    def draw_back_button(self):
-        pygame.draw.rect(self.screen, self.colors['yellow_dark'], (10, 20, 180, 50), border_radius=10)
+    def draw_back_button(self, mouse):
+
+        is_hover = False
+        for button in self.buttons:
+            if button.collidepoint(mouse):
+                is_hover = True
+                pygame.draw.rect(self.screen, self.colors['yellow_dark'], (10, 20, 180, 50), border_radius=16)
+            else:
+                pygame.draw.rect(self.screen, self.colors['yellow'], (10, 20, 180, 50), border_radius=10)
+        if is_hover:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+        else:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
         back_font = pygame.font.Font("./assists/fonts/PixeloidSansBold-1jpBg.ttf", 16)
         font_surface = back_font.render("BACK TO HOME", True, self.colors['deep_blue'])
@@ -104,11 +115,12 @@ class Draw_highscores:
     def draw_high_score(self):
         running = True
         while running:
+            mouse_pos = pygame.mouse.get_pos()
             self.screen.fill(self.colors["dark"])
             self.screen.blit(self.background, (0, 0))
             self.draw_title()
             self.draw_profiles_place()
-            self.draw_back_button()
+            self.draw_back_button(mouse_pos)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
