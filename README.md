@@ -10,6 +10,7 @@ pacman_project/
 ├── README.md                # In English as required
 ├── .gitignore
 ├── project_management/      # Documentation & project management folder (Gantt, Risk Analysis...)
+├── assests/                 # audios and images and videos
 └── src/
     ├── __init__.py
     ├── main.py              # Execution entry point
@@ -18,7 +19,9 @@ pacman_project/
     ├── maze_adapter.py      # Adapter for the external A-Maze-ing library
     ├── engine/
     │   ├── game_engine.py   # Main game loop
-    │   └── state_manager.py # Screen navigation (Menu, Game, Pause, GameOver)
+    |   ├── load_gifs.py     # convert gifs to frames
+    |   ├── main_menu.py     # Screen navigation (Menu, Game, Pause, GameOver)
+    │   └── splash_screen.py # draw splash screen  
     ├── models/
     │   ├── entity.py        # Base Entity class
     │   ├── pacman.py        # Player object
