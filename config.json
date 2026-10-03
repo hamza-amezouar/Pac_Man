@@ -1,7 +1,7 @@
 
 {
     
-    "highscore_filename": "fd.json",
+    "highscore_filename": "f#.json",
 
     "lives": 5,
     "pacgum": 10,
@@ -17,17 +17,15 @@
 
     
     "level": [
-        12,
-    
         {
-            "width": 20,
-            "height": 15,
+            "width": 9,
+            "height": 7,
             "pacgum": 42
         },
 
         
         {
-            "width": 5,
+            "width": 21,
             "height": 15,
             "pacgum": 20
         },
@@ -35,7 +33,7 @@
         
         {
             "width": 20,
-            "height": 3,
+            "height": 17,
             "pacgum": 20
         },
 
@@ -50,7 +48,7 @@
         {
             "width": 10,
             "height": 7,
-            "pacgum": 100
+            "pacgum": 42
         },
         
         {
@@ -77,7 +75,6 @@
             "width": 20,
             "height": 15,
             "pacgum": 42
-        },
-        13
+        }
     ]
 }
