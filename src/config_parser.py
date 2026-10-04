@@ -84,7 +84,7 @@ class Validate(BaseModel):
     level: list[Level] = Field(min_length=10)
 
 
-class Parce:
+class Parse:
     """
     Read, clean, validate, and prepare the game configuration.
     This class reads the JSON configuration file, removes comments,
@@ -118,8 +118,6 @@ class Parce:
                 for line in f:
                     if line.strip().startswith('#') or not line.strip():
                         continue
-                    if '#' in line:
-                        line = line.split('#')[0].strip()
                     lines.append(line)
 
             return ("".join(lines))
@@ -210,6 +208,13 @@ class Parce:
         try:
             data = self.read_data(path)
 
+            if Path(data["highscore_filename"]).suffix != ".json":
+                print(f"{yellow}⚠️  Warning: Your {data['highscore_filename']}"
+                      f" is not a suffix '.json' file.{white}")
+                print(f"{green}-> Using default: "
+                      f"{default_conf['highscore_filename']}\n{white}")
+                data["highscore_filename"] = default_conf['highscore_filename']
+
             if "level" not in data:
                 print(f"{yellow}⚠️  Warning: 'level' is missing.{white}")
                 print(f"{green}-> Using default levels: "
@@ -266,7 +271,6 @@ class Parce:
                     data[e_key] = default_conf[e_key]
 
             data_valid = Validate(**data)
-
         return data_valid.model_dump()
 
     def get_data(self) -> Dict[str, Any]:
