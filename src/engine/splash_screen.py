@@ -112,7 +112,7 @@ class DrawSplash:
         while self.view_splash:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return
+                    exit(0)
             self.screen.fill(self.colors["blue_light"])
             pac_image: pygame.surface.Surface = pacman_frames[pacman_frame]
             pacman_frame = (pacman_frame + 1) % len(pacman_frames)

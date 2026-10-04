@@ -4,11 +4,34 @@ import pygame
 
 
 class Draw_highscores:
-
-    def __init__(self, screen: pygame.Surafce,
+    """Renders and manages the High Scores screen interface.
+    This class handles loading fonts
+    and background assets, drawing titles,
+    displaying top player profiles
+    with their ranks and scores, and managing
+    interactive UI elements like the back button.
+    """
+    def __init__(self, screen: pygame.surface.Surface,
                  colors: Dict[str, tuple[int, int, int]],
                  width: int, height: int,
                  highscores: Dict[str, int]):
+
+        """Initializes the Draw_highscores
+        screen with display settings and assets.
+
+        Args:
+            screen (pygame.Surface):
+            The main Pygame display surface where elements are drawn.
+            colors (Dict[str, Tuple[int, int, int]]):
+            A dictionary mapping color names to RGB tuples.
+            width (int):
+            The width of the game window.
+            height (int):
+            The height of the game window.
+            highscores (Dict[str, int]):
+            A dictionary containing
+            player names and their respective high scores.
+        """
 
         self.screen = screen
         self.width = width
@@ -33,6 +56,9 @@ class Draw_highscores:
             self.bg_image, (self.width, self.height)).convert()
 
     def draw_title(self) -> None:
+        """Renders and displays
+        the 'HIGH SCORS TOP 10' title on the screen."""
+
         title_surface: pygame.surface.Surface = self.highscore_font.render(
             "HIGH SCORS TOP 10", True,
             self.colors["yellow_dark"])
@@ -42,6 +68,14 @@ class Draw_highscores:
         self.screen.blit(title_surface, title_rect)
 
     def draw_profiles_place(self) -> None:
+        """Renders the list of player high scores,
+        profile avatars, ranks, and points.
+
+        Iterates through
+        the highscores dictionary and draws styled card backgrounds,
+        rank indicators with specific colors for top places,
+        profile images, player names,and their scores.
+        """
         step = 0
         rank = 1
         current_image = 0
@@ -117,6 +151,12 @@ class Draw_highscores:
             current_image = (current_image + 1) % len(profiles)
 
     def draw_back_button(self, mouse: Tuple) -> None:
+        """Renders the interactive back button and handles mouse hover effects.
+
+        Args:
+            mouse (Tuple[int, int]):
+            Current (x, y) coordinates of the mouse cursor.
+        """
 
         is_hover: bool = False
         for button in self.buttons:
@@ -146,6 +186,16 @@ class Draw_highscores:
         self.buttons.append(pygame.Rect((10, 20, 180, 50)))
 
     def draw_high_score(self) -> int:
+        """Main loop for updating and rendering the high scores screen.
+
+        Handles mouse interactions,
+        updates screen elements, and processes exit/back actions.
+
+        Returns:
+            int: Returns 1 if the back button
+            is clicked to signal returning to the previous menu,
+                 otherwise loops until an exit event occurs.
+        """
         running: bool = True
         while running:
             mouse_pos: Tuple = pygame.mouse.get_pos()
