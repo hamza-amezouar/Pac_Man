@@ -2,7 +2,7 @@ from PIL import Image, ImageSequence
 import pygame
 
 
-def load_gif_frames(gif_path):
+def load_gif_frames(gif_path: str) -> list[pygame.surface.Surface]:
 
     git = Image.open(gif_path)
     frames = []

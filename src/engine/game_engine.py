@@ -6,15 +6,16 @@ from src.highscore import Draw_highscores
 
 class Engine:
 
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
+    def __init__(self, width: int, height: int):
+        self.width: int = width
+        self.height: int = height
         pygame.init()
         # pygame.mixer.init()
         pygame.font.init()
         # pygame.mixer.music.load("./assists/audios/background.mp3")
         # pygame.mixer.music.play(-1)
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen: pygame.surface.Surface = pygame.display.set_mode(
+            (self.width, self.height))
         self.running = True
         self.colors = {
             "yellow": (255, 255, 0),
@@ -37,27 +38,30 @@ class Engine:
             "rank_2": (167, 197, 237),
             "rank_3": (201, 151, 109)
         }
-        self.draw_splash = DrawSplash(self.width, self.height, self.screen,
-                                      self.colors)
-        self.draw_highscore = Draw_highscores(self.screen, self.colors, self.width, self.height, {"mas3oood": 110,"cheb laarbi": 2900,"chaba soad": 1011, "hicham smati": 3434})
-        
-        self.draw_main = Draw_main(self.width, self.height, self.screen,self.colors)
+        self.draw_splash: DrawSplash = DrawSplash(self.width, self.height,
+                                                  self.screen, self.colors)
+        self.draw_highscore: Draw_highscores = Draw_highscores(
+            self.screen, self.colors, self.width, self.height, {
+                "mas3oood": 110,
+                "cheb laarbi": 2900,
+                "chaba soad": 1011,
+                "hicham smati": 3434
+            })
 
+        self.draw_main: Draw_main = Draw_main(self.width, self.height,
+                                              self.screen, self.colors)
 
-
-
-    def run_engine(self):
+    def run_engine(self) -> None:
         self.draw_splash.show_splash()
-        flag = self.draw_main.Draw_menu()
+        flag: int = self.draw_main.Draw_menu()
         while self.running:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-            if flag == 0:
+            if flag == 3:
                 exit(0)
             if flag == 1:
-                score_flag = self.draw_highscore.draw_high_score()
+                score_flag: int = self.draw_highscore.draw_high_score()
                 if score_flag == 1:
                     flag = self.draw_main.Draw_menu()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-
