@@ -64,7 +64,7 @@ class Draw_highscores:
             self.colors["yellow_dark"])
 
         title_rect: pygame.rect.Rect = title_surface.get_rect()
-        title_rect.center = (self.width // 2 - 200, 20)
+        title_rect.topleft = (self.width // 2 - 200, 20)
         self.screen.blit(title_surface, title_rect)
 
     def draw_profiles_place(self) -> None:
@@ -106,7 +106,7 @@ class Draw_highscores:
                 self.colors["rank_number"])
 
             rank_rect: pygame.rect.Rect = rank_surface.get_rect()
-            rank_rect.center = (self.width // 2 - 325, 100 + step + 25)
+            rank_rect.topleft = (self.width // 2 - 325, 100 + step + 25)
             self.screen.blit(rank_surface, rank_rect)
 
             # profile image
@@ -135,7 +135,7 @@ class Draw_highscores:
                 self.colors["white"])
 
             name_rect: pygame.rect.Rect = name_surface.get_rect()
-            name_rect.center = (self.width // 2 - 240, 100 + step + 20)
+            name_rect.topleft = (self.width // 2 - 240, 100 + step + 20)
             self.screen.blit(name_surface, name_rect)
 
             # add pts
@@ -144,7 +144,7 @@ class Draw_highscores:
                 self.colors["white"])
 
             pts_rect: pygame.rect.Rect = pts_surface.get_rect()
-            pts_rect.center = (self.width - 570, 100 + step + 21)
+            pts_rect.topleft = (self.width - 570, 100 + step + 21)
             self.screen.blit(pts_surface, pts_rect)
             step += 90
             rank += 1
@@ -181,7 +181,7 @@ class Draw_highscores:
             self.colors['deep_blue'])
 
         font_rect: pygame.rect.Rect = font_surface.get_rect()
-        font_rect.center = (10 + 18, 20 + 16)
+        font_rect.topleft = (10 + 18, 20 + 16)
         self.screen.blit(font_surface, font_rect)
         self.buttons.append(pygame.Rect((10, 20, 180, 50)))
 
