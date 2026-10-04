@@ -6,7 +6,7 @@ debug:
 	@uv run python3 -m pdb
 clean:
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
-	@rm -rf .mypy_cache .pytest_cache
+	@find . -type d \( -name ".mypy_cache" -o -name ".pytest_cache" \) -exec rm -rf {} +  
 lint:
 	@flake8 .
 	@mypy .	--warn-return-any \

@@ -208,13 +208,13 @@ class Parse:
         try:
             data = self.read_data(path)
 
-            if  Path(data["highscore_filename"]).suffix != ".json":
-                        print(f"{yellow}⚠️  Warning: Your {data["highscore_filename"]}"
-                                                  f" is not a suffix '.json' file.{white}")
-                        print(f"{green}-> Using default: "
-                                                  f"{default_conf['highscore_filename']}\n{white}")
-                        data["highscore_filename"] = default_conf['highscore_filename']
-            
+            if Path(data["highscore_filename"]).suffix != ".json":
+                print(f"{yellow}⚠️  Warning: Your {data['highscore_filename']}"
+                      f" is not a suffix '.json' file.{white}")
+                print(f"{green}-> Using default: "
+                      f"{default_conf['highscore_filename']}\n{white}")
+                data["highscore_filename"] = default_conf['highscore_filename']
+
             if "level" not in data:
                 print(f"{yellow}⚠️  Warning: 'level' is missing.{white}")
                 print(f"{green}-> Using default levels: "
