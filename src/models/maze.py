@@ -44,11 +44,11 @@ class Screen:
 
     def ft_greed(self) -> None:
         for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(self.screen, (255, 0, 255), (x, 0),
-                             (x, self.height), 5)
+            pygame.draw.line(self.screen, (255, 11, 255), (x, 0),
+                             (x, self.height), 3)
         for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(self.screen, (255, 0, 255), (0, y),
-                             (self.width, y), 5)
+            pygame.draw.line(self.screen, (255, 11, 255), (0, y),
+                             (self.width, y), 3)
 
     def __init__(self, maze_w: int, maze_h: int):
         pygame.init()
@@ -74,9 +74,9 @@ class Screen:
         self.maze_pixel_h = self.maze_h * self.cell_size
         self.start_x = (self.width - self.maze_pixel_w) // 2
         self.start_y = (self.height - self.maze_pixel_h) // 2
-        
+        self.pacman_pos = ()
 
-    def draw_maze(self, walls: List[List[Dict[str, bool]]]) -> None:
+    def draw_maze(self, walls: List[List[Dict[str, bool]]]) -> Tuple[int, int]:
 
 
         # top wall
@@ -85,14 +85,16 @@ class Screen:
         # left wall
         pygame.draw.line(self.screen, (2, 255, 200), (self.start_x, self.start_y),
                          (self.start_x, self.start_y + self.maze_pixel_h), 5)
-
+        i = 0 
         for y in range(self.maze_h):
             for x in range(self.maze_w):
                 cell_x = self.start_x + x * self.cell_size
                 cell_y = self.start_y + y * self.cell_size
 
+
                 if walls[y][x]['N'] and walls[y][x]['E'] and walls[y][x][
                         'S'] and walls[y][x]['W']:
+                    i += 1
                     pygame.draw.line(
                         self.screen, (255, 100, 100),
                         (cell_x, cell_y + self.cell_size / 2),
@@ -109,3 +111,8 @@ class Screen:
                         self.screen, (2, 255, 200),
                         (cell_x, cell_y + self.cell_size),
                         (cell_x + self.cell_size, cell_y + self.cell_size), 5)
+                if i == 14:
+                    self.pacman_pos = (cell_x - self.cell_size // 2 , cell_y + self.cell_size // 2 )
+                    i += 1 
+        
+            
