@@ -25,16 +25,8 @@ class Pacman_face(Screen):
     pacman_left = load_gif_frames("src/models/pacman_face/left.gif")
     pacman_right = load_gif_frames("src/models/pacman_face/right.gif")
 
-    def draw_face(self):
-        pacman_size =  self.cell_size - 20
+    def draw_face(self, pacman_pos):
+        pacman_size =  self.cell_size - 15
         pacman_image = pygame.transform.scale(self.pacman_right[0],
                                               (pacman_size , pacman_size))
-        center_x = self.start_x + self.maze_pixel_w // 2
-        center_y = self.start_y + self.maze_pixel_h // 2
-
-        pacman_x = center_x - pacman_size // 2
-        pacman_y = center_y - pacman_size // 2
-        
-        width_image = ((self.width - self.maze_pixel_w) // 2) + ((self.maze_w // 2) * self.cell_size + 6) + self.cell_size
-        height_image = (self.height - self.maze_pixel_h) // 2  + ((self.maze_h // 2) * self.cell_size + 5) 
-        self.screen.blit(pacman_image, (pacman_x, pacman_y))
+        self.screen.blit(pacman_image, (pacman_pos[0] - 18, pacman_pos[1] - 10))
