@@ -38,7 +38,7 @@ class Maze(MazeGenerator):
     @property
     def get_height(self) -> Any:
         return self._height
-
+#ddd
 
 class Screen:
 
