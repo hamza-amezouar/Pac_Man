@@ -3,9 +3,9 @@ name = "pac-man"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
-    "mazegenerator",
+    "clear>=2.0.0",
     "mypy>=2.3.1",
     "pillow>=12.3.0",
     "pydantic>=2.13.5",
@@ -13,8 +13,9 @@ dependencies = [
     "yapf>=0.43.0",
 ]
 
-[tool.uv.sources]
-mazegenerator = { path = "mazegenerator-2.1.0-py3-none-any.whl" }
+[project.scripts]
+pac-man = "pac_man:main"
 
-[tool.mypy]
-ignore_missing_imports = true
+[build-system]
+requires = ["uv_build>=0.12.18,<0.13.0"]
+build-backend = "uv_build"
