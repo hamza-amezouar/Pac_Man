@@ -2,6 +2,11 @@ import pygame
 from src.engine.splash_screen import DrawSplash
 from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
+from src.models.maze import Maze
+from src.models.screen_maze import redraw_maze
+from src.config_parser import Parse
+
+
 
 
 class Engine:
@@ -9,6 +14,7 @@ class Engine:
     def __init__(self, width: int, height: int):
         self.width: int = width
         self.height: int = height
+        self.data:Parse = Parse().get_data()
         pygame.init()
         # pygame.mixer.init()
         pygame.font.init()
@@ -50,18 +56,30 @@ class Engine:
 
         self.draw_main: Draw_main = Draw_main(self.width, self.height,
                                               self.screen, self.colors)
+        self.maze_w = self.data['level'][0]['width']
+        self.maze_h = self.data['level'][0]['height']
+        seed = self.data['seed']
+        self.pacgum = self.data['level'][0]['pacgum']
+        self.maze = Maze(size=(self.maze_w, self.maze_h), seed=seed, level=1)
+        self.walls = self.maze.get_walls()
 
     def run_engine(self) -> None:
-        self.draw_splash.show_splash()
-        flag: int = self.draw_main.Draw_menu()
+        #self.draw_splash.show_splash()
+        #flag: int = self.draw_main.Draw_menu()
+        score_flag = redraw_maze(self.width, self.height, self.maze_w, self.maze_h, self.screen, self.walls, self.pacgum)
         while self.running:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-            if flag == 3:
-                exit(0)
+            if flag == 0:
+                score_flag = redraw_maze(self.width, self.height, self.maze_w, self.maze_h, self.screen, self.walls, self.pacgum)
+                if score_flag == 0:
+                    flag = self.draw_main.Draw_menu()
+
             if flag == 1:
                 score_flag: int = self.draw_highscore.draw_high_score()
-                if score_flag == 1:
+                if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
+            if flag == 3:
+                exit(0)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                   self.running = False

@@ -38,29 +38,25 @@ class Maze(MazeGenerator):
     @property
     def get_height(self) -> Any:
         return self._height
-#ddd
 
-class Screen:
+
+class Maze_screen:
 
     def ft_greed(self) -> None:
         for x in range(0, self.width, self.cell_size):
             pygame.draw.line(self.screen, (255, 11, 255), (x, 0),
-                             (x, self.height), 3)
+                             (x, self.height), 5)
         for y in range(0, self.height, self.cell_size):
             pygame.draw.line(self.screen, (255, 11, 255), (0, y),
-                             (self.width, y), 3)
+                             (self.width, y), 5)
 
-    def __init__(self, maze_w: int, maze_h: int):
-        pygame.init()
-        info = pygame.display.Info()
-        self.width = info.current_w
-        self.height = info.current_h
-
+    def __init__(self, screen_w, screen_h, maze_w: int, maze_h: int,
+                 screen: pygame.surface.Surface):
+        self.screen = screen
+        self.width = screen_w
+        self.height = screen_h
         self.maze_w = maze_w
         self.maze_h = maze_h
-
-        self.screen = pygame.display.set_mode((self.width, self.height))
-
         padding_x = 50
         padding_y = 150
 
@@ -77,28 +73,27 @@ class Screen:
         self.pacman_pos = ()
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]) -> Tuple[int, int]:
-
-
         # top wall
-        pygame.draw.line(self.screen, (2, 255, 200), (self.start_x, self.start_y),
+        pygame.draw.line(self.screen, (2, 255, 200),
+                         (self.start_x, self.start_y),
                          (self.start_x + self.maze_pixel_w, self.start_y), 5)
         # left wall
-        pygame.draw.line(self.screen, (2, 255, 200), (self.start_x, self.start_y),
+        pygame.draw.line(self.screen, (2, 255, 200),
+                         (self.start_x, self.start_y),
                          (self.start_x, self.start_y + self.maze_pixel_h), 5)
-        i = 0 
+        i = 0
         for y in range(self.maze_h):
             for x in range(self.maze_w):
                 cell_x = self.start_x + x * self.cell_size
                 cell_y = self.start_y + y * self.cell_size
-
 
                 if walls[y][x]['N'] and walls[y][x]['E'] and walls[y][x][
                         'S'] and walls[y][x]['W']:
                     i += 1
                     pygame.draw.line(
                         self.screen, (255, 100, 100),
-                        (cell_x, cell_y + self.cell_size / 2),
-                        (cell_x + self.cell_size, cell_y + self.cell_size / 2),
+                        (cell_x, cell_y + self.cell_size // 2),
+                        (cell_x + self.cell_size, cell_y + self.cell_size // 2),
                         self.cell_size)
 
                 if walls[y][x]['E']:
@@ -112,7 +107,60 @@ class Screen:
                         (cell_x, cell_y + self.cell_size),
                         (cell_x + self.cell_size, cell_y + self.cell_size), 5)
                 if i == 14:
-                    self.pacman_pos = (cell_x - self.cell_size // 2 , cell_y + self.cell_size // 2 )
-                    i += 1 
+                    self.pacman_pos = (cell_x - self.cell_size // 2,
+                                       cell_y + self.cell_size // 2)
+                    i += 1
+
+    def draw_super_pacgum(self, pacgum):
         
-            
+        for y in range(self.maze_h):
+            for x in range(self.maze_w):
+                if x == 0 and y == 0:
+
+                    pygame.draw.circle(self.screen,(228, 208, 10),
+                                     (self.start_x + self.cell_size //2,
+                                      self.start_y + self.cell_size// 2), self.cell_size // 2 - 15)
+                #     pacgum -= 1
+                # if x == self.maze_w - 1 and y == 0:
+                #     self.screen.blit(self.super_pacgum,
+                #                        (self.start_x + self.cell_size * x +
+                #                         self.cell_size // 2,
+                #                         self.start_y + self.cell_size // 2))
+                #     pacgum -= 1
+                # if x == 0 and y == self.maze_h - 1:
+                #     self.screen.blit(self.super_pacgum,
+                #         (self.start_x + self.cell_size // 2, self.start_y +
+                #          y * self.cell_size + self.cell_size // 2))
+                #     pacgum -= 1
+                # if x == self.maze_w - 1 and y == self.maze_h - 1:
+                #     self.screen.blit(self.super_pacgum,
+                #         (self.start_x + x * self.cell_size +
+                #          self.cell_size // 2, self.start_y +
+                #          y * self.cell_size + self.cell_size // 2))
+                #     pacgum -= 1
+        return pacgum
+
+    def draw_pacgums(self, pacgum, walls):
+        valid_cells = []
+        pacgum = self.draw_super_pacgum(pacgum)
+        i = 0
+        for y in range(self.maze_h):
+            for x in range(self.maze_w):
+                if walls[y][x]['N'] and walls[y][x]['E'] and walls[y][x][
+                        'S'] and walls[y][x]['W']:
+                    i += 1
+                    continue
+                elif x == 0 and y == 0:
+                    continue
+                elif x == self.maze_w - 1 and y == 0:
+                    continue
+                elif x == 0 and y == self.maze_h - 1:
+                    continue
+                elif x == self.maze_w - 1 and y == self.maze_h - 1:
+                    continue
+                elif i == 13:
+                    x += 1
+                else:
+                    valid_cells.append((x, y))
+        print(valid_cells)
+        exit(0)

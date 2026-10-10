@@ -1,7 +1,7 @@
 install:
 	@uv sync
 run:
-	@python3 pac-man.py config.json
+	@uv run python3 pac-man.py config.json
 debug:
 	@uv run python3 -m pdb
 clean:
