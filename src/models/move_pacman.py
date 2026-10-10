@@ -18,3 +18,14 @@ class Pacman_face(Maze_screen):
         pacman_image = pygame.transform.scale(self.pacman_right[0],
                                               (pacman_size , pacman_size))
         self.screen.blit(pacman_image, (pacman_pos[0] - 18, pacman_pos[1] - 18))
+
+    def moves_pacman(self, pacman_pos, direction):
+        current_x = (pacman_pos[0] - self.start_x) // self.cell_size
+        current_y = (pacman_pos[1] - self.start_y) // self.cell_size
+
+        if not (0 <= current_x < self.maze_w and  0 <= current_y < self.maze_h):
+            return 
+
+        if direction == "up":
+            pass 
+        

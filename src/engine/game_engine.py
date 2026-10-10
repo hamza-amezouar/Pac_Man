@@ -65,8 +65,7 @@ class Engine:
 
     def run_engine(self) -> None:
         #self.draw_splash.show_splash()
-        #flag: int = self.draw_main.Draw_menu()
-        score_flag = redraw_maze(self.width, self.height, self.maze_w, self.maze_h, self.screen, self.walls, self.pacgum)
+        flag: int = self.draw_main.Draw_menu()
         while self.running:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
             if flag == 0:
