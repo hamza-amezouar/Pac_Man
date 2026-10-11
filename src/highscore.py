@@ -80,13 +80,13 @@ class Draw_highscores:
         rank = 1
         current_image = 0
         profiles = [
-            "/home/hamezoua/pac-man/assists/images/profiles/profile1.jpg",
-            "/home/hamezoua/pac-man/assists/images/profiles/profile3.jpeg",
-            "/home/hamezoua/pac-man/assists/images/profiles/profile5.jpg",
-            "/home/hamezoua/pac-man/assists/images/profiles/profile7.png",
-            "/home/hamezoua/pac-man/assists/images/profiles/profile8.jpeg",
-            "/home/hamezoua/pac-man/assists/images/profiles/profile9.png",
-            "/home/hamezoua/pac-man/assists/images/profiles/profile10.jpeg"
+            "assists/images/profiles/profile1.jpg",
+            "assists/images/profiles/profile3.jpeg",
+            "assists/images/profiles/profile5.jpg",
+            "assists/images/profiles/profile7.png",
+            "assists/images/profiles/profile8.jpeg",
+            "assists/images/profiles/profile9.png",
+            "assists/images/profiles/profile10.jpeg"
         ]
         for name, level in self.highscors.items():
             # border user info
@@ -211,7 +211,7 @@ class Draw_highscores:
                     if event.button == 1:
                         for button in self.buttons:
                             if button.collidepoint(event.pos):
-                                return 1
+                                return 0
             pygame.display.update()
             pygame.time.wait(100)
         return 0

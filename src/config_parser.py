@@ -38,7 +38,7 @@ class Level(BaseModel):
 
     width: int = Field(ge=9)
     height: int = Field(ge=7)
-    pacgum: int = Field(gt=0)
+    pacgum: int = Field(gt=4)
 
     @model_validator(mode="after")
     def check_pacgum_pacgum(self) -> "Level":

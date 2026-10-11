@@ -153,9 +153,11 @@ class Draw_main:
                     if event.button == 1:
                         for button in self.buttons:
                             if button.collidepoint(event.pos):
-                                if button == self.buttons[3]:
-                                    return 3
+                                if button == self.buttons[0]:
+                                    return 0
                                 if button == self.buttons[1]:
                                     return 1
+                                if button == self.buttons[3]:
+                                    return 3
             self.Draw_buttons_menu(mouse_pos)
             pygame.display.update()
