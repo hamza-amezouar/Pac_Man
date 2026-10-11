@@ -1,14 +1,17 @@
 from src.models.move_pacman import Pacman_face
 from src.models.maze import Maze_screen
 import pygame
+from src.models.ghosts import Ghosts
 
 def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         run = True
         maze = Maze_screen(width, height, maze_w, maze_h, screen)
         pacman:Pacman_face = Pacman_face(width, height, maze_w, maze_h, screen)
-        screen.fill((30, 30, 30))
+        ghosts = Ghosts(width, height, maze_w, maze_h, screen, walls)
         maze.draw_pacgums(pacgum, walls)
-        while run:         
+        step = 10
+        while run:    
+            screen.fill((30, 30, 30))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
@@ -23,6 +26,8 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
                 pass
             elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 pass
+            ghosts.chase(maze.pacman_pos, step)
+            step += 20
             
         
             
