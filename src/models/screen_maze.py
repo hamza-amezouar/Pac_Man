@@ -4,9 +4,9 @@ import pygame
 
 def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         run = True
+        direction = None
         maze = Maze_screen(width, height, maze_w, maze_h, screen)
         pacman:Pacman_face = Pacman_face(width, height, maze_w, maze_h, screen)
-        screen.fill((30, 30, 30))
         maze.draw_pacgums(pacgum, walls)
         while run:         
             for event in pygame.event.get():
@@ -15,18 +15,22 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
             keys = pygame.key.get_pressed()
             if keys[pygame.K_q]:
                  exit(0)
-            elif keys[pygame.K_UP] or keys[pygame.K_w]:
-                 pacman.moves_pacman(maze.pacman_pos, "up")
+            elif keys [pygame.K_UP] or keys[pygame.K_w]:
+                direction = "up"
             elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                pass
+                direction = "right"
             elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                pass
+                direction = "down"
             elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                pass
+                direction = "left"
+            if direction:
+                old_pos = maze.pacman_pos[:]
+                pacman.moves_pacman(walls, maze.pacman_pos, direction)
+
+                if maze.pacman_pos == old_pos:
+                    direction = None
             
-        
-            
-            #maze.ft_greed()
+            screen.fill((30, 30, 30))
             maze.draw_maze(walls)
             pacman.draw_face(maze.pacman_pos)            
             

@@ -71,7 +71,7 @@ class Maze_screen:
         self.maze_pixel_h = self.maze_h * self.cell_size
         self.start_x = (self.width - self.maze_pixel_w) // 2
         self.start_y = (self.height - self.maze_pixel_h) // 2
-        self.pacman_pos = ()
+        self.pacman_pos = []
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]) -> Tuple[int, int]:
         # top wall
@@ -108,8 +108,9 @@ class Maze_screen:
                         (cell_x, cell_y + self.cell_size),
                         (cell_x + self.cell_size, cell_y + self.cell_size), 5)
                 if i == 14:
-                    self.pacman_pos = (cell_x - self.cell_size // 2,
-                                       cell_y + self.cell_size // 2)
+                    if not self.pacman_pos:
+                        self.pacman_pos = [cell_x - self.cell_size // 2,
+                                        cell_y + self.cell_size // 2]
                     i += 1
 
     def draw_super_pacgum(self, pacgum: int) -> int:
