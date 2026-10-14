@@ -74,7 +74,6 @@ class Maze_screen:
         self.pacman_pos = []
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]):
-        pygame.draw.line(self.screen, (255, 255, 255), (self.start_x, self.start_y), (self.start_x, self.start_y), 10)
         # top wall
         pygame.draw.line(self.screen, (255, 255, 255),
                          (self.start_x, self.start_y),
