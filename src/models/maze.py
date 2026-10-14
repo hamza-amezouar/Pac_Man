@@ -73,9 +73,10 @@ class Maze_screen:
         self.start_y = (self.height - self.maze_pixel_h) // 2
         self.pacman_pos = []
 
-    def draw_maze(self, walls: List[List[Dict[str, bool]]]) -> Tuple[int, int]:
+    def draw_maze(self, walls: List[List[Dict[str, bool]]]):
+        pygame.draw.line(self.screen, (255, 255, 255), (self.start_x, self.start_y), (self.start_x, self.start_y), 10)
         # top wall
-        pygame.draw.line(self.screen, (2, 255, 200),
+        pygame.draw.line(self.screen, (255, 255, 255),
                          (self.start_x, self.start_y),
                          (self.start_x + self.maze_pixel_w, self.start_y), 5)
         # left wall
@@ -109,51 +110,16 @@ class Maze_screen:
                         (cell_x + self.cell_size, cell_y + self.cell_size), 5)
                 if i == 14:
                     if not self.pacman_pos:
-                        self.pacman_pos = [cell_x - self.cell_size // 2,
-                                        cell_y + self.cell_size // 2]
+                        self.pacman_pos = [
+                            cell_x - self.cell_size // 2,
+                            cell_y + self.cell_size // 2
+                        ]
                     i += 1
 
-    def draw_super_pacgum(self, pacgum: int) -> int:
-
-        for y in range(self.maze_h):
-            for x in range(self.maze_w):
-                if x == 0 and y == 0:
-
-                    pygame.draw.circle(self.screen, (228, 208, 10),
-                                       (self.start_x + self.cell_size // 2,
-                                        self.start_y + self.cell_size // 2),
-                                       self.cell_size // 2 - 15)
-                    pacgum -= 1
-                if x == self.maze_w - 1 and y == 0:
-                    pygame.draw.circle(self.screen, (228, 208, 10),
-                                       (self.start_x + self.cell_size * x +
-                                        self.cell_size // 2,
-                                        self.start_y + self.cell_size // 2),
-                                       self.cell_size // 2 - 15)
-                    pacgum -= 1
-                if x == 0 and y == self.maze_h - 1:
-                    pygame.draw.circle(
-                        self.screen, (228, 208, 10),
-                        (self.start_x + self.cell_size // 2, self.start_y +
-                         y * self.cell_size + self.cell_size // 2),
-                        self.cell_size // 2 - 15)
-                    pacgum -= 1
-                if x == self.maze_w - 1 and y == self.maze_h - 1:
-                    pygame.draw.circle(
-                        self.screen, (228, 208, 10),
-                        (self.start_x + x * self.cell_size +
-                         self.cell_size // 2, self.start_y +
-                         y * self.cell_size + self.cell_size // 2),
-                        self.cell_size // 2 - 15)
-                    pacgum -= 1
-        return pacgum
-
-    def draw_pacgums(self, pacgum, walls):
+    def existing_pacgums(self, pacgum, walls):
         valid_cells = []
-        pacgum = self.draw_super_pacgum(pacgum)
-        super_pacgum = [(0, 0), (self.maze_w - 1, 0),
-                                          (0, self.maze_h - 1),
-                                          (self.maze_w - 1, self.maze_h - 1)]
+        super_pacgum = [(0, 0), (self.maze_w - 1, 0), (0, self.maze_h - 1),
+                        (self.maze_w - 1, self.maze_h - 1)]
         i = 0
         for y in range(self.maze_h):
             for x in range(self.maze_w):
@@ -167,12 +133,38 @@ class Maze_screen:
                     x += 1
                 else:
                     valid_cells.append((x, y))
-        list_pacgum = random.sample(valid_cells, pacgum)
-        for c_x, c_y in list_pacgum:
-            pygame.draw.circle(
-                self.screen, (228, 208, 10),
-                (self.start_x + c_x * self.cell_size + self.cell_size // 2,
-                 self.start_y + c_y * self.cell_size + self.cell_size // 2),
-                self.cell_size // 2 - 20)
-        total_pacgums =  super_pacgum + list_pacgum
+        pacgums = random.sample(valid_cells, pacgum)
+        total_pacgums = super_pacgum + pacgums
         return total_pacgums
+
+    def draw_all_pacgums(self, pacgums):
+        for c_x, c_y in pacgums:
+            if c_x == 0 and c_y == 0:
+                pygame.draw.circle(self.screen, (228, 208, 10),
+                                   (self.start_x + self.cell_size // 2,
+                                    self.start_y + self.cell_size // 2),
+                                   self.cell_size // 2 - 15)
+            elif c_x == self.maze_w - 1 and c_y == 0:
+                pygame.draw.circle(
+                    self.screen, (228, 208, 10),
+                    (self.start_x + self.cell_size * c_x + self.cell_size // 2,
+                     self.start_y + self.cell_size // 2),
+                    self.cell_size // 2 - 15)
+            elif c_x == 0 and c_y == self.maze_h - 1:
+                pygame.draw.circle(
+                    self.screen, (228, 208, 10),
+                    (self.start_x + self.cell_size // 2, self.start_y +
+                     c_y * self.cell_size + self.cell_size // 2),
+                    self.cell_size // 2 - 15)
+            elif c_x == self.maze_w - 1 and c_y == self.maze_h - 1:
+                pygame.draw.circle(
+                    self.screen, (228, 208, 10),
+                    (self.start_x + c_x * self.cell_size + self.cell_size // 2,
+                     self.start_y + c_y * self.cell_size +
+                     self.cell_size // 2), self.cell_size // 2 - 15)
+            else:
+                pygame.draw.circle(
+                    self.screen, (228, 208, 10),
+                    (self.start_x + c_x * self.cell_size + self.cell_size // 2,
+                     self.start_y + c_y * self.cell_size +
+                     self.cell_size // 2), self.cell_size // 2 - 20)

@@ -62,7 +62,7 @@ class Engine:
         self.pacgum = self.data['level'][0]['pacgum']
         self.maze = Maze(size=(self.maze_w, self.maze_h), seed=seed, level=1)
         self.walls = self.maze.get_walls()
-
+        
     def run_engine(self) -> None:
         #self.draw_splash.show_splash()
         flag: int = self.draw_main.Draw_menu()

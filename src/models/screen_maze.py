@@ -7,8 +7,11 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         direction = None
         maze = Maze_screen(width, height, maze_w, maze_h, screen)
         pacman:Pacman_face = Pacman_face(width, height, maze_w, maze_h, screen)
-        maze.draw_pacgums(pacgum, walls)
+        pacgums = maze.existing_pacgums(pacgum, walls)
+        clock = pygame.time.Clock()
+        
         while run:         
+            screen.fill((30, 30, 30))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
@@ -17,22 +20,26 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
                  exit(0)
             elif keys [pygame.K_UP] or keys[pygame.K_w]:
                 direction = "up"
+                target = pacman.target_pacman(maze.pacman_pos, direction)
             elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 direction = "right"
-            elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                direction = "down"
-            elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                direction = "left"
-            if direction:
-                old_pos = maze.pacman_pos[:]
-                pacman.moves_pacman(walls, maze.pacman_pos, direction)
-
-                if maze.pacman_pos == old_pos:
-                    direction = None
+                target = pacman.target_pacman(maze.pacman_pos, direction)
+            # elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            #     direction = "down"
+            # elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            #     direction = "left"
+                
+            if (direction and  target) is not None:
+                pacman.move_pacman(walls, maze.pacman_pos, direction, target)
+                if tuple(maze.pacman_pos) == target:
+                    target = pacman.target_pacman(
+                    maze.pacman_pos, direction
+                )
             
-            screen.fill((30, 30, 30))
+            maze.ft_greed()
             maze.draw_maze(walls)
+            maze.draw_all_pacgums(pacgums)
             pacman.draw_face(maze.pacman_pos)            
-            
+            clock.tick(20)
             pygame.display.update()
-            pygame.time.wait(100)
+            
