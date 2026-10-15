@@ -19,6 +19,9 @@ class Pacman_face(Maze_screen):
     def draw_face(self, pacman_pos):
         frames = self.pacman_right
         pacman_size =  self.cell_size - 15
+        center_x = pacman_pos[0] + self.cell_size // 2
+        center_y = pacman_pos[1] + self.cell_size // 2
+        # print(pacman_pos[0], pacman_pos[])
         # current_time = pygame.time.get_ticks()
         if self.direction == "start":
             frames = self.pacman_right
@@ -35,55 +38,62 @@ class Pacman_face(Maze_screen):
             index = (self.index + 1) % len(frames)
         pacman_image = pygame.transform.scale(frames[0],
                                                         (pacman_size , pacman_size))
-        self.screen.blit(pacman_image, (pacman_pos[0] - 18, pacman_pos[1] - 18))
+        self.screen.blit(pacman_image, (pacman_pos[0] - pacman_size // 2,
+        pacman_pos[1] - pacman_size // 2))
         self.index = (self.index + 1) % len(frames)
         
 
-    def target_pacman(self,pacman_pos, direction):
-        c_x = (pacman_pos[0] - self.start_x) // self.cell_size
-        c_y = (pacman_pos[1] - self.start_y) // self.cell_size
-        speed = 2
+    def target_pacman(self,current_pos, direction, walls):
+        c_x = int((current_pos[0] - self.start_x) // self.cell_size)
+        c_y = int((current_pos[1] - self.start_y) // self.cell_size)
+    
         if not (0 <= c_x < self.maze_w and  0 <= c_y < self.maze_h):
             return 
         if direction == "up":
-            if c_y > 0:
-                target_y = pacman_pos[1] - self.cell_size
-                return(pacman_pos[0], target_y)
+            if not walls[c_y][c_x]['N']:
+                target = (current_pos[0], current_pos[1] - self.cell_size)
+                return target
+            else:
+                return None
+        elif direction == "down":
+            if not walls[c_y][c_x]['S']:
+                return (current_pos[0], current_pos[1] + self.cell_size)
+        elif direction == "left":
+            if not walls[c_y][c_x]['W']:
+                return (current_pos[0] - self.cell_size, current_pos[1])
         elif direction == "right":
-            if c_x < self.maze_w - 1:
-                target_x = pacman_pos[0] + self.cell_size
-                return (target_x, pacman_pos[1])
+            if not walls[c_y][c_x]['E']:
+                return (current_pos[0] + self.cell_size, current_pos[1])
         return None
 
+    def move_pacman(self,current_pos,target, speed):
+        if target is None:
+            return True
+        if current_pos[1] > target[1]:
+            current_pos[1] = max(
+                target[1],
+                current_pos[1] - speed
+            )
 
-    def move_pacman(self, walls, pacman_pos, direction, target):
-        speed = 2
-        c_x = (pacman_pos[0] - self.start_x) // self.cell_size
-        c_y = (pacman_pos[1] - self.start_y) // self.cell_size
-        t_x = (target[0] - self.start_x) // self.cell_size
-        t_y = (target[1] - self.start_y) // self.cell_size
-        if direction == "up":
-            pygame.draw.circle(self.screen, (255,255,255), (target[0], target[1]), 20)
-            if pacman_pos[1] <= target[1]:
-                pacman_pos[1] = target[1]
-                print(pacman_pos[1], target[1])
-                return
-            if c_y > 0 and not walls[t_y][t_x]["S"]:
-                pacman_pos[1] -= speed
+        # Move down
+        elif current_pos[1] < target[1]:
+            current_pos[1] = min(
+                target[1],
+                current_pos[1] + speed
+            )
 
-                
-        elif direction == "right":  
-            pygame.draw.circle(self.screen, (255,255,255), (target[0], target[1]), 20)
-            if pacman_pos[0] >= target[0]:
-                pacman_pos[0] = target[0]
-                return
-            if c_x < self.maze_w - 1 and not walls[t_y][t_x]['W']:
-                pacman_pos[0] += speed
-        
+        # Move right
+        if current_pos[0] < target[0]:
+            current_pos[0] = min(
+                target[0],
+                current_pos[0] + speed
+            )
 
+        # Move left
+        elif current_pos[0] > target[0]:
+            current_pos[0] = max(
+                target[0],
+                current_pos[0] - speed
+            )
 
-        # else:
-        #     return
-        # self.direction = direction
-        # self.draw_face(pacman_pos)
-        
+        return tuple(current_pos) == target

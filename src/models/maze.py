@@ -44,12 +44,12 @@ class Maze(MazeGenerator):
 class Maze_screen:
 
     def ft_greed(self) -> None:
-        for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(self.screen, (255, 11, 255), (x, 0),
-                             (x, self.height), 5)
-        for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(self.screen, (255, 11, 255), (0, y),
-                             (self.width, y), 5)
+        for x in range(self.start_x, self.start_x + self.maze_pixel_w + 1, self.cell_size):
+            pygame.draw.line(self.screen, (255, 11, 255), (x, self.start_y),
+                             (x, self.start_y + self.maze_pixel_h), 5)
+        for y in range(self.start_y, self.start_y + self.maze_pixel_h + 1, self.cell_size):
+            pygame.draw.line(self.screen, (255, 11, 255), (self.start_x, y),
+                             (self.start_x + self.maze_pixel_w, y), 5)
 
     def __init__(self, screen_w, screen_h, maze_w: int, maze_h: int,
                  screen: pygame.surface.Surface):
@@ -109,9 +109,10 @@ class Maze_screen:
                         (cell_x + self.cell_size, cell_y + self.cell_size), 5)
                 if i == 14:
                     if not self.pacman_pos:
+                        cell_x = cell_x - self.cell_size
                         self.pacman_pos = [
-                            cell_x - self.cell_size // 2,
-                            cell_y + self.cell_size // 2
+                            cell_x + self.cell_size // 2,
+                            cell_y + self.cell_size// 2
                         ]
                     i += 1
 
