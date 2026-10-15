@@ -17,7 +17,7 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
     current_target = None
     reached = True
 
-    speed = 5
+    speed = 2
     clock = pygame.time.Clock()
 
     while run:
@@ -74,7 +74,7 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         maze.ft_greed()
         maze.draw_maze(walls)
         maze.draw_all_pacgums(pacgums)
-        pacman.draw_face(maze.pacman_pos)
+        pacman.draw_face(maze.pacman_pos, direction)
 
         clock.tick(60)
         pygame.display.update()

@@ -15,7 +15,7 @@ if __name__ == "__main__":
         # walls = maze1.get_walls()
         # screen = Screen(width, height)
         # pacman = Pacman_face(width, height)
-        game = Engine(1920, 1080)
+        game = Engine(1024, 950)
         game.run_engine()
         
         

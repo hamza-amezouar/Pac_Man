@@ -12,35 +12,36 @@ class Pacman_face(Maze_screen):
         self.pacman_down = load_gif_frames("src/models/pacman_face/pacman/down.gif")
         self.pacman_left = load_gif_frames("src/models/pacman_face/pacman/left.gif")
         self.pacman_right = load_gif_frames("src/models/pacman_face/pacman/right.gif")
-        self.direction = "start"
         self.index = 0
+        self.last_animation_time = 0
+        self.animation_delay = 250
 
 
-    def draw_face(self, pacman_pos):
+    def draw_face(self, pacman_pos, direction):
         frames = self.pacman_right
         pacman_size =  self.cell_size - 15
-        center_x = pacman_pos[0] + self.cell_size // 2
-        center_y = pacman_pos[1] + self.cell_size // 2
-        # print(pacman_pos[0], pacman_pos[])
-        # current_time = pygame.time.get_ticks()
-        if self.direction == "start":
+        current_time = pygame.time.get_ticks()
+        if direction is None:
             frames = self.pacman_right
-            index  = 0
-        elif self.direction == "up":
+            self.index  = 0
+        elif direction == "up":
             frames =  self.pacman_up
-        elif self.direction == "down":
+        elif direction == "down":
             frames = self.pacman_down
-        elif self.direction == "left":
+        elif direction == "left":
             frames = self.pacman_left
-        elif self.direction == "right":
+        elif direction == "right":
             frames = self.pacman_right
-        if self.direction != "start":
-            index = (self.index + 1) % len(frames)
-        pacman_image = pygame.transform.scale(frames[0],
+        if direction is not None:
+            if current_time - self.last_animation_time >= self.animation_delay:
+                self.index = (self.index + 1) % len(frames)
+                self.last_animation_time = current_time
+
+
+        pacman_image = pygame.transform.scale(frames[self.index],
                                                         (pacman_size , pacman_size))
         self.screen.blit(pacman_image, (pacman_pos[0] - pacman_size // 2,
         pacman_pos[1] - pacman_size // 2))
-        self.index = (self.index + 1) % len(frames)
         
 
     def target_pacman(self,current_pos, direction, walls):
