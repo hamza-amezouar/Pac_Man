@@ -2,10 +2,10 @@
 from src.models.move_pacman import Pacman_face
 from src.models.maze import Maze_screen
 import pygame
+from src.models.ghosts import Ghosts
 
 
 def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
-<<<<<<< HEAD
     run = True
     maze = Maze_screen(width, height, maze_w, maze_h, screen)
     pacman: Pacman_face = Pacman_face(
@@ -20,7 +20,10 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
 
     speed = 2
     clock = pygame.time.Clock()
-
+    ghost = Ghosts(width, height, maze_w, maze_h, screen, walls)
+    current_pos = 0
+    move_now = 0
+    path = ghost.calculate_ghost_path((0, 0), (7, 7))
     while run:
         screen.fill((30, 30, 30))
 
@@ -72,43 +75,16 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
             if reached:
                 current_target = None
 
-        maze.ft_greed()
+        # maze.ft_greed()
         maze.draw_maze(walls)
         maze.draw_all_pacgums(pacgums)
         pacman.draw_face(maze.pacman_pos, direction)
-
+        move_now += 1
+        if move_now == 20:
+            if current_pos != len(path) - 1:
+                path = ghost.calculate_ghost_path((0, 0), (7, 7))
+                current_pos = (current_pos + 1) % len(path)
+            move_now = 0
+        ghost.chase(path[current_pos])
         clock.tick(60)
         pygame.display.update()
-=======
-        run = True
-        maze = Maze_screen(width, height, maze_w, maze_h, screen)
-        pacman:Pacman_face = Pacman_face(width, height, maze_w, maze_h, screen)
-        maze.draw_pacgums(pacgum, walls)
-        step = 10
-        while run:    
-            screen.fill((30, 30, 30))
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    exit(0)
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_q]:
-                 exit(0)
-            elif keys[pygame.K_UP] or keys[pygame.K_w]:
-                 pacman.moves_pacman(maze.pacman_pos, "up")
-            elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                pass
-            elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                pass
-            elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                pass
-            step += 20
-            
-        
-            
-            # maze.ft_greed()
-            maze.draw_maze(walls)
-            pacman.draw_face(maze.pacman_pos)            
-            
-            pygame.display.update()
-            pygame.time.wait(100)
->>>>>>> 89b18d94fdae4cb778343c049f8477284b7015e4
