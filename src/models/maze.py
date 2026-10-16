@@ -75,7 +75,7 @@ class Maze_screen:
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]):
         # top wall
-        pygame.draw.line(self.screen, (255, 255, 255),
+        pygame.draw.line(self.screen, (2, 255, 200),
                          (self.start_x, self.start_y),
                          (self.start_x + self.maze_pixel_w, self.start_y), 5)
         # left wall
@@ -110,6 +110,7 @@ class Maze_screen:
                 if i == 14:
                     if not self.pacman_pos:
                         cell_x = cell_x - self.cell_size
+                        cell_y =  cell_y + self.cell_size * 4
                         self.pacman_pos = [
                             cell_x + self.cell_size // 2,
                             cell_y + self.cell_size// 2

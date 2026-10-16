@@ -14,7 +14,7 @@ class Pacman_face(Maze_screen):
         self.pacman_right = load_gif_frames("src/models/pacman_face/pacman/right.gif")
         self.index = 0
         self.last_animation_time = 0
-        self.animation_delay = 250
+        self.animation_delay = 200
 
 
     def draw_face(self, pacman_pos, direction):

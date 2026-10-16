@@ -18,13 +18,16 @@ class Ghosts(Maze_screen):
         self.ghost_image = pygame.image.load("assists/images/ghosts/redleft.gif").convert_alpha()
         self.pacman_image = pygame.image.load("assists/images/oacmn.gif").convert_alpha()
 
-    def calculate_ghost_path(self, currunt_pos, goal_pos):
+    def calculate_ghost_path(self, current_pos, goal_pos):
         queue = []
         visited = set()
         parrent = {}
         path = []
-        queue.append((currunt_pos))
-        visited.add((currunt_pos))
+        c_x = int((goal_pos[0] - self.start_x) // self.cell_size)
+        c_y = int((goal_pos[1] - self.start_y) // self.cell_size)
+        goal_pos = (c_x, c_y)
+        queue.append((current_pos))
+        visited.add((current_pos))
 
 
         while queue:
@@ -56,18 +59,17 @@ class Ghosts(Maze_screen):
                     parrent[(x + 1, y)] = (x, y)
                     visited.add((x + 1, y))
         pos = goal_pos
-        while pos != currunt_pos:
+        while pos != current_pos:
             path.append(pos)
             pos = parrent[pos]
-        path.append(currunt_pos)
+        path.append(current_pos)
         return path[::-1]
         
 
     def chase(self, current_pos):
         x = current_pos[0]
         y = current_pos[1]
+        size = self.cell_size - 10
         pixel_x = self.start_x + (x * self.cell_size) + self.cell_size // 2
         pixel_y = self.start_y + (y * self.cell_size) + self.cell_size // 2
-        pos = (pixel_x - 15, pixel_y - 15)
-        self.screen.blit(pygame.transform.scale(self.ghost_image, (35 , 35)), pos)
-        # [(0, 0), (0, 1), (1, 1), (2, 1), (2, 2), (2, 3), (2, 4), (3, 4), (3, 5)]
+        self.screen.blit(pygame.transform.scale(self.ghost_image, (size , size)), (pixel_x - size // 2, pixel_y - size // 2))

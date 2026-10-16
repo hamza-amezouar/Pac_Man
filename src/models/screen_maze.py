@@ -18,12 +18,13 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
     current_target = None
     reached = True
 
-    speed = 2
+    speed = 5
     clock = pygame.time.Clock()
     ghost = Ghosts(width, height, maze_w, maze_h, screen, walls)
     current_pos = 0
     move_now = 0
-    path = ghost.calculate_ghost_path((0, 0), (7, 7))
+    maze.draw_maze(walls)
+    old_path = ghost.calculate_ghost_path((14, 0), maze.pacman_pos)
     while run:
         screen.fill((30, 30, 30))
 
@@ -80,11 +81,17 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         maze.draw_all_pacgums(pacgums)
         pacman.draw_face(maze.pacman_pos, direction)
         move_now += 1
-        if move_now == 20:
-            if current_pos != len(path) - 1:
-                path = ghost.calculate_ghost_path((0, 0), (7, 7))
-                current_pos = (current_pos + 1) % len(path)
+        if current_pos < len(old_path):
+            ghost.chase(old_path[current_pos])
+        else:
+            ghost.chase(old_path[0])
+            current_pos = 0
+        if move_now == 17:
+            path = ghost.calculate_ghost_path(old_path[current_pos], maze.pacman_pos)
+            current_pos = (current_pos + 1) % len(path)
             move_now = 0
-        ghost.chase(path[current_pos])
+            if path != old_path:
+                old_path = path
+                current_pos = 1
         clock.tick(60)
         pygame.display.update()
