@@ -82,7 +82,6 @@ class Ghosts(Maze_screen):
 
         self.pixel_x = start_pixel_x + (goal_pixel_x - start_pixel_x) * progress
         self.pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * progress
-
         size = self.cell_size - 10
         self.screen.blit(
             pygame.transform.scale(self.ghost_image, (size, size)),
