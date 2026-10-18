@@ -1,4 +1,6 @@
 
+import time
+
 from src.models.move_pacman import Pacman_face
 from src.models.maze import Maze_screen
 import pygame
@@ -82,9 +84,12 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         pacman.draw_face(maze.pacman_pos, direction)
         move_now += 1
         if current_pos < len(old_path):
-            ghost.chase(old_path[current_pos])
+            if current_pos + 1 < len(old_path):
+                ghost.chase(old_path[current_pos], old_path[current_pos + 1], move_now, 17)
+            else:
+                ghost.chase(old_path[current_pos], old_path[current_pos], move_now, 17)
         else:
-            ghost.chase(old_path[0])
+            ghost.chase(old_path[0], old_path[0], move_now, 17)
             current_pos = 0
         if move_now == 17:
             path = ghost.calculate_ghost_path(old_path[current_pos], maze.pacman_pos)

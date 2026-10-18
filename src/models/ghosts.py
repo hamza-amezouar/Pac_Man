@@ -14,7 +14,6 @@ class Ghosts(Maze_screen):
         self.maze_h = maze_h
         self.screen = screen
         self.walls = walls
-        self.current_pos = -1
         self.ghost_image = pygame.image.load("assists/images/ghosts/redleft.gif").convert_alpha()
         self.pacman_image = pygame.image.load("assists/images/oacmn.gif").convert_alpha()
 
@@ -66,10 +65,26 @@ class Ghosts(Maze_screen):
         return path[::-1]
         
 
-    def chase(self, current_pos):
-        x = current_pos[0]
-        y = current_pos[1]
+    def chase(self, current_pos, goal_pos, move_now, total_steps):
+        current_x, current_y = current_pos
+        goal_x, goal_y = goal_pos
+
+
+        start_pixel_x = self.start_x + (current_x * self.cell_size) + self.cell_size // 2
+        start_pixel_y = self.start_y + (current_y * self.cell_size) + self.cell_size // 2
+
+        goal_pixel_x = self.start_x + (goal_x * self.cell_size) + self.cell_size // 2
+        goal_pixel_y = self.start_y + (goal_y * self.cell_size) + self.cell_size // 2
+
+
+        progress = move_now / total_steps
+
+
+        self.pixel_x = start_pixel_x + (goal_pixel_x - start_pixel_x) * progress
+        self.pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * progress
+
         size = self.cell_size - 10
-        pixel_x = self.start_x + (x * self.cell_size) + self.cell_size // 2
-        pixel_y = self.start_y + (y * self.cell_size) + self.cell_size // 2
-        self.screen.blit(pygame.transform.scale(self.ghost_image, (size , size)), (pixel_x - size // 2, pixel_y - size // 2))
+        self.screen.blit(
+            pygame.transform.scale(self.ghost_image, (size, size)),
+            (self.pixel_x - size // 2, self.pixel_y - size // 2)
+        )
