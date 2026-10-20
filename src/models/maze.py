@@ -1,8 +1,12 @@
 from mazegenerator.mazegenerator import MazeGenerator
-from typing import Tuple, List, Dict, Any
+from src.config_parser import Parse
+from typing import Tuple, List, Dict, Any, TYPE_CHECKING
 import pygame
 import random
+import time
 
+if TYPE_CHECKING:
+    from src.engine.game_engine import Engine
 
 class Maze(MazeGenerator):
 
@@ -42,17 +46,11 @@ class Maze(MazeGenerator):
 
 
 class Maze_screen:
-
-    def ft_greed(self) -> None:
-        for x in range(self.start_x, self.start_x + self.maze_pixel_w + 1, self.cell_size):
-            pygame.draw.line(self.screen, (255, 11, 255), (x, self.start_y),
-                             (x, self.start_y + self.maze_pixel_h), 5)
-        for y in range(self.start_y, self.start_y + self.maze_pixel_h + 1, self.cell_size):
-            pygame.draw.line(self.screen, (255, 11, 255), (self.start_x, y),
-                             (self.start_x + self.maze_pixel_w, y), 5)
-
     def __init__(self, screen_w, screen_h, maze_w: int, maze_h: int,
-                 screen: pygame.surface.Surface):
+                 screen: pygame.surface.Surface, data:Parse, engine:"Engine",level):
+        self.engine = engine
+        self.level = level
+        self.data = data
         self.screen = screen
         self.width = screen_w
         self.height = screen_h
@@ -75,7 +73,7 @@ class Maze_screen:
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]):
         # top wall
-        pygame.draw.line(self.screen, (255, 255, 255),
+        pygame.draw.line(self.screen, (2, 255, 200),
                          (self.start_x, self.start_y),
                          (self.start_x + self.maze_pixel_w, self.start_y), 5)
         # left wall
@@ -133,6 +131,7 @@ class Maze_screen:
                     x += 1
                 else:
                     valid_cells.append((x, y))
+        pacgum -= 4           
         pacgums = random.sample(valid_cells, pacgum)
         total_pacgums = super_pacgum + pacgums
         return total_pacgums
@@ -168,3 +167,30 @@ class Maze_screen:
                     (self.start_x + c_x * self.cell_size + self.cell_size // 2,
                      self.start_y + c_y * self.cell_size +
                      self.cell_size // 2), self.cell_size // 2 - 20)
+
+    def eats_pacgums(self, pacgums):
+        super_pacgum = [(0, 0), (self.maze_w - 1, 0), (0, self.maze_h - 1),
+                                (self.maze_w - 1, self.maze_h - 1)]
+        for c_x, c_y in pacgums:
+            cell_x =  int(self.start_x + c_x * self.cell_size + (self.cell_size // 2))
+            cell_y = int(self.start_y + c_y * self.cell_size + (self.cell_size // 2))
+            if self.pacman_pos == [cell_x, cell_y]:
+                if (c_x, c_y) in super_pacgum :
+                    self.engine.score += self.data["points_per_super_pacgum"]
+                else:
+                    self.engine.score += self.data["points_per_pacgum"]
+                pacgums.remove((c_x, c_y))
+
+    def menu_maze(self, start_ticks):
+        font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 18)
+        goal_timestamp = self.engine.time
+        current_ticks = pygame.time.get_ticks()
+        elapsed_time = current_ticks - start_ticks
+        remaining_time = goal_timestamp - (elapsed_time / 1000)
+        time_text = font.render(f"Time:{int(remaining_time)}", True ,(255, 255, 255))
+        score_text = font.render(f"Score: {self.engine.score}", True, (255, 255, 255))
+        level_text = font.render(f"Level: {self.level} / {len(self.data['level'])}", True, (255, 255, 255))
+        self.screen.blit(time_text, ((self.start_x + self.maze_pixel_w // 2) - 50 , self.start_y // 2 + 45))
+        self.screen.blit(score_text, (self.start_x, self.start_y // 2 + 45))
+        self.screen.blit(level_text, (self.start_x + (self.cell_size * self.maze_w) - 150, self.start_y // 2 + 45))
+
