@@ -183,14 +183,17 @@ class Maze_screen:
 
     def menu_maze(self, start_ticks):
         font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 18)
+        time_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 20)
         goal_timestamp = self.engine.time
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
         remaining_time = goal_timestamp - (elapsed_time / 1000)
-        time_text = font.render(f"Time:{int(remaining_time)}", True ,(255, 255, 255))
+        time_text = time_font.render(f"Time: {int(remaining_time)}", True ,(255, 0, 0))
+        if int(remaining_time) == -1:
+           return None
         score_text = font.render(f"Score: {self.engine.score}", True, (255, 255, 255))
         level_text = font.render(f"Level: {self.level} / {len(self.data['level'])}", True, (255, 255, 255))
-        self.screen.blit(time_text, ((self.start_x + self.maze_pixel_w // 2) - 50 , self.start_y // 2 + 45))
+        self.screen.blit(time_text, ((self.start_x + self.maze_pixel_w // 2) - 50 , self.start_y - 120 ))
         self.screen.blit(score_text, (self.start_x, self.start_y // 2 + 45))
         self.screen.blit(level_text, (self.start_x + (self.cell_size * self.maze_w) - 150, self.start_y // 2 + 45))
 
