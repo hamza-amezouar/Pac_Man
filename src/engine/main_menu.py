@@ -129,6 +129,7 @@ class Draw_main:
         step = 0
         x = 0
         self.init_buttons()
+        clock = pygame.time.Clock()
         while x < 35:
             pygame.time.wait(10)
             self.screen.fill(self.colors["dark"])
@@ -161,3 +162,4 @@ class Draw_main:
                                     return 3
             self.Draw_buttons_menu(mouse_pos)
             pygame.display.update()
+            clock.tick(60)

@@ -1,7 +1,6 @@
-import time
-
 import pygame
 
+from src.engine.load_gifs import load_gif_frames
 from src.models.maze import  Maze_screen
 
 
@@ -14,7 +13,9 @@ class Ghosts(Maze_screen):
         self.maze_h = maze_h
         self.screen = screen
         self.walls = walls
-        self.ghost_image = pygame.image.load("assists/images/ghosts/redleft.gif").convert_alpha()
+        self.current_frame = 0
+        self.old_cell = (0, 0)
+        self.ghost_image = load_gif_frames("assists/images/redghost.gif")
         self.pacman_image = pygame.image.load("assists/images/oacmn.gif").convert_alpha()
 
     def calculate_ghost_path(self, current_pos, goal_pos):
@@ -64,12 +65,34 @@ class Ghosts(Maze_screen):
         path.append(current_pos)
         return path[::-1]
         
-
-    def chase(self, current_pos, goal_pos, move_now, total_steps):
+    def update_ghost_image(self, current_pos , goal_pos, color):
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
+        if current_x > goal_x:
+            self.ghost_image = load_gif_frames(f"assists/images/ghosts/{color}right.gif")
+        
+        elif current_x < goal_x:
+            self.ghost_image = load_gif_frames(f"assists/images/ghosts/{color}left.gif")
 
+        elif current_y > goal_y:
+            self.ghost_image = load_gif_frames(f"assists/images/ghosts/{color}up.gif")
 
+        elif current_y < goal_y:
+            self.ghost_image = load_gif_frames(f"assists/images/ghosts/{color}down.gif")
+
+    def init_ghosts(self):
+        ghosts_data = {
+            "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue"},
+            "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow"},
+            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink"},
+            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red"},
+            }
+        return ghosts_data
+
+    def chase(self, current_pos, goal_pos, move_now, total_steps, ghost_color):
+        current_x, current_y = current_pos
+        goal_x, goal_y = goal_pos
+        self.update_ghost_image(current_pos , goal_pos, ghost_color)
         start_pixel_x = self.start_x + (current_x * self.cell_size) + self.cell_size // 2
         start_pixel_y = self.start_y + (current_y * self.cell_size) + self.cell_size // 2
 
@@ -78,12 +101,14 @@ class Ghosts(Maze_screen):
 
 
         progress = move_now / total_steps
-
-
+        
         self.pixel_x = start_pixel_x + (goal_pixel_x - start_pixel_x) * progress
         self.pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * progress
         size = self.cell_size - 10
         self.screen.blit(
-            pygame.transform.scale(self.ghost_image, (size, size)),
+            pygame.transform.scale(self.ghost_image[self.current_frame], (size, size)),
             (self.pixel_x - size // 2, self.pixel_y - size // 2)
         )
+        if self.old_cell != (start_pixel_x, start_pixel_y):
+            self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
+        self.old_cell = (start_pixel_x, start_pixel_y)

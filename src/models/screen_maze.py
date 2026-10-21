@@ -20,13 +20,17 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
     current_target = None
     reached = True
 
-    speed = 5
+    speed = 3
     clock = pygame.time.Clock()
     ghost = Ghosts(width, height, maze_w, maze_h, screen, walls)
     current_pos = 0
-    move_now = 0
+    move_now = 1
     maze.draw_maze(walls)
-    old_path = ghost.calculate_ghost_path((0, 0), maze.pacman_pos)
+    ghosts_data = ghost.init_ghosts()
+    ghosts_data['blue']["old_path"] = ghost.calculate_ghost_path(ghosts_data['blue']["pos"], maze.pacman_pos)
+    ghosts_data['yellow']["old_path"] = ghost.calculate_ghost_path(ghosts_data['yellow']["pos"], maze.pacman_pos)
+    ghosts_data['pink']["old_path"] = ghost.calculate_ghost_path(ghosts_data['pink']["pos"], maze.pacman_pos)
+    ghosts_data['red']["old_path"] = ghost.calculate_ghost_path(ghosts_data['red']["pos"], maze.pacman_pos)
     while run:
         screen.fill((30, 30, 30))
 
@@ -82,19 +86,17 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         maze.draw_maze(walls)
         maze.draw_all_pacgums(pacgums)
         pacman.draw_face(maze.pacman_pos, direction)
-        move_now += 1
-        if current_pos + 1< len(old_path):
+        if current_pos + 1 < len(old_path):
             start_cell = old_path[current_pos]
             target_cell = old_path[current_pos + 1]
         else:
             start_cell = old_path[-1]
             target_cell = old_path[-1]
 
-        ghost.chase(start_cell, target_cell, move_now, 45)
-        move_now += 1
+        ghost.chase(start_cell, target_cell, move_now, 45, "red")
+        move_now += 2
         if move_now >= 45:
-            move_now = 0
-                
+            move_now = 0  
             if current_pos + 1 < len(old_path):
                 ghost_reached_cell = old_path[current_pos + 1]
             else:
