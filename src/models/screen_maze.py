@@ -95,10 +95,11 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
                 start_cell = old_path[-1]
                 target_cell = old_path[-1]
 
-            ghost.chase(start_cell, target_cell, specter["move_now"], 45, specter["color"])
+            ghost.chase(start_cell, target_cell, 45, specter)
             specter["move_now"] += 2
             if specter["move_now"] >= 45:
                 specter["move_now"] = 0
+                specter["current_frame"] += 1
                 pacman_pos = maze.pacman_pos
                 x = int((pacman_pos[0] - maze.start_x) // maze.cell_size)
                 y = int((pacman_pos[1] - maze.start_y) // maze.cell_size)
