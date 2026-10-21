@@ -86,23 +86,25 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
         maze.draw_maze(walls)
         maze.draw_all_pacgums(pacgums)
         pacman.draw_face(maze.pacman_pos, direction)
-        if current_pos + 1 < len(old_path):
-            start_cell = old_path[current_pos]
-            target_cell = old_path[current_pos + 1]
-        else:
-            start_cell = old_path[-1]
-            target_cell = old_path[-1]
-
-        ghost.chase(start_cell, target_cell, move_now, 45, "red")
-        move_now += 2
-        if move_now >= 45:
-            move_now = 0  
-            if current_pos + 1 < len(old_path):
-                ghost_reached_cell = old_path[current_pos + 1]
+        for specter in ghosts_data.values():
+            old_path = specter["old_path"]
+            if specter["current_pos"] + 1 < len(old_path):
+                start_cell = old_path[specter["current_pos"]]
+                target_cell = old_path[specter["current_pos"] + 1]
             else:
-                ghost_reached_cell = old_path[-1]
-            new_path = ghost.calculate_ghost_path(ghost_reached_cell, maze.pacman_pos)
-            old_path = new_path
-            current_pos = 0
+                start_cell = old_path[-1]
+                target_cell = old_path[-1]
+
+            ghost.chase(start_cell, target_cell, specter["move_now"], 45, specter["color"])
+            specter["move_now"] += 2
+            if specter["move_now"] >= 45:
+                specter["move_now"] = 0  
+                if specter["current_pos"] + 1 < len(old_path):
+                    ghost_reached_cell = old_path[specter["current_pos"] + 1]
+                else:
+                    ghost_reached_cell = old_path[-1]
+                new_path = ghost.calculate_ghost_path(ghost_reached_cell, maze.pacman_pos)
+                specter["old_path"] = new_path
+                specter["current_pos"] = 0
         clock.tick(60)
         pygame.display.update()
