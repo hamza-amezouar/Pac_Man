@@ -59,6 +59,8 @@ class Ghosts(Maze_screen):
                     parrent[(x + 1, y)] = (x, y)
                     visited.add((x + 1, y))
         pos = goal_pos
+        if not pos in parrent:
+            return [current_pos]
         while pos != current_pos:
             path.append(pos)
             pos = parrent[pos]
@@ -82,10 +84,10 @@ class Ghosts(Maze_screen):
 
     def init_ghosts(self):
         ghosts_data = {
+            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red",},
             "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue"},
             "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow"},
-            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink"},
-            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red"},
+            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink"}
             }
         return ghosts_data
 

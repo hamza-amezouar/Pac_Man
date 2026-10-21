@@ -98,12 +98,32 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
             ghost.chase(start_cell, target_cell, specter["move_now"], 45, specter["color"])
             specter["move_now"] += 2
             if specter["move_now"] >= 45:
-                specter["move_now"] = 0  
+                specter["move_now"] = 0
+                pacman_pos = maze.pacman_pos
+                x = int((pacman_pos[0] - maze.start_x) // maze.cell_size)
+                y = int((pacman_pos[1] - maze.start_y) // maze.cell_size)
+                if specter["color"] == "pink" and direction:
+                    if direction == "up":
+                        if y - 3 >= 0:
+                            y -= 4
+                    elif direction == "down":
+                        if y + 4 < maze_h:
+                            y += 4
+                    elif direction == "left":
+                        if x - 4 >= 0:
+                            x -= 4
+                    elif direction == "right":
+                        if x + 4 < maze_w:
+                            x += 4
+                    pacman_pos = (
+                        maze.start_x + (x * maze.cell_size) + maze.cell_size // 2, 
+                        maze.start_y + (y * maze.cell_size) + maze.cell_size // 2
+                        )
                 if specter["current_pos"] + 1 < len(old_path):
                     ghost_reached_cell = old_path[specter["current_pos"] + 1]
                 else:
                     ghost_reached_cell = old_path[-1]
-                new_path = ghost.calculate_ghost_path(ghost_reached_cell, maze.pacman_pos)
+                new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
                 specter["old_path"] = new_path
                 specter["current_pos"] = 0
         clock.tick(60)
