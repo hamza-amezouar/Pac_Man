@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 from src.engine.load_gifs import load_gif_frames
@@ -118,6 +120,8 @@ class Ghosts(Maze_screen):
         if ghost_data["current_frame"] >= len(images) or ghost_data["current_frame"] < 0:
             ghost_data["current_frame"] = 0
 
+        ghost_data["pos"] = goal_pos
+
         self.screen.blit(
             pygame.transform.scale(images[ghost_data["current_frame"]], (size, size)),
             (self.pixel_x - size // 2, self.pixel_y - size // 2)
@@ -125,3 +129,60 @@ class Ghosts(Maze_screen):
         if self.old_cell != (start_pixel_x, start_pixel_y):
             self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
         self.old_cell = (start_pixel_x, start_pixel_y)
+
+
+    def ghosts_brain(self, specter, direction, pacman_pos, red_pos):
+        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
+        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
+        if specter["color"] == "pink" and direction:
+            if direction == "up":
+                if y - 6 >= 0:
+                    y -= 6
+            elif direction == "down":
+                if y + 6 < self.maze_h:
+                    y += 6
+            elif direction == "left":
+                if x - 6 >= 0:
+                    x -= 6
+            elif direction == "right":
+                if x + 6 < self.maze_w:
+                    x += 6
+            pacman_pos = (
+                self.start_x + (x * self.cell_size) + self.cell_size // 2, 
+                self.start_y + (y * self.cell_size) + self.cell_size // 2
+                )
+        if specter["color"] == "blue" and direction:
+            if direction == "up":
+                if y - 2 >= 0:
+                    y -= 2
+            elif direction == "down":
+                if y + 2 < self.maze_h:
+                    y += 2
+            elif direction == "left":
+                if x - 2 >= 0:
+                    x -= 2
+            elif direction == "right":
+                if x + 2 < self.maze_w:
+                    x += 2
+            X = (x * 2) - red_pos[0]
+            Y = (y * 2) - red_pos[1]
+            if not X >= 0:
+                X = 0
+            if not X < self.maze_w:
+                X = self.maze_w - 1
+            if not Y >= 0:
+                Y = 0
+            if not Y < self.maze_h:
+                Y = self.maze_h - 1
+            pacman_pos = (
+                self.start_x + (X * self.cell_size) + self.cell_size // 2, 
+                self.start_y + (Y * self.cell_size) + self.cell_size // 2
+                )
+        if specter["color"] == "yellow" and direction:
+            X = random.randint(0, self.maze_w - 1)
+            Y = random.randint(0, self.maze_h - 1)
+            pacman_pos = (
+            self.start_x + (X * self.cell_size) + self.cell_size // 2, 
+            self.start_y + (Y * self.cell_size) + self.cell_size // 2
+            )
+        return pacman_pos

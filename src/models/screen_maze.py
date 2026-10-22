@@ -1,4 +1,5 @@
 
+import random
 import time
 
 from src.models.move_pacman import Pacman_face
@@ -94,32 +95,12 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
             else:
                 start_cell = old_path[-1]
                 target_cell = old_path[-1]
-
+            pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
             ghost.chase(start_cell, target_cell, 45, specter)
             specter["move_now"] += 2
             if specter["move_now"] >= 45:
                 specter["move_now"] = 0
                 specter["current_frame"] += 1
-                pacman_pos = maze.pacman_pos
-                x = int((pacman_pos[0] - maze.start_x) // maze.cell_size)
-                y = int((pacman_pos[1] - maze.start_y) // maze.cell_size)
-                if specter["color"] == "pink" and direction:
-                    if direction == "up":
-                        if y - 3 >= 0:
-                            y -= 4
-                    elif direction == "down":
-                        if y + 4 < maze_h:
-                            y += 4
-                    elif direction == "left":
-                        if x - 4 >= 0:
-                            x -= 4
-                    elif direction == "right":
-                        if x + 4 < maze_w:
-                            x += 4
-                    pacman_pos = (
-                        maze.start_x + (x * maze.cell_size) + maze.cell_size // 2, 
-                        maze.start_y + (y * maze.cell_size) + maze.cell_size // 2
-                        )
                 if specter["current_pos"] + 1 < len(old_path):
                     ghost_reached_cell = old_path[specter["current_pos"] + 1]
                 else:
