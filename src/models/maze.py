@@ -91,21 +91,23 @@ class Maze_screen:
                         'S'] and walls[y][x]['W']:
                     i += 1
                     ft_draw_line(self.screen, (255, 100, 100),
-                                     (cell_x, cell_y + self.cell_size // 2),
-                                     (cell_x + self.cell_size,
-                                      cell_y + self.cell_size // 2),
-                                     self.cell_size)
+                                    (cell_x + 5, cell_y + 5 ),
+                                    (cell_x + self.cell_size,
+                                    cell_y + 5 ),
+                                    self.cell_size)
 
                 if walls[y][x]['E']:
                     ft_draw_line(
                         self.screen, (2, 255, 200),
                         (cell_x + self.cell_size, cell_y),
                         (cell_x + self.cell_size, cell_y + self.cell_size), 5)
+                    
                 if walls[y][x]['S']:
                     ft_draw_line(
                         self.screen, (2, 255, 200),
                         (cell_x, cell_y + self.cell_size),
                         (cell_x + self.cell_size + 4, cell_y + self.cell_size), 5)
+
                 if i == 14:
                     if not self.pacman_pos:
                         cell_x = cell_x - self.cell_size
