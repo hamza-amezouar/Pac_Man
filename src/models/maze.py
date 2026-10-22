@@ -1,5 +1,6 @@
 from mazegenerator.mazegenerator import MazeGenerator
 from src.config_parser import Parse
+from src.helper_func.draw_line import ft_draw_line
 from typing import Tuple, List, Dict, Any, TYPE_CHECKING
 import pygame
 import random
@@ -73,11 +74,11 @@ class Maze_screen:
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]):
         # top wall
-        pygame.draw.line(self.screen, (2, 255, 200),
+        ft_draw_line(self.screen, (2, 255, 200),
                          (self.start_x, self.start_y),
                          (self.start_x + self.maze_pixel_w, self.start_y), 5)
         # left wall
-        pygame.draw.line(self.screen, (2, 255, 200),
+        ft_draw_line(self.screen, (2, 255, 200),
                          (self.start_x, self.start_y),
                          (self.start_x, self.start_y + self.maze_pixel_h), 5)
         i = 0
@@ -89,22 +90,22 @@ class Maze_screen:
                 if walls[y][x]['N'] and walls[y][x]['E'] and walls[y][x][
                         'S'] and walls[y][x]['W']:
                     i += 1
-                    pygame.draw.line(self.screen, (255, 100, 100),
+                    ft_draw_line(self.screen, (255, 100, 100),
                                      (cell_x, cell_y + self.cell_size // 2),
                                      (cell_x + self.cell_size,
                                       cell_y + self.cell_size // 2),
                                      self.cell_size)
 
                 if walls[y][x]['E']:
-                    pygame.draw.line(
+                    ft_draw_line(
                         self.screen, (2, 255, 200),
                         (cell_x + self.cell_size, cell_y),
                         (cell_x + self.cell_size, cell_y + self.cell_size), 5)
                 if walls[y][x]['S']:
-                    pygame.draw.line(
+                    ft_draw_line(
                         self.screen, (2, 255, 200),
                         (cell_x, cell_y + self.cell_size),
-                        (cell_x + self.cell_size, cell_y + self.cell_size), 5)
+                        (cell_x + self.cell_size + 4, cell_y + self.cell_size), 5)
                 if i == 14:
                     if not self.pacman_pos:
                         cell_x = cell_x - self.cell_size
@@ -190,7 +191,7 @@ class Maze_screen:
         remaining_time = goal_timestamp - (elapsed_time / 1000)
         time_text = time_font.render(f"Time: {int(remaining_time)}", True ,(255, 0, 0))
         if int(remaining_time) == -1:
-           return None
+           exit(0)
         score_text = font.render(f"Score: {self.engine.score}", True, (255, 255, 255))
         level_text = font.render(f"Level: {self.level} / {len(self.data['level'])}", True, (255, 255, 255))
         self.screen.blit(time_text, ((self.start_x + self.maze_pixel_w // 2) - 50 , self.start_y - 120 ))
