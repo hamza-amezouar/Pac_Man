@@ -99,6 +99,11 @@ def redraw_maze(width, height, maze_w, maze_h, screen, walls, pacgum):
             ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
             specter["move_now"] += 2
             if specter["move_now"] >= specter["total_speed"]:
+                x = int((pacman_pos[0] - maze.start_x) // maze.cell_size)
+                y = int((pacman_pos[1] - maze.start_y) // maze.cell_size)
+                if target_cell == (x, y):
+                    print("game over")
+                    exit()
                 specter["move_now"] = 0
                 specter["current_frame"] += 1
                 if specter["current_pos"] + 1 < len(old_path):
