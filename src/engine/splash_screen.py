@@ -1,5 +1,5 @@
 from typing import Dict
-
+from src.biulder import Draw
 import pygame
 from .load_gifs import load_gif_frames
 
@@ -23,6 +23,7 @@ class DrawSplash:
         self.screen = screen
         self.loading = pygame.font.Font(None, 30)
         self.colors = colors
+        self.draw = Draw()
 
     def draw_pacgums(self, x: int, y: int, number: int) -> None:
         """
@@ -119,10 +120,9 @@ class DrawSplash:
             yellow_frame = (yellow_frame + 1) % len(yellow_ghost)
             blue_frame = (blue_frame + 1) % len(blue_ghost)
             red_frame = (red_frame + 1) % len(red_ghost)
-            pygame.draw.rect(self.screen,
+            self.draw.custom_rect(self.screen,
                              self.colors["dark"],
-                             (center_x - 489 // 2, center_y + 6, 489, 39),
-                             border_radius=4)
+                             (center_x - 489 // 2, center_y + 6, 489, 39))
             if walk_speed >= 100:
                 self.draw_ghosts(center_x, center_y, walk_speed - 60,
                                  yellow_ghost[yellow_frame])
@@ -134,15 +134,13 @@ class DrawSplash:
             self.draw_pacgums(center_x, center_y, nb_pacgum)
             if self.draw_pacman(center_x, center_y, walk_speed, pac_image):
                 break
-            pygame.draw.rect(self.screen,
+            self.draw.custom_rect(self.screen,
                              self.colors["yellow"],
-                             (center_x - 500 // 2, center_y, 500, 50),
-                             width=6,
-                             border_radius=10)
+                             (center_x - 500 // 2, center_y, 500, 50))
 
-            pygame.draw.rect(self.screen, self.colors["blue_light"],
+            self.draw.custom_rect(self.screen, self.colors["blue_light"],
                              (center_x - 520, center_y - 17, 270, 70))
-            pygame.draw.rect(self.screen, self.colors["blue_light"],
+            self.draw.custom_rect(self.screen, self.colors["blue_light"],
                              (center_x + 250, center_y - 17, 270, 70))
             self.draw_loading(number)
             pygame.display.update()
