@@ -159,5 +159,5 @@ class Draw_main:
                                 if button == self.buttons[3]:
                                     return 3
             self.Draw_buttons_menu(mouse_pos)
-            pygame.display.update()
             clock.tick(60)
+            pygame.display.update()

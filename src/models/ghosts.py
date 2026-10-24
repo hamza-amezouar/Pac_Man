@@ -130,13 +130,12 @@ class Ghosts(Maze_screen):
             self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
         self.old_cell = (start_pixel_x, start_pixel_y)
 
-
     def ghosts_brain(self, specter, direction, pacman_pos, red_pos):
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         if specter["color"] == "pink" and direction:
             g_x , g_y = specter["pos"]
-            if abs(x - g_x) + abs(y - g_y) <= 1:
+            if abs(x - g_x) + abs(y - g_y) <= 3:
                 return pacman_pos
             if direction == "up":
                 if y - 6 >= 0:
@@ -157,7 +156,7 @@ class Ghosts(Maze_screen):
                 )
         elif specter["color"] == "blue" and direction:
             g_x , g_y = specter["pos"]
-            if abs(x - g_x) + abs(y - g_y) <= 1:
+            if abs(x - g_x) + abs(y - g_y) <= 3:
                 return pacman_pos
             if direction == "up":
                 if y - 2 >= 0:
