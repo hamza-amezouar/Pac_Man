@@ -1,6 +1,7 @@
 
 from src.models.move_pacman import Pacman_face
 from src.models.maze import Maze, Maze_screen
+from src.models.ghosts import Ghosts 
 from src.config_parser import Parse
 import pygame
 
@@ -16,6 +17,13 @@ def game_level(width, height, data:Parse, engine, screen, l):
         maze.draw_maze(walls)
         pacgums = maze.existing_pacgums(pacgum, walls)
         pacman = Pacman_face(width, height,maze_w, maze_h, screen, data, engine, l + 1)
+        ghost = Ghosts(width, height, maze_w, maze_h, screen, walls, data, engine, l + 1)
+        ghosts_data = ghost.init_ghosts()
+        ghosts_data['blue']["old_path"] = ghost.calculate_ghost_path(ghosts_data['blue']["pos"], maze.pacman_pos)
+        ghosts_data['yellow']["old_path"] = ghost.calculate_ghost_path(ghosts_data['yellow']["pos"], maze.pacman_pos)
+        ghosts_data['pink']["old_path"] = ghost.calculate_ghost_path(ghosts_data['pink']["pos"], maze.pacman_pos)
+        ghosts_data['red']["old_path"] = ghost.calculate_ghost_path(ghosts_data['red']["pos"], maze.pacman_pos)
+
         direction = None
         next_direction = None
         current_target = None
@@ -71,12 +79,32 @@ def game_level(width, height, data:Parse, engine, screen, l):
             else:
                 reached = True
             
-            #maze.ft_greed()
             maze.draw_maze(walls)
             maze.menu_maze(start_ticks)
             maze.draw_all_pacgums(pacgums)
             pacman.draw_face(maze.pacman_pos, direction)
             maze.eats_pacgums(pacgums)
+            for specter in ghosts_data.values():
+                old_path = specter["old_path"]
+                if specter["current_pos"] + 1 < len(old_path):
+                    start_cell = old_path[specter["current_pos"]]
+                    target_cell = old_path[specter["current_pos"] + 1]
+                else:
+                    start_cell = old_path[-1]
+                    target_cell = old_path[-1]
+                pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
+                ghost.chase(start_cell, target_cell, 45, specter)
+                specter["move_now"] += 2
+                if specter["move_now"] >= 45:
+                    specter["move_now"] = 0
+                    specter["current_frame"] += 1
+                    if specter["current_pos"] + 1 < len(old_path):
+                        ghost_reached_cell = old_path[specter["current_pos"] + 1]
+                    else:
+                        ghost_reached_cell = old_path[-1]
+                    new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
+                    specter["old_path"] = new_path
+                    specter["current_pos"] = 0
             clock.tick(60)
             pygame.display.update()
 
