@@ -28,7 +28,7 @@ def game_level(width, height, data:Parse, engine, screen, l):
         next_direction = None
         current_target = None
         reached = True
-        speed = 5
+        speed = 10
         clock = pygame.time.Clock()
         run = True
         while run:
@@ -93,9 +93,9 @@ def game_level(width, height, data:Parse, engine, screen, l):
                     start_cell = old_path[-1]
                     target_cell = old_path[-1]
                 pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
-                ghost.chase(start_cell, target_cell, 45, specter)
+                ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
                 specter["move_now"] += 2
-                if specter["move_now"] >= 45:
+                if specter["move_now"] >= specter["total_speed"]:
                     specter["move_now"] = 0
                     specter["current_frame"] += 1
                     if specter["current_pos"] + 1 < len(old_path):
@@ -105,6 +105,7 @@ def game_level(width, height, data:Parse, engine, screen, l):
                     new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
                     specter["old_path"] = new_path
                     specter["current_pos"] = 0
+
             clock.tick(60)
             pygame.display.update()
 

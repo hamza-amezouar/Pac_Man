@@ -1,15 +1,16 @@
 import random
+
 import pygame
+
 from src.engine.load_gifs import load_gif_frames
 from src.models.maze import  Maze_screen
+
 from typing import Tuple, List, Dict, Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.engine.game_engine import Engine
-
-
 class Ghosts(Maze_screen):
-    def __init__(self, screen_w, screen_h, maze_w, maze_h, screen, walls, data, engine:"Engine", level):
+    def __init__(self, screen_w, screen_h, maze_w, maze_h, screen, walls,data, engine,level):
         super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data, engine, level)
         self.screen_w = screen_w
         self.screen_h = screen_h
@@ -90,10 +91,10 @@ class Ghosts(Maze_screen):
     
     def init_ghosts(self):
         ghosts_data = {
-            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right"},
-            "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right"},
-            "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right"},
-            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right"}
+            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 50},
+            "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 45},
+            "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 40},
+            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 60}
             }
         return ghosts_data
 
@@ -132,11 +133,13 @@ class Ghosts(Maze_screen):
             self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
         self.old_cell = (start_pixel_x, start_pixel_y)
 
-
     def ghosts_brain(self, specter, direction, pacman_pos, red_pos):
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         if specter["color"] == "pink" and direction:
+            g_x , g_y = specter["pos"]
+            if abs(x - g_x) + abs(y - g_y) <= 3:
+                return pacman_pos
             if direction == "up":
                 if y - 6 >= 0:
                     y -= 6
@@ -149,11 +152,15 @@ class Ghosts(Maze_screen):
             elif direction == "right":
                 if x + 6 < self.maze_w:
                     x += 6
+
             pacman_pos = (
                 self.start_x + (x * self.cell_size) + self.cell_size // 2, 
                 self.start_y + (y * self.cell_size) + self.cell_size // 2
                 )
-        if specter["color"] == "blue" and direction:
+        elif specter["color"] == "blue" and direction:
+            g_x , g_y = specter["pos"]
+            if abs(x - g_x) + abs(y - g_y) <= 3:
+                return pacman_pos
             if direction == "up":
                 if y - 2 >= 0:
                     y -= 2
@@ -180,7 +187,10 @@ class Ghosts(Maze_screen):
                 self.start_x + (X * self.cell_size) + self.cell_size // 2, 
                 self.start_y + (Y * self.cell_size) + self.cell_size // 2
                 )
-        if specter["color"] == "yellow" and direction:
+        elif specter["color"] == "yellow" and direction:
+            g_x , g_y = specter["pos"]
+            if abs(x - g_x) + abs(y - g_y) <= 1:
+                return pacman_pos
             X = random.randint(0, self.maze_w - 1)
             Y = random.randint(0, self.maze_h - 1)
             pacman_pos = (
