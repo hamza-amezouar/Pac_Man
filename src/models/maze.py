@@ -71,6 +71,14 @@ class Maze_screen:
         self.start_x = (self.width - self.maze_pixel_w) // 2
         self.start_y = (self.height - self.maze_pixel_h) // 2
         self.pacman_pos = []
+    
+        self.super_size = round(self.cell_size * 0.70)
+        self.pacgum_size = round(self.cell_size * 0.30)
+    
+        pacgums_img = pygame.image.load("assists/images/pacgum.png")
+        super_pacgum_img = pygame.image.load("assists/images/super_pacgum.png")
+        self.pacgums = pygame.transform.scale(pacgums_img, (self.pacgum_size, self.pacgum_size))
+        self.super_pacgum = pygame.transform.scale(super_pacgum_img, (self.super_size, self.super_size))
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]):
         # top wall
@@ -141,35 +149,18 @@ class Maze_screen:
 
     def draw_all_pacgums(self, pacgums):
         for c_x, c_y in pacgums:
+            offset = (self.cell_size - self.super_size) // 2
             if c_x == 0 and c_y == 0:
-                pygame.draw.circle(self.screen, (228, 208, 10),
-                                   (self.start_x + self.cell_size // 2,
-                                    self.start_y + self.cell_size // 2),
-                                   self.cell_size // 2 - 15)
+                self.screen.blit(self.super_pacgum, (self.start_x + offset, self.start_y + offset))
             elif c_x == self.maze_w - 1 and c_y == 0:
-                pygame.draw.circle(
-                    self.screen, (228, 208, 10),
-                    (self.start_x + self.cell_size * c_x + self.cell_size // 2,
-                     self.start_y + self.cell_size // 2),
-                    self.cell_size // 2 - 15)
+                self.screen.blit(self.super_pacgum, (self.start_x + self.cell_size * c_x + offset, self.start_y + offset))
             elif c_x == 0 and c_y == self.maze_h - 1:
-                pygame.draw.circle(
-                    self.screen, (228, 208, 10),
-                    (self.start_x + self.cell_size // 2, self.start_y +
-                     c_y * self.cell_size + self.cell_size // 2),
-                    self.cell_size // 2 - 15)
+                self.screen.blit(self.super_pacgum, (self.start_x + offset, self.start_y + c_y * self.cell_size + offset))
             elif c_x == self.maze_w - 1 and c_y == self.maze_h - 1:
-                pygame.draw.circle(
-                    self.screen, (228, 208, 10),
-                    (self.start_x + c_x * self.cell_size + self.cell_size // 2,
-                     self.start_y + c_y * self.cell_size +
-                     self.cell_size // 2), self.cell_size // 2 - 15)
+                self.screen.blit(self.super_pacgum, (self.start_x + c_x * self.cell_size + offset, self.start_y + c_y * self.cell_size + offset ))
             else:
-                pygame.draw.circle(
-                    self.screen, (228, 208, 10),
-                    (self.start_x + c_x * self.cell_size + self.cell_size // 2,
-                     self.start_y + c_y * self.cell_size +
-                     self.cell_size // 2), self.cell_size // 2 - 20)
+                offset = (self.cell_size - self.pacgum_size) // 2
+                self.screen.blit(self.pacgums, (self.start_x + c_x * self.cell_size + offset , self.start_y + c_y * self.cell_size + offset))
 
     def eats_pacgums(self, pacgums):
         super_pacgum = [(0, 0), (self.maze_w - 1, 0), (0, self.maze_h - 1),

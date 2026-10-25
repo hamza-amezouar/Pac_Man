@@ -36,8 +36,8 @@ class Level(BaseModel):
         pacgum: the number of pacgum in the level
     """
 
-    width: int = Field(ge=9)
-    height: int = Field(ge=7)
+    width: int = Field(ge=15, le=30)
+    height: int = Field(ge=15, le=30)
     pacgum: int = Field(gt=4)
 
     @model_validator(mode="after")
