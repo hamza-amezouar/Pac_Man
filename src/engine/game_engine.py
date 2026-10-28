@@ -2,7 +2,6 @@ import pygame
 from src.engine.splash_screen import DrawSplash
 from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
-from src.models.maze import Maze
 from src.models.screen_maze import redraw_maze
 from src.config_parser import Parse
 
@@ -15,6 +14,8 @@ class Engine:
         self.width: int = width
         self.height: int = height
         self.data:Parse = Parse().get_data()
+        self.score = 0
+        self.time = self.data["level_max_time"]
         pygame.init()
         # pygame.mixer.init()
         pygame.font.init()
@@ -56,12 +57,8 @@ class Engine:
 
         self.draw_main: Draw_main = Draw_main(self.width, self.height,
                                               self.screen, self.colors)
-        self.maze_w = self.data['level'][0]['width']
-        self.maze_h = self.data['level'][0]['height']
-        seed = self.data['seed']
-        self.pacgum = self.data['level'][0]['pacgum']
-        self.maze = Maze(size=(self.maze_w, self.maze_h), seed=seed, level=1)
-        self.walls = self.maze.get_walls()
+    
+
         
     def run_engine(self) -> None:
         #self.draw_splash.show_splash()
@@ -69,7 +66,7 @@ class Engine:
         while self.running:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
             if flag == 0:
-                score_flag = redraw_maze(self.width, self.height, self.maze_w, self.maze_h, self.screen, self.walls, self.pacgum)
+                score_flag = redraw_maze(self.width, self.height,self.data,self, self.screen)
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
 

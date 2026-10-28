@@ -14,9 +14,9 @@ def load_gif_frames(gif_path: str) -> list[pygame.surface.Surface]:
         list[pygame.surface.Surface]:
         A list of Pygame Surface objects representing each frame of the GIF.
     """
-    gif = Image.open(gif_path)
+    git = Image.open(gif_path)
     frames = []
-    for frame in ImageSequence.Iterator(gif):
+    for frame in ImageSequence.Iterator(git):
         frame_rgba = frame.convert("RGBA")
         pygame_image = pygame.image.fromstring(frame_rgba.tobytes(),
                                                frame_rgba.size, "RGBA")

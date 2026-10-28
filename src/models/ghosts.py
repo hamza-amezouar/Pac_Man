@@ -5,10 +5,13 @@ import pygame
 from src.engine.load_gifs import load_gif_frames
 from src.models.maze import  Maze_screen
 
+from typing import Tuple, List, Dict, Any, TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from src.engine.game_engine import Engine
 class Ghosts(Maze_screen):
-    def __init__(self, screen_w, screen_h, maze_w, maze_h, screen, walls):
-        super().__init__(screen_w, screen_h, maze_w, maze_h, screen)
+    def __init__(self, screen_w, screen_h, maze_w, maze_h, screen, walls,data, engine,level):
+        super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data, engine, level)
         self.screen_w = screen_w
         self.screen_h = screen_h
         self.maze_w = maze_w
@@ -88,10 +91,10 @@ class Ghosts(Maze_screen):
     
     def init_ghosts(self):
         ghosts_data = {
-            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 50},
-            "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 45},
-            "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 40},
-            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 60}
+            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 23},
+            "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 20},
+            "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 25},
+            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 20}
             }
         return ghosts_data
 

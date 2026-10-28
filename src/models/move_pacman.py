@@ -5,40 +5,43 @@ import pygame
 
 class Pacman_face(Maze_screen):
 
-    def __init__(self, screen_w, screen_h, maze_w, maze_h, screen):
-        super().__init__(screen_w, screen_h, maze_w, maze_h, screen)
-
+    def __init__(self, screen_w, screen_h, maze_w, maze_h, screen, data,engine, level):
+        super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data,engine, level)
+        
         self.pacman_up = load_gif_frames("src/models/pacman_face/pacman/up.gif")
         self.pacman_down = load_gif_frames("src/models/pacman_face/pacman/down.gif")
         self.pacman_left = load_gif_frames("src/models/pacman_face/pacman/left.gif")
         self.pacman_right = load_gif_frames("src/models/pacman_face/pacman/right.gif")
         self.index = 0
         self.last_animation_time = 0
-        self.animation_delay = 200
+        self.animation_delay = 250
+        self.frames = self.pacman_right
 
 
     def draw_face(self, pacman_pos, direction):
-        frames = self.pacman_right
         pacman_size =  self.cell_size - 15
         current_time = pygame.time.get_ticks()
         if direction is None:
-            frames = self.pacman_right
+            self.frames = self.pacman_right
             self.index  = 0
         elif direction == "up":
-            frames =  self.pacman_up
+            self.frames =  self.pacman_up
         elif direction == "down":
-            frames = self.pacman_down
+            self.frames = self.pacman_down
         elif direction == "left":
-            frames = self.pacman_left
+            self.frames = self.pacman_left
         elif direction == "right":
-            frames = self.pacman_right
-        if direction is not None:
+            self.frames = self.pacman_right
+        elif direction == "blocked":
+            self.index = 0
+
+        if direction is not None and direction != "blocked":
             if current_time - self.last_animation_time >= self.animation_delay:
-                self.index = (self.index + 1) % len(frames)
+                self.index = (self.index + 1) % len(self.frames)
                 self.last_animation_time = current_time
+            
 
-
-        pacman_image = pygame.transform.scale(frames[self.index],
+        pacman_image = pygame.transform.scale(self.frames[self.index],
                                                         (pacman_size , pacman_size))
         self.screen.blit(pacman_image, (pacman_pos[0] - pacman_size // 2,
         pacman_pos[1] - pacman_size // 2))
@@ -76,21 +79,18 @@ class Pacman_face(Maze_screen):
                 current_pos[1] - speed
             )
 
-        # Move down
         elif current_pos[1] < target[1]:
             current_pos[1] = min(
                 target[1],
                 current_pos[1] + speed
             )
 
-        # Move right
         if current_pos[0] < target[0]:
             current_pos[0] = min(
                 target[0],
                 current_pos[0] + speed
             )
 
-        # Move left
         elif current_pos[0] > target[0]:
             current_pos[0] = max(
                 target[0],

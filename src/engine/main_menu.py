@@ -1,5 +1,4 @@
 from typing import Dict, Tuple
-from src.biulder import Draw
 
 import pygame
 
@@ -23,8 +22,6 @@ class Draw_main:
         self.colors = colors
         self.bg_image: pygame.surface.Surface = pygame.image.load(
             './assists/images/background.png')
-
-        self.draw = Draw()
         self.background: pygame.surface.Surface = pygame.transform.scale(
             self.bg_image, (self.width, self.height)).convert()
         self.menu_font: pygame.font.Font = pygame.font.Font(
@@ -41,9 +38,9 @@ class Draw_main:
         start = self.width // 2
         if start + step >= self.width:
             return True
-        self.draw.custom_rect(self.screen, self.colors["blue_light"],
+        pygame.draw.rect(self.screen, self.colors["blue_light"],
                          (start + step, 0, start, self.height))
-        self.draw.custom_rect(self.screen, self.colors["blue_light"],
+        pygame.draw.rect(self.screen, self.colors["blue_light"],
                          (0 - step, 0, start, self.height))
         return False
 
@@ -76,13 +73,15 @@ class Draw_main:
             for button in self.buttons:
                 if button.collidepoint(mouse):
                     is_hover = True
-                    self.draw.custom_rect(self.screen,
+                    pygame.draw.rect(self.screen,
                                      self.colors['yellow_dark'],
-                                     button)
+                                     button,
+                                     border_radius=20)
                 else:
-                    self.draw.custom_rect(self.screen,
+                    pygame.draw.rect(self.screen,
                                      self.colors['yellow'],
-                                     button)
+                                     button,
+                                     border_radius=10)
             if is_hover:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:
@@ -127,9 +126,9 @@ class Draw_main:
         Runs the main menu loop: plays the opening transition animation first,
         then handles user input, button interactions, and display updates.
         """
+        step = 0
         x = 0
         self.init_buttons()
-        clock = pygame.time.Clock()
         while x < 35:
             pygame.time.wait(10)
             self.screen.fill(self.colors["dark"])
@@ -138,6 +137,8 @@ class Draw_main:
                     return 3
             self.screen.blit(self.background, (0, 0))
             self.Draw_buttons_menu((0, 0))
+            self.Draw_animation(step)
+            step += 25
             pygame.display.update()
             x += 1
         while True:
@@ -159,5 +160,4 @@ class Draw_main:
                                 if button == self.buttons[3]:
                                     return 3
             self.Draw_buttons_menu(mouse_pos)
-            clock.tick(60)
             pygame.display.update()
