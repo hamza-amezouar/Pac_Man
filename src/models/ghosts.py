@@ -97,11 +97,11 @@ class Ghosts(Maze_screen):
             }
         return ghosts_data
 
-    def chase(self, current_pos, goal_pos, total_steps, ghost_data, ):
+    def chase(self, current_pos, goal_pos, total_steps, specter):
 
-        image_mode = self.update_ghost_image(current_pos , goal_pos, ghost_data)
-        images = load_gif_frames(f"assists/images/ghosts/{ghost_data["color"]}{image_mode}.gif")
-        ghost_data["final_mode"] = image_mode
+        image_mode = self.update_ghost_image(current_pos , goal_pos, specter)
+        images = load_gif_frames(f"assists/images/ghosts/{specter["color"]}{image_mode}.gif")
+        specter["final_mode"] = image_mode
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
         start_pixel_x = self.start_x + (current_x * self.cell_size) + self.cell_size // 2
@@ -111,21 +111,21 @@ class Ghosts(Maze_screen):
         goal_pixel_y = self.start_y + (goal_y * self.cell_size) + self.cell_size // 2
 
 
-        progress = ghost_data["move_now"] / total_steps
+        progress = specter["move_now"] / total_steps
         
         self.pixel_x = start_pixel_x + (goal_pixel_x - start_pixel_x) * progress
         self.pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * progress
         size = self.cell_size - 10
 
         if current_pos == goal_pos:
-            ghost_data["current_frame"] -= 1
-        if ghost_data["current_frame"] >= len(images) or ghost_data["current_frame"] < 0:
-            ghost_data["current_frame"] = 0
+            specter["current_frame"] -= 1
+        if specter["current_frame"] >= len(images) or specter["current_frame"] < 0:
+            specter["current_frame"] = 0
 
-        ghost_data["pos"] = current_pos
+        specter["pos"] = current_pos
 
         self.screen.blit(
-            pygame.transform.scale(images[ghost_data["current_frame"]], (size, size)),
+            pygame.transform.scale(images[specter["current_frame"]], (size, size)),
             (self.pixel_x - size // 2, self.pixel_y - size // 2)
         )
         if self.old_cell != (start_pixel_x, start_pixel_y):
@@ -200,6 +200,35 @@ class Ghosts(Maze_screen):
         if (x, y) in self.pacgums_pos:
             self.Scared_Mode = True
 
-    def scard(self, start_cell, target_cell, total_steps, specter):
-        pass
+    def scard(self, current_pos, goal_pos, total_steps, specter):
+        images = load_gif_frames(f"assists/images/ghosts/scard.gif")
+        current_x, current_y = current_pos
+        goal_x, goal_y = goal_pos
+        start_pixel_x = self.start_x + (current_x * self.cell_size) + self.cell_size // 2
+        start_pixel_y = self.start_y + (current_y * self.cell_size) + self.cell_size // 2
+
+        goal_pixel_x = self.start_x + (goal_x * self.cell_size) + self.cell_size // 2
+        goal_pixel_y = self.start_y + (goal_y * self.cell_size) + self.cell_size // 2
+
+
+        progress = specter["move_now"] / total_steps
+        
+        self.pixel_x = start_pixel_x + (goal_pixel_x - start_pixel_x) * progress
+        self.pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * progress
+        size = self.cell_size - 10
+
+        if current_pos == goal_pos:
+            specter["current_frame"] -= 1
+        if specter["current_frame"] >= len(images) or specter["current_frame"] < 0:
+            specter["current_frame"] = 0
+
+        specter["pos"] = current_pos
+
+        self.screen.blit(
+            pygame.transform.scale(images[specter["current_frame"]], (size, size)),
+            (self.pixel_x - size // 2, self.pixel_y - size // 2)
+        )
+        if self.old_cell != (start_pixel_x, start_pixel_y):
+            self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
+        self.old_cell = (start_pixel_x, start_pixel_y)
 
