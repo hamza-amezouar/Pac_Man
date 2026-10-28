@@ -63,7 +63,6 @@ class Ghosts(Maze_screen):
                     parrent[(x + 1, y)] = (x, y)
                     visited.add((x + 1, y))
         pos = goal_pos
-        print(pos)
         if not pos in parrent:
             return [current_pos]
         while pos != current_pos:
@@ -91,10 +90,10 @@ class Ghosts(Maze_screen):
     
     def init_ghosts(self):
         ghosts_data = {
-            "red": {"my_pos": (self.maze_w - 1, self.maze_h - 1),"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 30},
-            "blue": {"my_pos": (0, 0),"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 30},
-            "yellow": {"my_pos": (self.maze_w - 1, 0),"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 30},
-            "pink": {"my_pos": (0, self.maze_h - 1), "pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 30}
+            "red": {"my_pos": (self.maze_w - 1, self.maze_h - 1),"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False},
+            "blue": {"my_pos": (0, 0),"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False},
+            "yellow": {"my_pos": (self.maze_w - 1, 0),"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False},
+            "pink": {"my_pos": (0, self.maze_h - 1), "pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False}
             }
         return ghosts_data
 
@@ -203,16 +202,23 @@ class Ghosts(Maze_screen):
             self.Scared_Mode = True
 
     def scard(self, current_pos, goal_pos, total_steps, specter, start_ticks):
-        goal_timestamp = 7
+        goal_timestamp = 10
         specter["total_speed"] = 20
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
-        print(current_ticks // 1000, start_ticks // 1000)
         remaining_time = goal_timestamp - (elapsed_time / 1000)
-        # print(remaining_time)
+        print(remaining_time, start_ticks // 1000)
         if remaining_time < 0:
             self.Scared_Mode = False
-        images = load_gif_frames(f"assists/images/ghosts/scard.gif")
+        if remaining_time < 3:
+            if specter["remain"]:
+                specter["remain"] = False
+            else:
+                specter["remain"] = True
+        if not specter["remain"]:
+            images = load_gif_frames(f"assists/images/ghosts/scard.gif")
+        else:
+            images = load_gif_frames(f"assists/images/ghosts/scard1.gif")
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
         start_pixel_x = self.start_x + (current_x * self.cell_size) + self.cell_size // 2

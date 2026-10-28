@@ -121,6 +121,8 @@ def game_level(width, height, data:Parse, engine, screen, l):
                     ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
 
                     if specter["move_now"] >= specter["total_speed"]:
+                        if specter["remain"]:
+                            specter["remain"] = False
                         c_x = int((maze.pacman_pos[0] - maze.start_x) // maze.cell_size)
                         c_y = int((maze.pacman_pos[1] - maze.start_y) // maze.cell_size)
                         specter["move_now"] = 0
@@ -129,7 +131,6 @@ def game_level(width, height, data:Parse, engine, screen, l):
                             ghost_reached_cell = old_path[specter["current_pos"] + 1]
                         else:
                             ghost_reached_cell = old_path[-1]
-                        print(f"pacman pos == {pacman_pos}")
                         new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
                         specter["old_path"] = new_path
                     start_eat = pygame.time.get_ticks()
