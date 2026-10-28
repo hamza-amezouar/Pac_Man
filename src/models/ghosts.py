@@ -20,6 +20,8 @@ class Ghosts(Maze_screen):
         self.walls = walls
         self.current_frame = 0
         self.old_cell = (0, 0)
+        self.Scared_Mode = False
+        self.pacgums_pos = [(0, 0), (0 ,self.maze_h -1), (self.maze_w - 1, 0), (self.maze_w - 1, self.maze_h - 1)]
         self.ghost_image = load_gif_frames("assists/images/redghost.gif")
         self.pacman_image = pygame.image.load("assists/images/oacmn.gif").convert_alpha()
 
@@ -91,14 +93,14 @@ class Ghosts(Maze_screen):
     
     def init_ghosts(self):
         ghosts_data = {
-            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 23},
-            "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 20},
-            "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 25},
-            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 20}
+            "red": {"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 30},
+            "blue": {"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 30},
+            "yellow": {"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 30},
+            "pink": {"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 30}
             }
         return ghosts_data
 
-    def chase(self, current_pos, goal_pos, total_steps, ghost_data):
+    def chase(self, current_pos, goal_pos, total_steps, ghost_data, ):
 
         image_mode = self.update_ghost_image(current_pos , goal_pos, ghost_data)
         images = load_gif_frames(f"assists/images/ghosts/{ghost_data["color"]}{image_mode}.gif")
@@ -123,7 +125,7 @@ class Ghosts(Maze_screen):
         if ghost_data["current_frame"] >= len(images) or ghost_data["current_frame"] < 0:
             ghost_data["current_frame"] = 0
 
-        ghost_data["pos"] = goal_pos
+        ghost_data["pos"] = current_pos
 
         self.screen.blit(
             pygame.transform.scale(images[ghost_data["current_frame"]], (size, size)),
@@ -152,41 +154,39 @@ class Ghosts(Maze_screen):
             elif direction == "right":
                 if x + 6 < self.maze_w:
                     x += 6
-
+            if (x , y) == specter["pos"]:
+                return pacman_pos
             pacman_pos = (
                 self.start_x + (x * self.cell_size) + self.cell_size // 2, 
                 self.start_y + (y * self.cell_size) + self.cell_size // 2
                 )
         elif specter["color"] == "blue" and direction:
-            g_x , g_y = specter["pos"]
-            if abs(x - g_x) + abs(y - g_y) <= 3:
-                return pacman_pos
+            X, Y = (x, y)
             if direction == "up":
-                if y - 2 >= 0:
-                    y -= 2
+                if Y - 7 >= 0:
+                    Y -= 7
+                else:
+                    Y = 0
             elif direction == "down":
-                if y + 2 < self.maze_h:
-                    y += 2
-            elif direction == "left":
-                if x - 2 >= 0:
-                    x -= 2
+                if Y + 7 < self.maze_h:
+                    Y += 7
+                else:
+                    Y = self.maze_h - 1 
             elif direction == "right":
-                if x + 2 < self.maze_w:
-                    x += 2
-            X = (x * 2) - red_pos[0]
-            Y = (y * 2) - red_pos[1]
-            if not X >= 0:
-                X = 0
-            if not X < self.maze_w:
-                X = self.maze_w - 1
-            if not Y >= 0:
-                Y = 0
-            if not Y < self.maze_h:
-                Y = self.maze_h - 1
-            pacman_pos = (
-                self.start_x + (X * self.cell_size) + self.cell_size // 2, 
-                self.start_y + (Y * self.cell_size) + self.cell_size // 2
-                )
+                if X + 7 < self.maze_w:
+                    X  += 7
+                else:
+                    X = self.maze_w - 1
+            elif direction == "left":
+                if X - 7 >= 0:
+                    X -= 7
+                else:
+                    X = 0
+            if (X, Y) != (x, y):
+                pacman_pos = (
+                    self.start_x + (X * self.cell_size) + self.cell_size // 2, 
+                    self.start_y + (Y * self.cell_size) + self.cell_size // 2
+                    )
         elif specter["color"] == "yellow" and direction:
             g_x , g_y = specter["pos"]
             if abs(x - g_x) + abs(y - g_y) <= 1:
@@ -194,7 +194,23 @@ class Ghosts(Maze_screen):
             X = random.randint(0, self.maze_w - 1)
             Y = random.randint(0, self.maze_h - 1)
             pacman_pos = (
-            self.start_x + (X * self.cell_size) + self.cell_size // 2, 
+            self.start_x + (X * self.cell_size) + self.cell_size // 2,
             self.start_y + (Y * self.cell_size) + self.cell_size // 2
             )
         return pacman_pos
+
+    def is_caught(self,data_ghosts, pacman_pos):
+        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
+        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
+        for color in data_ghosts.keys():
+            if data_ghosts[color]["pos"] == (x, y):
+                return 1
+        return 0
+
+    def is_eat_super_pacgums(self, pacman_pos):
+        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
+        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
+        if (x, y) in self.pacgums_pos:
+            self.Scared_Mode = True
+
+    def 
