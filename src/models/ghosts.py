@@ -63,6 +63,7 @@ class Ghosts(Maze_screen):
                     parrent[(x + 1, y)] = (x, y)
                     visited.add((x + 1, y))
         pos = goal_pos
+        print(pos)
         if not pos in parrent:
             return [current_pos]
         while pos != current_pos:
@@ -99,6 +100,7 @@ class Ghosts(Maze_screen):
 
     def chase(self, current_pos, goal_pos, total_steps, specter):
 
+        specter["total_speed"] = 30
         image_mode = self.update_ghost_image(current_pos , goal_pos, specter)
         images = load_gif_frames(f"assists/images/ghosts/{specter["color"]}{image_mode}.gif")
         specter["final_mode"] = image_mode
@@ -132,13 +134,13 @@ class Ghosts(Maze_screen):
             self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
         self.old_cell = (start_pixel_x, start_pixel_y)
 
-    def ghosts_brain(self, specter, direction, pacman_pos, red_pos):
+    def ghosts_brain(self, specter, direction, pacman_pos):
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         if specter["color"] == "pink" and direction:
             g_x , g_y = specter["pos"]
             if abs(x - g_x) + abs(y - g_y) <= 3:
-                return pacman_pos
+                return (x, y)
             if direction == "up":
                 if y - 6 >= 0:
                     y -= 6
@@ -152,7 +154,7 @@ class Ghosts(Maze_screen):
                 if x + 6 < self.maze_w:
                     x += 6
             if (x , y) == specter["pos"]:
-                return pacman_pos
+                return (x, y)
         elif specter["color"] == "blue" and direction:
             X, Y = (x, y)
             if direction == "up":
@@ -180,7 +182,7 @@ class Ghosts(Maze_screen):
         elif specter["color"] == "yellow" and direction:
             g_x , g_y = specter["pos"]
             if abs(x - g_x) + abs(y - g_y) <= 1:
-                return pacman_pos
+                return (x, y)
             X = random.randint(0, self.maze_w - 1)
             Y = random.randint(0, self.maze_h - 1)
             x, y = (X, Y)
@@ -202,6 +204,7 @@ class Ghosts(Maze_screen):
 
     def scard(self, current_pos, goal_pos, total_steps, specter, start_ticks):
         goal_timestamp = 7
+        specter["total_speed"] = 20
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
         print(current_ticks // 1000, start_ticks // 1000)

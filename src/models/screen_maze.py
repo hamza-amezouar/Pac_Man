@@ -98,7 +98,7 @@ def game_level(width, height, data:Parse, engine, screen, l):
                 else:
                     start_cell = old_path[-1]
                     target_cell = old_path[-1]
-                pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
+                pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos)
                 
                 ghost.is_eat_super_pacgums(maze.pacman_pos)
 
@@ -129,6 +129,7 @@ def game_level(width, height, data:Parse, engine, screen, l):
                             ghost_reached_cell = old_path[specter["current_pos"] + 1]
                         else:
                             ghost_reached_cell = old_path[-1]
+                        print(f"pacman pos == {pacman_pos}")
                         new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
                         specter["old_path"] = new_path
                     start_eat = pygame.time.get_ticks()
