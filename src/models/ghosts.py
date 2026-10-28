@@ -200,7 +200,15 @@ class Ghosts(Maze_screen):
         if (x, y) in self.pacgums_pos:
             self.Scared_Mode = True
 
-    def scard(self, current_pos, goal_pos, total_steps, specter):
+    def scard(self, current_pos, goal_pos, total_steps, specter, start_ticks):
+        goal_timestamp = 7
+        current_ticks = pygame.time.get_ticks()
+        elapsed_time = current_ticks - start_ticks
+        print(current_ticks // 1000, start_ticks // 1000)
+        remaining_time = goal_timestamp - (elapsed_time / 1000)
+        # print(remaining_time)
+        if remaining_time < 0:
+            self.Scared_Mode = False
         images = load_gif_frames(f"assists/images/ghosts/scard.gif")
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
