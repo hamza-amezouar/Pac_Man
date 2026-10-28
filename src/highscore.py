@@ -88,67 +88,68 @@ class Draw_highscores:
             "assists/images/profiles/profile9.png",
             "assists/images/profiles/profile10.jpeg"
         ]
-        for name, level in self.highscors.items():
-            # border user info
-            pygame.draw.rect(self.screen,
-                             self.colors["yellow_dark"],
-                             (self.width // 2 - 350, 100 + step, 900, 70),
-                             border_radius=10)
-            # ract to add user info
-            pygame.draw.rect(self.screen,
-                             self.colors["profile_bg"],
-                             (self.width // 2 - 345, 102 + step, 890, 65),
-                             border_radius=10)
+        for highscors in  self.highscors:
+            for name, level in highscors.items():
+                # border user info
+                pygame.draw.rect(self.screen,
+                                self.colors["yellow_dark"],
+                                (self.width // 2 - 350, 100 + step, 900, 70),
+                                border_radius=10)
+                # ract to add user info
+                pygame.draw.rect(self.screen,
+                                self.colors["profile_bg"],
+                                (self.width // 2 - 345, 102 + step, 890, 65),
+                                border_radius=10)
 
-            # rank number
-            rank_surface: pygame.surface.Surface = self.rank_font.render(
-                f"{rank}", True,
-                self.colors["rank_number"])
+                # rank number
+                rank_surface: pygame.surface.Surface = self.rank_font.render(
+                    f"{rank}", True,
+                    self.colors["rank_number"])
 
-            rank_rect: pygame.rect.Rect = rank_surface.get_rect()
-            rank_rect.topleft = (self.width // 2 - 325, 100 + step + 25)
-            self.screen.blit(rank_surface, rank_rect)
+                rank_rect: pygame.rect.Rect = rank_surface.get_rect()
+                rank_rect.topleft = (self.width // 2 - 325, 100 + step + 25)
+                self.screen.blit(rank_surface, rank_rect)
 
-            # profile image
-            color_vip = self.colors["white"]
-            if rank == 1:
-                color_vip = self.colors["rank_1"]
-            elif rank == 2:
-                color_vip = self.colors["rank_2"]
-            elif rank == 3:
-                color_vip = self.colors["rank_3"]
-            pygame.draw.rect(self.screen,
-                             color_vip,
-                             (self.width // 2 - 300, 100 + step + 10, 52, 52),
-                             border_radius=7)
-            profile: pygame.surface.Surface = pygame.image.load(
-                profiles[current_image])
+                # profile image
+                color_vip = self.colors["white"]
+                if rank == 1:
+                    color_vip = self.colors["rank_1"]
+                elif rank == 2:
+                    color_vip = self.colors["rank_2"]
+                elif rank == 3:
+                    color_vip = self.colors["rank_3"]
+                pygame.draw.rect(self.screen,
+                                color_vip,
+                                (self.width // 2 - 300, 100 + step + 10, 52, 52),
+                                border_radius=7)
+                profile: pygame.surface.Surface = pygame.image.load(
+                    profiles[current_image])
 
-            profile = pygame.transform.scale(
-                profile, (45, 45)).convert()
+                profile = pygame.transform.scale(
+                    profile, (45, 45)).convert()
 
-            self.screen.blit(profile, (self.width // 2 - 297, 100 + step + 13))
+                self.screen.blit(profile, (self.width // 2 - 297, 100 + step + 13))
 
-            # add name
-            name_surface: pygame.surface.Surface = self.name_font.render(
-                f"{name}", True,
-                self.colors["white"])
+                # add name
+                name_surface: pygame.surface.Surface = self.name_font.render(
+                    f"{name}", True,
+                    self.colors["white"])
 
-            name_rect: pygame.rect.Rect = name_surface.get_rect()
-            name_rect.topleft = (self.width // 2 - 240, 100 + step + 20)
-            self.screen.blit(name_surface, name_rect)
+                name_rect: pygame.rect.Rect = name_surface.get_rect()
+                name_rect.topleft = (self.width // 2 - 240, 100 + step + 20)
+                self.screen.blit(name_surface, name_rect)
 
-            # add pts
-            pts_surface: pygame.surface.Surface = self.pts_font.render(
-                f"{level} - PTS", True,
-                self.colors["white"])
+                # add pts
+                pts_surface: pygame.surface.Surface = self.pts_font.render(
+                    f"{level} - PTS", True,
+                    self.colors["white"])
 
-            pts_rect: pygame.rect.Rect = pts_surface.get_rect()
-            pts_rect.topleft = (self.width - 570, 100 + step + 21)
-            self.screen.blit(pts_surface, pts_rect)
-            step += 90
-            rank += 1
-            current_image = (current_image + 1) % len(profiles)
+                pts_rect: pygame.rect.Rect = pts_surface.get_rect()
+                pts_rect.topleft = (self.width - 570, 100 + step + 21)
+                self.screen.blit(pts_surface, pts_rect)
+                step += 90
+                rank += 1
+                current_image = (current_image + 1) % len(profiles)
 
     def draw_back_button(self, mouse: Tuple) -> None:
         """Renders the interactive back button and handles mouse hover effects.

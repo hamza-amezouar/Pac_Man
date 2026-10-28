@@ -3,7 +3,8 @@ from src.engine.splash_screen import DrawSplash
 from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
 from src.models.screen_maze import redraw_maze
-from src.config_parser import Parse
+from src.config_parser import Parse, yellow, white, green
+import json
 
 
 
@@ -17,6 +18,15 @@ class Engine:
         self.score = 0
         self.time = self.data["level_max_time"]
         self.lives = self.data["lives"]
+        try:
+            with open(self.data["highscore_filename"], "r") as f:
+                res = json.load(f)
+        except FileNotFoundError as e:
+            res = []
+            print(f"{yellow}⚠️  Warning: {e}{white}")
+            print(f"{green}-> Using default: {res}\n{white}")
+
+        self.info = res
         pygame.init()
         # pygame.mixer.init()
         pygame.font.init()
@@ -49,7 +59,7 @@ class Engine:
         self.draw_splash: DrawSplash = DrawSplash(self.width, self.height,
                                                   self.screen, self.colors)
         self.draw_highscore: Draw_highscores = Draw_highscores(
-            self.screen, self.colors, self.width, self.height,{"Mohamed":151})
+            self.screen, self.colors, self.width, self.height,self.info)
 
         self.draw_main: Draw_main = Draw_main(self.width, self.height,
                                               self.screen, self.colors)
