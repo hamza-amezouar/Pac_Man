@@ -20,9 +20,9 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
     high_score = pygame.image.load("assists/images/high_score.png")
     score_img = pygame.transform.scale(high_score, (700, 500))
     name = ""
-    n_text = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf",32)
+    n_text = pygame.font.Font("assists/fonts/AgentOrange.ttf",32)
     runing = True
-    
+    score = engine.score
     while runing:
 
         screen.blit(background_img, (0,0))
@@ -46,10 +46,8 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
             
             if even.type == pygame.KEYDOWN:
                 if even.key == pygame.K_RETURN:
-                    informal = {name: engine.score}
+                    informal = {name: score}
                     engine.info.append(informal)
-                    with open(engine.data["highscore_filename"], "w") as file:
-                        json.dump(engine.info, file)
                     runing = False
                 
                 elif even.key == pygame.K_BACKSPACE:
@@ -58,20 +56,22 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
                     name += " "
                 elif even.unicode.isalnum() and len(name) < 10:
                     name += even.unicode
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_q]:
+            exit(0)
 
         name_text = n_text.render(name, True, (255, 255, 255))
         new_width = (width - name_text.get_width()) // 2
         screen.blit(name_text, (new_width, height * 0.62))
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_q]:
-            exit(0)
         if not runing:
-            engine.draw_highscore.draw_high_score()
+            engine.info = sorted(engine.info, reverse=True, key=lambda player : list(player.values())[0])[:10]
+            with open(engine.data["highscore_filename"], "w") as file:
+                json.dump(engine.info, file, indent=2)
+                engine.draw_highscore.draw_high_score(engine.info)
             return 0
         pygame.display.update()
 
 def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface.Surface, l):
-        print(l)
         maze_w = data["level"][l]['width']
         maze_h = data["level"][l]['height']
         pacgum = data["level"][l]['pacgum']
@@ -100,19 +100,28 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
         game_over = False
         game_over_img = pygame.image.load("assists/images/game_over.png")
         game_over_img = pygame.transform.scale(game_over_img, (800, 200))
-        win_img = pygame.image.load("assists/images/congratulations.png")
+        win_img = pygame.image.load("assists/images/win.png")
         win_img = pygame.transform.scale(win_img, (800, 200))
-
+        background_img = pygame.image.load("assists/images/background.png")
+        background_img = pygame.transform.scale(background_img, (width, height))
         
         while run:
+            mouse_pos: Tuple = pygame.mouse.get_pos()
+            engine.draw_highscore.draw_back_button(mouse_pos)
+            pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
+                        if l == len(data['level']) - 1:
+                            x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
+                            y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
+                            screen.blit(win_img, (x, y))
+                            pygame.display.update()
                         return 1
             if not game_over:
-                screen.fill((30, 30, 30))
+                screen.blit(background_img, (0,0))
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_q]:
                     exit(0)
@@ -126,6 +135,11 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
                     next_direction = "left"
                 #pacman  
                 if not pacgums:
+                    if l == len(data['level']) - 1:
+                        x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
+                        y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
+                        screen.blit(win_img, (x, y))
+                        pygame.display.update()
                     return 1
                 if reached:
                     next_target = None
@@ -189,7 +203,6 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
                 screen.blit(game_over_img, (x, y))
                 pygame.display.update()
                 if receive_name_player(width, height, screen,engine,"game_over") == 0:
-                    print("enter")
                     return 0
                 pygame.display.update()
         return -1
@@ -198,17 +211,13 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
 
 def redraw_maze(width, height, data:Parse,engine:"Engine" ,screen:pygame.surface.Surface):
     i = 0
-    while i in range(len(data['level'])):
+    while i in range(len(data['level']) - 1):
         game =  game_level(width, height, data, engine, screen, i)
         if game == 1:
             i += 1
         if game == 0:
             return 0
-    
-    # x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
-    # y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
-    # screen.blit(game_over_img, (x, y))
     game_level(width, height, data, engine, screen, i)
     receive_name_player(width, height, screen, engine,"win")
-    engine.draw_highscore.draw_high_score()
+    engine.draw_highscore.draw_high_score(engine.info)
     return 0

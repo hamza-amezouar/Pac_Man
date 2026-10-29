@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 
 import pygame
 
@@ -13,8 +13,7 @@ class Draw_highscores:
     """
     def __init__(self, screen: pygame.surface.Surface,
                  colors: Dict[str, tuple[int, int, int]],
-                 width: int, height: int,
-                 highscores: Dict[str, int]):
+                 width: int, height: int):
 
         """Initializes the Draw_highscores
         screen with display settings and assets.
@@ -36,15 +35,13 @@ class Draw_highscores:
         self.screen = screen
         self.width = width
         self.height = height
-        self.highscors = highscores
         self.colors: Dict[str, Tuple[int, int, int]] = colors
         self.buttons: list[pygame.Rect] = []
 
         # fonts initialize
         self.highscore_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
-        self.name_font: pygame.font.Font = pygame.font.Font(
-            "./assists/fonts/Game Paused DEMO.otf", 20)
+        self.name_font: pygame.font.Font = pygame.font.Font("./assists/fonts/ka1.ttf", 20)
         self.rank_font: pygame.font.Font = pygame.font.Font(None, 26)
         self.pts_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/ka1.ttf", 20)
@@ -64,10 +61,10 @@ class Draw_highscores:
             self.colors["yellow_dark"])
 
         title_rect: pygame.rect.Rect = title_surface.get_rect()
-        title_rect.topleft = (self.width // 2 - 200, 20)
+        title_rect.topleft = (self.width // 2 - 160, 20)
         self.screen.blit(title_surface, title_rect)
 
-    def draw_profiles_place(self) -> None:
+    def draw_profiles_place(self, highscors:List[Dict[str, int]]) -> None:
         """Renders the list of player high scores,
         profile avatars, ranks, and points.
 
@@ -88,8 +85,8 @@ class Draw_highscores:
             "assists/images/profiles/profile9.png",
             "assists/images/profiles/profile10.jpeg"
         ]
-        for highscors in  self.highscors:
-            for name, level in highscors.items():
+        for highscore in highscors:
+            for name, level in highscore.items():
                 # border user info
                 pygame.draw.rect(self.screen,
                                 self.colors["yellow_dark"],
@@ -164,11 +161,11 @@ class Draw_highscores:
             if button.collidepoint(mouse):
                 is_hover = True
                 pygame.draw.rect(self.screen,
-                                 self.colors['yellow_dark'], (10, 20, 180, 50),
+                                 self.colors['yellow_dark'], (10, 20, 140, 50),
                                  border_radius=16)
             else:
                 pygame.draw.rect(self.screen,
-                                 self.colors['yellow'], (10, 20, 180, 50),
+                                 self.colors['yellow'], (10, 20, 140, 50),
                                  border_radius=10)
         if is_hover:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
@@ -176,17 +173,17 @@ class Draw_highscores:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
         back_font: pygame.font.Font = pygame.font.Font(
-            "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 16)
+            "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 14)
         font_surface: pygame.surface.Surface = back_font.render(
             "BACK TO HOME", True,
             self.colors['deep_blue'])
 
         font_rect: pygame.rect.Rect = font_surface.get_rect()
-        font_rect.topleft = (10 + 18, 20 + 16)
+        font_rect.topleft = (18, 36)
         self.screen.blit(font_surface, font_rect)
         self.buttons.append(pygame.Rect((10, 20, 180, 50)))
 
-    def draw_high_score(self) -> int:
+    def draw_high_score(self, highscors) -> int:
         """Main loop for updating and rendering the high scores screen.
 
         Handles mouse interactions,
@@ -203,7 +200,7 @@ class Draw_highscores:
             self.screen.fill(self.colors["dark"])
             self.screen.blit(self.background, (0, 0))
             self.draw_title()
-            self.draw_profiles_place()
+            self.draw_profiles_place(highscors)
             self.draw_back_button(mouse_pos)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -213,6 +210,9 @@ class Draw_highscores:
                         for button in self.buttons:
                             if button.collidepoint(event.pos):
                                 return 0
+                key = pygame.key.get_pressed()
+                if key[pygame.K_q]:
+                    exit(0)
             pygame.display.update()
             pygame.time.wait(100)
         return 0
