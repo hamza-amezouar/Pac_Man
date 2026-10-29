@@ -98,7 +98,6 @@ class Ghosts(Maze_screen):
         return ghosts_data
 
     def chase(self, current_pos, goal_pos, total_steps, specter):
-        print(specter["was_eaten"])
         specter["total_speed"] = 30
         image_mode = self.update_ghost_image(current_pos , goal_pos, specter)
         images = load_gif_frames(f"assists/images/ghosts/{specter["color"]}{image_mode}.gif")
@@ -204,7 +203,6 @@ class Ghosts(Maze_screen):
         return False
 
     def scared(self,current_pos, goal_pos, total_steps, specter, start_ticks):
-        print(specter["was_eaten"])
         goal_timestamp = 10
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
