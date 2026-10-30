@@ -21,13 +21,16 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
     score_img = pygame.transform.scale(high_score, (700, 500))
     name = ""
     n_text = pygame.font.Font("assists/fonts/AgentOrange.ttf",32)
+    score_text = pygame.font.Font("./assists/fonts/ka1.ttf", 20)
+    score_text = score_text.render(f"{str(engine.score)} PTS", True, (255, 255, 255))
     runing = True
-    score = engine.score
     while runing:
 
         screen.blit(background_img, (0,0))
         screen.blit(gamer_img, (500, 50))
         screen.blit(score_img, (610, 400))
+        screen.blit(score_text, (width*0.48, height * 0.58))
+        score_img
 
         if status == "game_over":
             msg = "LOSE"
@@ -46,7 +49,7 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
             
             if even.type == pygame.KEYDOWN:
                 if even.key == pygame.K_RETURN:
-                    informal = {name: score}
+                    informal = {name: engine.score}
                     engine.info.append(informal)
                     runing = False
                 
@@ -71,7 +74,7 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
             return 0
         pygame.display.update()
 
-def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface.Surface, l):
+def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygame.surface.Surface, l:int)-> int:
         maze_w = data["level"][l]['width']
         maze_h = data["level"][l]['height']
         pacgum = data["level"][l]['pacgum']
@@ -106,9 +109,6 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
         background_img = pygame.transform.scale(background_img, (width, height))
         
         while run:
-            mouse_pos: Tuple = pygame.mouse.get_pos()
-            engine.draw_highscore.draw_back_button(mouse_pos)
-            pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit(0)
@@ -122,6 +122,8 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
                         return 1
             if not game_over:
                 screen.blit(background_img, (0,0))
+                mouse_pos: Tuple = pygame.mouse.get_pos()
+                engine.draw_highscore.draw_back_button(mouse_pos)
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_q]:
                     exit(0)

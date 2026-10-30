@@ -155,7 +155,7 @@ class Draw_highscores:
             mouse (Tuple[int, int]):
             Current (x, y) coordinates of the mouse cursor.
         """
-
+        
         is_hover: bool = False
         for button in self.buttons:
             if button.collidepoint(mouse):
@@ -182,6 +182,7 @@ class Draw_highscores:
         font_rect.topleft = (18, 36)
         self.screen.blit(font_surface, font_rect)
         self.buttons.append(pygame.Rect((10, 20, 180, 50)))
+
 
     def draw_high_score(self, highscors) -> int:
         """Main loop for updating and rendering the high scores screen.
