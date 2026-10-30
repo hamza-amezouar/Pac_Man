@@ -116,8 +116,6 @@ def game_level(width, height, data:Parse, engine, screen, l):
                             ghost_reached_cell = old_path[-1]
                         new_path = ghost.calculate_ghost_path(ghost_reached_cell, specter["my_pos"])
                         specter["old_path"] = new_path
-                    if specter["pos"] == specter["my_pos"]:
-                        specter["was_eaten"] = False
 
                 else:
                     specter["was_eaten"] = False
