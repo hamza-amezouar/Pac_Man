@@ -150,7 +150,7 @@ class Draw_highscores:
             rank += 1
             current_image = (current_image + 1) % len(profiles)
 
-    def draw_back_button(self, mouse: Tuple) -> None:
+    def draw_back_button(self, mouse: Tuple, event) -> None:
         """Renders the interactive back button and handles mouse hover effects.
 
         Args:
@@ -184,6 +184,10 @@ class Draw_highscores:
         font_rect.topleft = (10 + 18, 20 + 16)
         self.screen.blit(font_surface, font_rect)
         self.buttons.append(pygame.Rect((10, 20, 180, 50)))
+        for button in self.buttons:
+            if button.collidepoint(event.pos):
+                return 1
+        return 0
 
     def draw_high_score(self) -> int:
         """Main loop for updating and rendering the high scores screen.
@@ -203,15 +207,14 @@ class Draw_highscores:
             self.screen.blit(self.background, (0, 0))
             self.draw_title()
             self.draw_profiles_place()
-            self.draw_back_button(mouse_pos)
             for event in pygame.event.get():
+                is_clicked = self.draw_back_button(mouse_pos, event)
                 if event.type == pygame.QUIT:
                     exit(0)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        for button in self.buttons:
-                            if button.collidepoint(event.pos):
-                                return 0
+                        if is_clicked:
+                            return 0
             pygame.display.update()
             pygame.time.wait(100)
         return 0

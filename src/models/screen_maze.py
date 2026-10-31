@@ -142,7 +142,6 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
                 if not game_over:
                     screen.blit(background_img, (0,0))
                     mouse_pos: Tuple = pygame.mouse.get_pos()
-                    engine.draw_highscore.draw_back_button(mouse_pos)
                     keys = pygame.key.get_pressed()
                     if keys[pygame.K_q]:
                         exit(0)
