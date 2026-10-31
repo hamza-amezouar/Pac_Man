@@ -1,5 +1,5 @@
 from typing import Dict, Tuple
-from src.biulder import Draw
+from src.helper_func.draw_rect import custom_rect
 
 import pygame
 
@@ -23,8 +23,6 @@ class Draw_main:
         self.colors = colors
         self.bg_image: pygame.surface.Surface = pygame.image.load(
             './assists/images/background.png')
-
-        self.draw = Draw()
         self.background: pygame.surface.Surface = pygame.transform.scale(
             self.bg_image, (self.width, self.height)).convert()
         self.menu_font: pygame.font.Font = pygame.font.Font(
@@ -41,9 +39,9 @@ class Draw_main:
         start = self.width // 2
         if start + step >= self.width:
             return True
-        self.draw.custom_rect(self.screen, self.colors["blue_light"],
+        custom_rect(self.screen, self.colors["blue_light"],
                          (start + step, 0, start, self.height))
-        self.draw.custom_rect(self.screen, self.colors["blue_light"],
+        custom_rect(self.screen, self.colors["blue_light"],
                          (0 - step, 0, start, self.height))
         return False
 
@@ -76,11 +74,11 @@ class Draw_main:
             for button in self.buttons:
                 if button.collidepoint(mouse):
                     is_hover = True
-                    self.draw.custom_rect(self.screen,
+                    custom_rect(self.screen,
                                      self.colors['yellow_dark'],
                                      button)
                 else:
-                    self.draw.custom_rect(self.screen,
+                    custom_rect(self.screen,
                                      self.colors['yellow'],
                                      button)
             if is_hover:

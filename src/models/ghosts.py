@@ -260,7 +260,7 @@ class Ghosts(Maze_screen):
             for specter in ghosts_data:
                 if ghosts_data[specter]["pos"] ==  (x, y):
                     ghosts_data[specter]["was_eaten"] = True
-    def create_random_path(self, pac_man_pos):
-        x, y = pac_man_pos
-        if x + self
+    # def create_random_path(self, pac_man_pos):
+    #     x, y = pac_man_pos
+    #     if x + self
 
