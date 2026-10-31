@@ -13,8 +13,8 @@ if TYPE_CHECKING:
     from src.engine.game_engine import Engine
 
 def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"Engine", status:str):
-    background_img = pygame.image.load("assists/images/background.png")
     time.sleep(1)
+    background_img = pygame.image.load("assists/images/background.png")
     background_img = pygame.transform.scale(background_img, (width, height))
     gamer_img = pygame.image.load("assists/images/gamer.png")
     gamer_img = pygame.transform.scale(gamer_img, (900, 150))
@@ -24,6 +24,8 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
     n_text = pygame.font.Font("assists/fonts/AgentOrange.ttf",32)
     score_text = pygame.font.Font("./assists/fonts/ka1.ttf", 20)
     score_text = score_text.render(f"{str(engine.score)} PTS", True, (255, 255, 255))
+    lose_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
+    win_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
     runing = True
     while runing:
 
@@ -35,13 +37,11 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
 
         if status == "game_over":
             msg = "LOSE"
-            msg_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
-            msg_text = msg_font.render(msg, True, (255, 0, 0))
+            msg_text = lose_font.render(msg, True, (255, 0, 0))
             screen.blit(msg_text, (900, 220))
         else:
             msg = "WIN"
-            msg_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
-            msg_text = msg_font.render(msg, True, (0, 255, 0))
+            msg_text = win_font.render(msg, True, (0, 255, 0))
             screen.blit(msg_text, (910, 250))
 
         for even in pygame.event.get():
@@ -77,7 +77,7 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
 
 def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygame.surface.Surface, l:int)-> int:
         maze_w = data["level"][l]['width']
-        maze_h = data["level"][l]['height']
+        maze_h = data["level"][l]['height'] 
         pacgum = data["level"][l]['pacgum']
         seed =  data['seed'] 
         conf_maze = Maze(size=(maze_w, maze_h), seed=seed, level=l + 1)
@@ -125,15 +125,18 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
                             pygame.display.update()
                         return 1
                     if event.key == pygame.K_SPACE and not game_pause:
-                        elapse = pygame.time.get_ticks() - start_ticks
+                        time_pause = pygame.time.get_ticks() - start_ticks
                         game_pause = True
                         x = int(maze.start_x + (maze.maze_pixel_w // 2))
                         y = int(maze.start_y + (maze.maze_pixel_h * 0.30))
                         custom_rect(screen,(0, 0, 255), (x, y, 100, 100))
                         pygame.display.update()
-                    if event.key == pygame.K_RETURN:
+                    
+                    if event.key == pygame.K_RETURN and game_pause:
+                        start_ticks = pygame.time.get_ticks() - time_pause 
                         game_pause = False
             if game_pause:
+                clock.tick(60)
                 continue
             else:
                 if not game_over:
