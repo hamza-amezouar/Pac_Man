@@ -203,7 +203,7 @@ class Ghosts(Maze_screen):
         return False
 
     def scared(self,current_pos, goal_pos, total_steps, specter, start_ticks):
-        goal_timestamp = 10
+        goal_timestamp = 20
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
         remaining_time = goal_timestamp - (elapsed_time / 1000)
@@ -260,4 +260,7 @@ class Ghosts(Maze_screen):
             for specter in ghosts_data:
                 if ghosts_data[specter]["pos"] ==  (x, y):
                     ghosts_data[specter]["was_eaten"] = True
+    def create_random_path(self, pac_man_pos):
+        x, y = pac_man_pos
+        if x + self
 

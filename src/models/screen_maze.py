@@ -1,4 +1,5 @@
 
+import random
 import time
 
 from src.models.move_pacman import Pacman_face
@@ -90,6 +91,8 @@ def game_level(width, height, data:Parse, engine, screen, l):
             maze.draw_all_pacgums(pacgums)
             pacman.draw_face(maze.pacman_pos, direction)
             maze.eats_pacgums(pacgums)
+            c_x = int((maze.pacman_pos[0] - maze.start_x) // maze.cell_size)
+            c_y = int((maze.pacman_pos[1] - maze.start_y) // maze.cell_size)
             for specter in ghosts_data.values():
                 old_path = specter["old_path"]
                 if specter["current_pos"] + 1 < len(old_path):
@@ -114,11 +117,20 @@ def game_level(width, height, data:Parse, engine, screen, l):
                             ghost_reached_cell = old_path[specter["current_pos"] + 1]
                         else:
                             ghost_reached_cell = old_path[-1]
-                        new_path = ghost.calculate_ghost_path(ghost_reached_cell, specter["my_pos"])
+                        random_x = random.randint(0, maze.maze_w)
+                        random_y = random.randint(0, maze.maze_h)
+                        while (random_x , random_y) == (c_x, c_y):
+                            random_x = random.randint(0, maze.maze_w)
+                            random_y = random.randint(0, maze.maze_h)
+                        if specter["was_eaten"]:
+                            random_x, random_y = specter["my_pos"]
+                        new_path = ghost.calculate_ghost_path(ghost_reached_cell, (random_x , random_y))
                         specter["old_path"] = new_path
+                        
 
                 else:
                     specter["was_eaten"] = False
+                    specter["remain"] = False
                     if ghost.is_caught(ghosts_data, maze.pacman_pos):
                         print("Game Over11")
                     ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
@@ -126,8 +138,6 @@ def game_level(width, height, data:Parse, engine, screen, l):
                     if specter["move_now"] >= specter["total_speed"]:
                         if specter["remain"]:
                             specter["remain"] = False
-                        c_x = int((maze.pacman_pos[0] - maze.start_x) // maze.cell_size)
-                        c_y = int((maze.pacman_pos[1] - maze.start_y) // maze.cell_size)
                         specter["move_now"] = 0
                         specter["current_frame"] += 1
                         if specter["current_pos"] + 1 < len(old_path):
