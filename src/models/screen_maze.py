@@ -32,7 +32,7 @@ def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"En
         screen.blit(background_img, (0,0))
         screen.blit(gamer_img, (500, 50))
         screen.blit(score_img, (610, 400))
-        screen.blit(score_text, (width*0.48, height * 0.58))
+        screen.blit(score_text, (width * 0.48, height * 0.58))
         score_img
 
         if status == "game_over":
@@ -97,7 +97,7 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
         game_over_img = pygame.transform.scale(game_over_img, (800, 200))
         win_img = pygame.image.load("assists/images/win.png")
         win_img = pygame.transform.scale(win_img, (800, 200))
-        background_img = pygame.image.load("assists/images/background.png")
+        background_img = pygame.image.load("assists/images/background_maze.png")
         background_img = pygame.transform.scale(background_img, (width, height))
 
         direction = None
