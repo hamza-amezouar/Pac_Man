@@ -2,6 +2,7 @@ from src.models.move_pacman import Pacman_face
 from src.models.maze import Maze, Maze_screen
 from src.models.ghosts import Ghosts 
 from src.config_parser import Parse
+from src.builder import custom_rect
 from typing import Tuple, List, Dict, Any, TYPE_CHECKING
 import pygame
 import time
@@ -78,7 +79,6 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
         maze_w = data["level"][l]['width']
         maze_h = data["level"][l]['height']
         pacgum = data["level"][l]['pacgum']
-        start_ticks = pygame.time.get_ticks()
         seed =  data['seed'] 
         conf_maze = Maze(size=(maze_w, maze_h), seed=seed, level=l + 1)
         walls = conf_maze.get_walls()
@@ -93,20 +93,24 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
         ghosts_data['pink']["old_path"] = ghost.calculate_ghost_path(ghosts_data['pink']["pos"], maze.pacman_pos)
         ghosts_data['red']["old_path"] = ghost.calculate_ghost_path(ghosts_data['red']["pos"], maze.pacman_pos)
 
-        direction = None
-        next_direction = None
-        current_target = None
-        reached = True
-        speed = 10
-        clock = pygame.time.Clock()
-        run = True
-        game_over = False
         game_over_img = pygame.image.load("assists/images/game_over.png")
         game_over_img = pygame.transform.scale(game_over_img, (800, 200))
         win_img = pygame.image.load("assists/images/win.png")
         win_img = pygame.transform.scale(win_img, (800, 200))
         background_img = pygame.image.load("assists/images/background.png")
         background_img = pygame.transform.scale(background_img, (width, height))
+
+        direction = None
+        next_direction = None
+        current_target = None
+        reached = True
+        speed = 10
+        run = True
+        game_over = False
+        game_pause = False
+        clock = pygame.time.Clock()
+        start_ticks = pygame.time.get_ticks()
+        time_pause = 0
         
         while run:
             for event in pygame.event.get():
@@ -120,93 +124,103 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
                             screen.blit(win_img, (x, y))
                             pygame.display.update()
                         return 1
-            if not game_over:
-                screen.blit(background_img, (0,0))
-                mouse_pos: Tuple = pygame.mouse.get_pos()
-                engine.draw_highscore.draw_back_button(mouse_pos)
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_q]:
-                    exit(0)
-                elif keys[pygame.K_UP] or keys[pygame.K_w]:
-                    next_direction = "up"
-                elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                    next_direction = "down"
-                elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                    next_direction = "right"
-                elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                    next_direction = "left"
-                #pacman  
-                if not pacgums:
-                    if l == len(data['level']) - 1:
-                        x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
-                        y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
-                        screen.blit(win_img, (x, y))
+                    if event.key == pygame.K_SPACE and not game_pause:
+                        elapse = pygame.time.get_ticks() - start_ticks
+                        game_pause = True
+                        x = int(maze.start_x + (maze.maze_pixel_w // 2))
+                        y = int(maze.start_y + (maze.maze_pixel_h * 0.30))
+                        custom_rect(screen,(0, 0, 255), (x, y, 100, 100))
                         pygame.display.update()
-                    return 1
-                if reached:
-                    next_target = None
-                    if next_direction is not None:
-                        next_target = pacman.target_pacman(maze.pacman_pos, next_direction, walls)
-
-                    if next_target is not None:
-                        direction = next_direction
-                        current_target = next_target
-                        next_direction = None
-                
-                    elif direction is not None:
-                        current_target = pacman.target_pacman(
-                                    maze.pacman_pos, direction, walls)
-                        if current_target is None:
-                            direction = "blocked" 
-                            next_direction = None
-                
-                        
-                if current_target is not None:
-                    reached = pacman.move_pacman(maze.pacman_pos, current_target, speed)
-                    if reached:
-                        current_target = None
-                else:
-                    reached = True
-                
-                if maze.menu_maze(start_ticks):
-                    game_over = True
-                maze.draw_maze(walls)
-                maze.draw_all_pacgums(pacgums)
-                pacman.draw_face(maze.pacman_pos, direction)
-                maze.eats_pacgums(pacgums)
-                # ghosts
-                for specter in ghosts_data.values():
-                    old_path = specter["old_path"]
-                    if specter["current_pos"] + 1 < len(old_path):
-                        start_cell = old_path[specter["current_pos"]]
-                        target_cell = old_path[specter["current_pos"] + 1]
-                    else:
-                        start_cell = old_path[-1]
-                        target_cell = old_path[-1]
-                    pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
-                    ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
-                    specter["move_now"] += 2
-                    if specter["move_now"] >= specter["total_speed"]:
-                        specter["move_now"] = 0
-                        specter["current_frame"] += 1
-                        if specter["current_pos"] + 1 < len(old_path):
-                            ghost_reached_cell = old_path[specter["current_pos"] + 1]
-                        else:
-                            ghost_reached_cell = old_path[-1]
-                        new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
-                        specter["old_path"] = new_path
-                        specter["current_pos"] = 0
-            
-                clock.tick(60)
-                pygame.display.update()
+                    if event.key == pygame.K_RETURN:
+                        game_pause = False
+            if game_pause:
+                continue
             else:
-                x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
-                y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
-                screen.blit(game_over_img, (x, y))
-                pygame.display.update()
-                if receive_name_player(width, height, screen,engine,"game_over") == 0:
-                    return 0
-                pygame.display.update()
+                if not game_over:
+                    screen.blit(background_img, (0,0))
+                    mouse_pos: Tuple = pygame.mouse.get_pos()
+                    engine.draw_highscore.draw_back_button(mouse_pos)
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_q]:
+                        exit(0)
+                    elif keys[pygame.K_UP] or keys[pygame.K_w]:
+                        next_direction = "up"
+                    elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                        next_direction = "down"
+                    elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                        next_direction = "right"
+                    elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                        next_direction = "left"
+                    #pacman  
+                    if not pacgums:
+                        if l == len(data['level']) - 1:
+                            x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
+                            y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
+                            screen.blit(win_img, (x, y))
+                            pygame.display.update()
+                        return 1
+                    if reached:
+                        next_target = None
+                        if next_direction is not None:
+                            next_target = pacman.target_pacman(maze.pacman_pos, next_direction, walls)
+
+                        if next_target is not None:
+                            direction = next_direction
+                            current_target = next_target
+                            next_direction = None
+                    
+                        elif direction is not None:
+                            current_target = pacman.target_pacman(
+                                        maze.pacman_pos, direction, walls)
+                            if current_target is None:
+                                direction = "blocked" 
+                                next_direction = None
+                    if current_target is not None:
+                        reached = pacman.move_pacman(maze.pacman_pos, current_target, speed)
+                        if reached:
+                            current_target = None
+                    else:
+                        reached = True
+                    
+                    if maze.menu_maze(start_ticks):
+                        game_over = True
+                    maze.draw_maze(walls)
+                    maze.draw_all_pacgums(pacgums)
+                    pacman.draw_face(maze.pacman_pos, direction)
+                    maze.eats_pacgums(pacgums)
+                    # ghosts
+                    for specter in ghosts_data.values():
+                        old_path = specter["old_path"]
+                        if specter["current_pos"] + 1 < len(old_path):
+                            start_cell = old_path[specter["current_pos"]]
+                            target_cell = old_path[specter["current_pos"] + 1]
+                        else:
+                            start_cell = old_path[-1]
+                            target_cell = old_path[-1]
+                        pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
+                        ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
+                        specter["move_now"] += 2
+                        if specter["move_now"] >= specter["total_speed"]:
+                            specter["move_now"] = 0
+                            specter["current_frame"] += 1
+                            if specter["current_pos"] + 1 < len(old_path):
+                                ghost_reached_cell = old_path[specter["current_pos"] + 1]
+                            else:
+                                ghost_reached_cell = old_path[-1]
+                            new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
+                            specter["old_path"] = new_path
+                            specter["current_pos"] = 0
+                
+                    clock.tick(60)
+                    pygame.display.update()
+                else:
+                    x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
+                    y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
+                    screen.blit(game_over_img, (x, y))
+                    pygame.display.update()
+                    if receive_name_player(width, height, screen,engine,"game_over") == 0:
+                        return 0
+                    pygame.display.update()
         return -1
             
 
