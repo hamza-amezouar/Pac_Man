@@ -39,7 +39,7 @@ class Draw_highscores:
         self.highscors = highscores
         self.colors: Dict[str, Tuple[int, int, int]] = colors
         self.buttons: list[pygame.Rect] = []
-
+        self.buttons.append(pygame.Rect((10, 20, 180, 50)))
         # fonts initialize
         self.highscore_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
@@ -150,7 +150,7 @@ class Draw_highscores:
             rank += 1
             current_image = (current_image + 1) % len(profiles)
 
-    def draw_back_button(self, mouse: Tuple, event) -> None:
+    def draw_back_button(self, mouse: Tuple, message: str) -> None:
         """Renders the interactive back button and handles mouse hover effects.
 
         Args:
@@ -177,17 +177,12 @@ class Draw_highscores:
         back_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 16)
         font_surface: pygame.surface.Surface = back_font.render(
-            "BACK TO HOME", True,
+            message, True,
             self.colors['deep_blue'])
 
         font_rect: pygame.rect.Rect = font_surface.get_rect()
         font_rect.topleft = (10 + 18, 20 + 16)
         self.screen.blit(font_surface, font_rect)
-        self.buttons.append(pygame.Rect((10, 20, 180, 50)))
-        for button in self.buttons:
-            if button.collidepoint(event.pos):
-                return 1
-        return 0
 
     def draw_high_score(self) -> int:
         """Main loop for updating and rendering the high scores screen.
@@ -207,14 +202,15 @@ class Draw_highscores:
             self.screen.blit(self.background, (0, 0))
             self.draw_title()
             self.draw_profiles_place()
+            self.draw_back_button(mouse_pos, "BACK TO HOME")
             for event in pygame.event.get():
-                is_clicked = self.draw_back_button(mouse_pos, event)
                 if event.type == pygame.QUIT:
                     exit(0)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        if is_clicked:
-                            return 0
+                        for button in self.buttons:
+                            if button.collidepoint(event.pos):
+                                return 0
             pygame.display.update()
             pygame.time.wait(100)
         return 0
