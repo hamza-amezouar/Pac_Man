@@ -20,6 +20,23 @@ class Ghosts(Maze_screen):
                  screen: pygame.surface.Surface, walls: List[List[Dict[str,
                                                                        bool]]],
                  data: Dict[str, Any], engine: "Engine", level: int):
+        """
+        Initialize the ghosts and load their images.
+
+        Args:
+            screen_w: The width of the game screen.
+            screen_h: The height of the game screen.
+            maze_w: The width of the maze.
+            maze_h: The height of the maze.
+            screen: The Pygame surface used to draw the ghosts.
+            walls: The walls of the maze.
+            data: The game settings.
+            engine: The main game engine.
+            level: The current game level.
+
+        Returns:
+            None.
+        """
         super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data,
                          engine, level)
         self.screen_w = screen_w
@@ -42,6 +59,19 @@ class Ghosts(Maze_screen):
     def calculate_ghost_path(
             self, current_pos: Tuple[int, int],
             goal_pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+        """
+        Find a path between the ghost and its target.
+
+        Uses the BFS algorithm to find a path through the maze.
+
+        Args:
+            current_pos: The current position of the ghost.
+            goal_pos: The target position in the maze.
+
+        Returns:
+            A list of positions that the ghost must follow.
+            If no path is found, returns the current position.
+        """
         queue = []
         visited: Set[Tuple[int, int]] = set()
         parrent = {}
@@ -90,6 +120,17 @@ class Ghosts(Maze_screen):
     def update_ghost_image(self, current_pos: Tuple[int, int],
                            goal_pos: Tuple[int, int],
                            ghost_data: Dict[str, Any]) -> str:
+        """
+        Choose the ghost image based on its movement direction.
+
+        Args:
+            current_pos: The current position of the ghost.
+            goal_pos: The next position of the ghost.
+            ghost_data: Information about the ghost.
+
+        Returns:
+            The direction name used to select the ghost image.
+        """
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
         if current_x > goal_x:
@@ -107,6 +148,13 @@ class Ghosts(Maze_screen):
             return str(ghost_data["final_mode"])
 
     def init_ghosts(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Create the initial data for all ghosts.
+
+        Returns:
+            A dictionary containing the positions, colors, speeds,
+            and movement information of each ghost.
+        """
         ghosts_data = {
             "red": {
                 "my_pos": (self.maze_w - 1, self.maze_h - 1),
@@ -165,6 +213,18 @@ class Ghosts(Maze_screen):
 
     def chase(self, current_pos: Tuple[int, int], goal_pos: Tuple[int, int],
               total_steps: int, specter: Dict[str, Any]) -> None:
+        """
+        Move and draw a ghost while it chases its target.
+
+        Args:
+            current_pos: The current position of the ghost.
+            goal_pos: The target position of the ghost.
+            total_steps: The number of steps needed to reach the target.
+            specter: Information about the ghost.
+
+        Returns:
+            None.
+        """
         specter["total_speed"] = 30
         image_mode = self.update_ghost_image(current_pos, goal_pos, specter)
         images = load_gif_frames(
@@ -211,6 +271,19 @@ class Ghosts(Maze_screen):
 
     def ghosts_brain(self, specter: Dict[str, Any], direction: Optional[str],
                      pacman_pos: List[int]) -> Tuple[int, int]:
+        """
+        Choose a target position based on the ghost's behavior.
+
+        Each ghost uses a different rule to choose where to move.
+
+        Args:
+            specter: Information about the ghost.
+            direction: The current direction of Pac-Man.
+            pacman_pos: The pixel position of Pac-Man.
+
+        Returns:
+            The target position as maze coordinates (x, y).
+        """
 
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
@@ -270,6 +343,16 @@ class Ghosts(Maze_screen):
 
     def is_caught(self, data_ghosts: Dict[str, Dict[str, Any]],
                   pacman_pos: List[int]) -> int:
+        """
+        Check if a ghost catches Pac-Man.
+
+        Args:
+            data_ghosts: A dictionary containing information about all ghosts.
+            pacman_pos: The pixel position of Pac-Man.
+
+        Returns:
+            1 if a ghost is in the same maze cell as Pac-Man, otherwise 0.
+        """
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         for color in data_ghosts.keys():
@@ -278,6 +361,15 @@ class Ghosts(Maze_screen):
         return 0
 
     def is_eat_super_pacgums(self, pacman_pos: List[int]) -> bool:
+        """
+        Check if Pac-Man eats a super pac-gum.
+
+        Args:
+            pacman_pos: The pixel position of Pac-Man.
+
+        Returns:
+            True if Pac-Man eats a super pac-gum, otherwise False.
+        """
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         if (x, y) in self.pacgums_pos:
@@ -288,6 +380,23 @@ class Ghosts(Maze_screen):
     def scared(self, current_pos: Tuple[int, int], goal_pos: Tuple[int, int],
                total_steps: int, specter: Dict[str,
                                                Any], start_ticks: int) -> None:
+        """
+        Draw a ghost in scared mode.
+
+        Changes the ghost's appearance and speed while scared.
+        It also handles the timer and the animation when a ghost is eaten.
+
+        Args:
+            current_pos: The current position of the ghost.
+            goal_pos: The target position of the ghost.
+            total_steps: The number of steps needed to reach the target.
+            specter: Information about the ghost.
+            start_ticks: The time when scared mode started.
+
+        Returns:
+            None.
+        """
+
         goal_timestamp = 20
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
@@ -348,6 +457,18 @@ class Ghosts(Maze_screen):
 
     def was_eaten_ghosts(self, ghosts_data: Dict[str, Dict[str, Any]],
                          pacman_pos: List[int]) -> None:
+        """
+        Check if Pac-Man eats a ghost.
+
+        If a ghost is in the same maze cell as Pac-Man, mark it as eaten.
+
+        Args:
+            ghosts_data: A dictionary containing information about all ghosts.
+            pacman_pos: The pixel position of Pac-Man.
+
+        Returns:
+            None.
+        """
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         for specter in ghosts_data:
