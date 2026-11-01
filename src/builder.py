@@ -1,10 +1,6 @@
 import pygame
 
-class Draw:
-    def __int__(self):
-        ...
-    def custom_rect(self, surface, color, rect_coords):
-
+def custom_rect(surface, color, rect_coords):
         if isinstance(rect_coords, pygame.Rect):
             x_start = rect_coords.x
             y_start = rect_coords.y

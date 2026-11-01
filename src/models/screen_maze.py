@@ -2,20 +2,141 @@ from src.models.move_pacman import Pacman_face
 from src.models.maze import Maze, Maze_screen
 from src.models.ghosts import Ghosts 
 from src.config_parser import Parse
+from src.builder import custom_rect
 from typing import Tuple, List, Dict, Any, TYPE_CHECKING
 import pygame
 import time
+import json
 
 
 if TYPE_CHECKING:
     from src.engine.game_engine import Engine
 
+def pause_menu(width:int, height:int, screen: pygame.surface.Surface)-> int:
+    pause_img = pygame.image.load("assists/images/pause_img.jpeg")
+    pause_img = pygame.transform.scale(pause_img, (400, 450))
+    x = int(width * 0.40) 
+    y = int(height * 0.30)
+    screen.blit(pause_img, (x, y))
+    b_x = int(width * 0.46)
+    b_y = int(height * 0.47)
+    padding = 0
+    run = True
+    normal_font = pygame.font.Font("assists/fonts/ka1.ttf", 30)
+    hover_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 30)
+    for b in range(3):
+        
+        custom_rect(screen,(255, 255, 255), (b_x, (b_y + padding), 170, 50))
+        custom_rect(screen,(223, 124, 0), (b_x + 5 ,(b_y + padding) + 5, 160, 40))
 
-def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface.Surface, l):
+        if b == 0:
+            play_button = pygame.Rect((b_x, (b_y + padding), 170, 50))
+        elif b == 1:
+            menu_button = pygame.Rect((b_x, (b_y + padding), 170, 50))
+        else:   
+            quit_button = pygame.Rect((b_x, (b_y + padding), 170, 50))
+        padding += 70
+    
+    
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if play_button.collidepoint(event.pos):
+                        return 1
+                    elif menu_button.collidepoint(event.pos):
+                        return 2
+                    elif quit_button.collidepoint(event.pos):
+                        return 0
+        
+        buttons = [(play_button, "PLAY"),
+                   (menu_button, "MENU"),
+                   (quit_button, "QUIT")
+                ]
+        
+        mouse_pos = pygame.mouse.get_pos()
+        for button , msg in buttons:
+            custom_rect(screen,(223, 124, 0), (button.x + 5 ,button.y + 5, 160, 40))
+            if button.collidepoint(mouse_pos):
+                msg_surface = hover_font.render(msg, True, (25, 25, 166))
+            else:
+                msg_surface = normal_font.render(msg, True, (25, 25, 166))
+            text_center = msg_surface.get_rect(center = button.center)
+            screen.blit(msg_surface, text_center)
+
+        pygame.display.update()
+        
+
+
+
+
+def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"Engine", status:str):
+    time.sleep(1)
+    background_img = pygame.image.load("assists/images/background.png")
+    background_img = pygame.transform.scale(background_img, (width, height))
+    gamer_img = pygame.image.load("assists/images/gamer.png")
+    gamer_img = pygame.transform.scale(gamer_img, (900, 150))
+    high_score = pygame.image.load("assists/images/high_score.png")
+    score_img = pygame.transform.scale(high_score, (700, 500))
+    name = ""
+    n_text = pygame.font.Font("assists/fonts/AgentOrange.ttf",32)
+    score_text = pygame.font.Font("./assists/fonts/ka1.ttf", 20)
+    score_text = score_text.render(f"{str(engine.score)} PTS", True, (255, 255, 255))
+    lose_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
+    win_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
+    runing = True
+    while runing:
+
+        screen.blit(background_img, (0,0))
+        screen.blit(gamer_img, (500, 50))
+        screen.blit(score_img, (610, 400))
+        screen.blit(score_text, (width * 0.48, height * 0.58))
+        score_img
+
+        if status == "game_over":
+            msg = "LOSE"
+            msg_text = lose_font.render(msg, True, (255, 0, 0))
+            screen.blit(msg_text, (900, 220))
+        else:
+            msg = "WIN"
+            msg_text = win_font.render(msg, True, (0, 255, 0))
+            screen.blit(msg_text, (910, 250))
+
+        for even in pygame.event.get():
+            if even.type == pygame.QUIT:
+                exit(0)
+            
+            if even.type == pygame.KEYDOWN:
+                if even.key == pygame.K_RETURN:
+                    informal = {name: engine.score}
+                    engine.info.append(informal)
+                    runing = False
+                
+                elif even.key == pygame.K_BACKSPACE:
+                    name  = name[:-1]
+                elif even.key == pygame.K_SPACE and len(name) < 10:
+                    name += " "
+                elif even.unicode.isalnum() and len(name) < 10:
+                    name += even.unicode
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_q]:
+            exit(0)
+
+        name_text = n_text.render(name, True, (255, 255, 255))
+        new_width = (width - name_text.get_width()) // 2
+        screen.blit(name_text, (new_width, height * 0.62))
+        if not runing:
+            engine.info = sorted(engine.info, reverse=True, key=lambda player : list(player.values())[0])[:10]
+            with open(engine.data["highscore_filename"], "w") as file:
+                json.dump(engine.info, file, indent=2)
+                engine.draw_highscore.draw_high_score(engine.info)
+            return 0
+        pygame.display.update()
+
+def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygame.surface.Surface, l:int)-> int:
         maze_w = data["level"][l]['width']
-        maze_h = data["level"][l]['height']
+        maze_h = data["level"][l]['height'] 
         pacgum = data["level"][l]['pacgum']
-        start_ticks = pygame.time.get_ticks()
         seed =  data['seed'] 
         conf_maze = Maze(size=(maze_w, maze_h), seed=seed, level=l + 1)
         walls = conf_maze.get_walls()
@@ -30,16 +151,24 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
         ghosts_data['pink']["old_path"] = ghost.calculate_ghost_path(ghosts_data['pink']["pos"], maze.pacman_pos)
         ghosts_data['red']["old_path"] = ghost.calculate_ghost_path(ghosts_data['red']["pos"], maze.pacman_pos)
 
+        game_over_img = pygame.image.load("assists/images/game_over.png")
+        game_over_img = pygame.transform.scale(game_over_img, (800, 200))
+        win_img = pygame.image.load("assists/images/win.png")
+        win_img = pygame.transform.scale(win_img, (800, 200))
+        background_img = pygame.image.load("assists/images/background_maze.png")
+        background_img = pygame.transform.scale(background_img, (width, height))
+
         direction = None
         next_direction = None
         current_target = None
         reached = True
         speed = 10
-        clock = pygame.time.Clock()
         run = True
         game_over = False
-        game_over_img = pygame.image.load("assists/images/game_over.png")
-        game_over_img = pygame.transform.scale(game_over_img, (800, 200))
+        game_pause = False
+        clock = pygame.time.Clock()
+        start_ticks = pygame.time.get_ticks()
+        time_pause = 0
         
         while run:
             for event in pygame.event.get():
@@ -47,143 +176,125 @@ def game_level(width, height, data:Parse, engine:"Engine", screen:pygame.surface
                     exit(0)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
-                        engine.lives -=1
-                        return True
-            if not game_over:
-                screen.fill((30, 30, 30))
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_q]:
-                    exit(0)
-                elif keys[pygame.K_UP] or keys[pygame.K_w]:
-                    next_direction = "up"
-                elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                    next_direction = "down"
-                elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                    next_direction = "right"
-                elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                    next_direction = "left"
-                #pacman  
-                if not pacgums:
-                    return True
-                if reached:
-                    next_target = None
-                    if next_direction is not None:
-                        next_target = pacman.target_pacman(maze.pacman_pos, next_direction, walls)
-
-                    if next_target is not None:
-                        direction = next_direction
-                        current_target = next_target
-                        next_direction = None
-                
-                    elif direction is not None:
-                        current_target = pacman.target_pacman(
-                                    maze.pacman_pos, direction, walls)
-                        if current_target is None:
-                            direction = "blocked" 
-                            next_direction = None
-                
-                        
-                if current_target is not None:
-                    reached = pacman.move_pacman(maze.pacman_pos, current_target, speed)
-                    if reached:
-                        current_target = None
-                else:
-                    reached = True
-                
-                if maze.menu_maze(start_ticks):
-                    game_over = True
-                maze.draw_maze(walls)
-                maze.draw_all_pacgums(pacgums)
-                pacman.draw_face(maze.pacman_pos, direction)
-                maze.eats_pacgums(pacgums)
-                # ghosts
-                for specter in ghosts_data.values():
-                    old_path = specter["old_path"]
-                    if specter["current_pos"] + 1 < len(old_path):
-                        start_cell = old_path[specter["current_pos"]]
-                        target_cell = old_path[specter["current_pos"] + 1]
-                    else:
-                        start_cell = old_path[-1]
-                        target_cell = old_path[-1]
-                    pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
-                    ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
-                    specter["move_now"] += 2
-                    if specter["move_now"] >= specter["total_speed"]:
-                        specter["move_now"] = 0
-                        specter["current_frame"] += 1
-                        if specter["current_pos"] + 1 < len(old_path):
-                            ghost_reached_cell = old_path[specter["current_pos"] + 1]
+                        if l == len(data['level']) - 1:
+                            x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
+                            y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
+                            screen.blit(win_img, (x, y))
+                            pygame.display.update()
+                        return 1
+                    if event.key == pygame.K_SPACE and not game_pause:
+                        time_pause = pygame.time.get_ticks() - start_ticks
+                        game_pause = True
+                        pause = pause_menu(width, height, screen)
+                        if pause == 0:
+                            exit(0)
+                        if pause == 1 and game_pause :
+                            start_ticks = pygame.time.get_ticks() - time_pause 
+                            game_pause = False
                         else:
-                            ghost_reached_cell = old_path[-1]
-                        new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
-                        specter["old_path"] = new_path
-                        specter["current_pos"] = 0
-            
+                            return 0
+            if game_pause:
                 clock.tick(60)
-                pygame.display.update()
+                continue
             else:
-                x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
-                y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
-                screen.blit(game_over_img, (x, y))
-                pygame.display.update()
-                receive_name_player(width, height, screen,engine,"game_over")
-                pygame.display.update()
+                if not game_over:
+                    screen.blit(background_img, (0,0))
+                    mouse_pos: Tuple = pygame.mouse.get_pos()
+                    engine.draw_highscore.draw_back_button(mouse_pos)
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_q]:
+                        exit(0)
+                    elif keys[pygame.K_UP] or keys[pygame.K_w]:
+                        next_direction = "up"
+                    elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                        next_direction = "down"
+                    elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                        next_direction = "right"
+                    elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                        next_direction = "left"
+                    #pacman  
+                    if not pacgums:
+                        if l == len(data['level']) - 1:
+                            x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
+                            y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
+                            screen.blit(win_img, (x, y))
+                            pygame.display.update()
+                        return 1
+                    if reached:
+                        next_target = None
+                        if next_direction is not None:
+                            next_target = pacman.target_pacman(maze.pacman_pos, next_direction, walls)
 
-def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"Engine", status:str):
-    background_img = pygame.image.load("assists/images/background.png")
-    time.sleep(1)
-    background_img = pygame.transform.scale(background_img, (width, height))
-    gamer_img = pygame.image.load("assists/images/gamer.png")
-    gamer_img = pygame.transform.scale(gamer_img, (900, 150))
-    high_score = pygame.image.load("assists/images/high_score.png")
-    score_img = pygame.transform.scale(high_score, (700, 500))
-    name = ""
-    n_text = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf",32)
-    runing = True
-    
-    while runing:
+                        if next_target is not None:
+                            direction = next_direction
+                            current_target = next_target
+                            next_direction = None
+                    
+                        elif direction is not None:
+                            current_target = pacman.target_pacman(
+                                        maze.pacman_pos, direction, walls)
+                            if current_target is None:
+                                direction = "blocked" 
+                                next_direction = None
+                    if current_target is not None:
+                        reached = pacman.move_pacman(maze.pacman_pos, current_target, speed)
+                        if reached:
+                            current_target = None
+                    else:
+                        reached = True
+                    
+                    if maze.menu_maze(start_ticks):
+                        game_over = True
+                    maze.draw_maze(walls)
+                    maze.draw_all_pacgums(pacgums)
+                    pacman.draw_face(maze.pacman_pos, direction)
+                    maze.eats_pacgums(pacgums)
+                    # ghosts
+                    for specter in ghosts_data.values():
+                        old_path = specter["old_path"]
+                        if specter["current_pos"] + 1 < len(old_path):
+                            start_cell = old_path[specter["current_pos"]]
+                            target_cell = old_path[specter["current_pos"] + 1]
+                        else:
+                            start_cell = old_path[-1]
+                            target_cell = old_path[-1]
+                        pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos, ghosts_data["red"]["pos"])
+                        ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
+                        specter["move_now"] += 2
+                        if specter["move_now"] >= specter["total_speed"]:
+                            specter["move_now"] = 0
+                            specter["current_frame"] += 1
+                            if specter["current_pos"] + 1 < len(old_path):
+                                ghost_reached_cell = old_path[specter["current_pos"] + 1]
+                            else:
+                                ghost_reached_cell = old_path[-1]
+                            new_path = ghost.calculate_ghost_path(ghost_reached_cell, pacman_pos)
+                            specter["old_path"] = new_path
+                            specter["current_pos"] = 0
+                
+                    clock.tick(60)
+                    pygame.display.update()
+                else:
+                    x = maze.start_x + (maze.maze_pixel_w - game_over_img.get_width()) //2
+                    y = maze.start_y + ((maze.maze_pixel_h - game_over_img.get_height()) // 2) - maze.cell_size
+                    screen.blit(game_over_img, (x, y))
+                    pygame.display.update()
+                    if receive_name_player(width, height, screen,engine,"game_over") == 0:
+                        return 0
+                    pygame.display.update()
+        return -1
+            
 
-        screen.blit(background_img, (0,0))
-        screen.blit(gamer_img, (500, 50))
-        screen.blit(score_img, (610, 400))
 
-        if status == "game_over":
-            msg = "LOSE"
-            msg_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
-            msg_text = msg_font.render(msg, True, (255, 0, 0))
-            screen.blit(msg_text, (900, 220))
-        else:
-            msg = "WIN"
-            msg_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
-            msg_text = msg_font.render(msg, True, (0, 255, 0))
-            screen.blit(msg_text, (910, 250))
-
-        for even in pygame.event.get():
-            if even.type == pygame.QUIT:
-                exit(0)
-            if even.type == pygame.KEYDOWN:
-                if even.key == pygame.K_RETURN:
-                    res =  {name: engine.score}
-                    print(res)
-                    runing = False
-                elif even.key == pygame.K_BACKSPACE:
-                    name  = name[:-1]
-                elif even.key == pygame.K_SPACE and len(name) < 10:
-                    name += " "
-                elif even.unicode.isalnum() and len(name) < 10:
-                    name += even.unicode
-        name_text = n_text.render(name, True, (255, 255, 255))
-        new_width = (width - name_text.get_width()) // 2
-        screen.blit(name_text, (new_width, height * 0.62))
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_q]:
-            exit(0)
-        pygame.display.update()
-        
 def redraw_maze(width, height, data:Parse,engine:"Engine" ,screen:pygame.surface.Surface):
-    for i in range(len(data['level'])):
-        game_level(width, height, data, engine, screen, i)
-  
-    
-    print("game over")
-    exit(0)
+    i = 0
+    while i in range(len(data['level']) - 1):
+        game =  game_level(width, height, data, engine, screen, i)
+        if game == 1:
+            i += 1
+        if game == 0:
+            return 0
+    game_level(width, height, data, engine, screen, i)
+    receive_name_player(width, height, screen, engine,"win")
+    engine.draw_highscore.draw_high_score(engine.info)
+    return 0
