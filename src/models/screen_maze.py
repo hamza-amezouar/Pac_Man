@@ -12,6 +12,64 @@ import json
 if TYPE_CHECKING:
     from src.engine.game_engine import Engine
 
+def pause_menu(width:int, height:int, screen: pygame.surface.Surface)-> int:
+    pause_img = pygame.image.load("assists/images/pause_img.jpeg")
+    pause_img = pygame.transform.scale(pause_img, (400, 450))
+    x = int(width * 0.40) 
+    y = int(height * 0.30)
+    screen.blit(pause_img, (x, y))
+    b_x = int(width * 0.46)
+    b_y = int(height * 0.47)
+    padding = 0
+    run = True
+    normal_font = pygame.font.Font("assists/fonts/ka1.ttf", 30)
+    hover_font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 30)
+    for b in range(3):
+        
+        custom_rect(screen,(255, 255, 255), (b_x, (b_y + padding), 170, 50))
+        custom_rect(screen,(223, 124, 0), (b_x + 5 ,(b_y + padding) + 5, 160, 40))
+
+        if b == 0:
+            play_button = pygame.Rect((b_x, (b_y + padding), 170, 50))
+        elif b == 1:
+            menu_button = pygame.Rect((b_x, (b_y + padding), 170, 50))
+        else:   
+            quit_button = pygame.Rect((b_x, (b_y + padding), 170, 50))
+        padding += 70
+    
+    
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if play_button.collidepoint(event.pos):
+                        return 1
+                    elif menu_button.collidepoint(event.pos):
+                        return 2
+                    elif quit_button.collidepoint(event.pos):
+                        return 0
+        
+        buttons = [(play_button, "PLAY"),
+                   (menu_button, "MENU"),
+                   (quit_button, "QUIT")
+                ]
+        
+        mouse_pos = pygame.mouse.get_pos()
+        for button , msg in buttons:
+            custom_rect(screen,(223, 124, 0), (button.x + 5 ,button.y + 5, 160, 40))
+            if button.collidepoint(mouse_pos):
+                msg_surface = hover_font.render(msg, True, (25, 25, 166))
+            else:
+                msg_surface = normal_font.render(msg, True, (25, 25, 166))
+            text_center = msg_surface.get_rect(center = button.center)
+            screen.blit(msg_surface, text_center)
+
+        pygame.display.update()
+        
+
+
+
+
 def receive_name_player(width, height, screen:pygame.surface.Surface, engine:"Engine", status:str):
     time.sleep(1)
     background_img = pygame.image.load("assists/images/background.png")
@@ -127,14 +185,14 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
                     if event.key == pygame.K_SPACE and not game_pause:
                         time_pause = pygame.time.get_ticks() - start_ticks
                         game_pause = True
-                        x = int(maze.start_x + (maze.maze_pixel_w // 2))
-                        y = int(maze.start_y + (maze.maze_pixel_h * 0.30))
-                        custom_rect(screen,(0, 0, 255), (x, y, 100, 100))
-                        pygame.display.update()
-                    
-                    if event.key == pygame.K_RETURN and game_pause:
-                        start_ticks = pygame.time.get_ticks() - time_pause 
-                        game_pause = False
+                        pause = pause_menu(width, height, screen)
+                        if pause == 0:
+                            exit(0)
+                        if pause == 1 and game_pause :
+                            start_ticks = pygame.time.get_ticks() - time_pause 
+                            game_pause = False
+                        else:
+                            return 0
             if game_pause:
                 clock.tick(60)
                 continue
