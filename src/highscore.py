@@ -11,10 +11,10 @@ class Draw_highscores:
     with their ranks and scores, and managing
     interactive UI elements like the back button.
     """
-    def __init__(self, screen: pygame.surface.Surface,
-                 colors: Dict[str, tuple[int, int, int]],
-                 width: int, height: int):
 
+    def __init__(self, screen: pygame.surface.Surface,
+                 colors: Dict[str, tuple[int, int,
+                                         int]], width: int, height: int):
         """Initializes the Draw_highscores
         screen with display settings and assets.
 
@@ -41,7 +41,8 @@ class Draw_highscores:
         # fonts initialize
         self.highscore_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 40)
-        self.name_font: pygame.font.Font = pygame.font.Font("./assists/fonts/ka1.ttf", 20)
+        self.name_font: pygame.font.Font = pygame.font.Font(
+            "./assists/fonts/ka1.ttf", 20)
         self.rank_font: pygame.font.Font = pygame.font.Font(None, 26)
         self.pts_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/ka1.ttf", 20)
@@ -57,14 +58,13 @@ class Draw_highscores:
         the 'HIGH SCORS TOP 10' title on the screen."""
 
         title_surface: pygame.surface.Surface = self.highscore_font.render(
-            "HIGH SCORS TOP 10", True,
-            self.colors["yellow_dark"])
+            "HIGH SCORS TOP 10", True, self.colors["yellow_dark"])
 
         title_rect: pygame.rect.Rect = title_surface.get_rect()
         title_rect.topleft = (self.width // 2 - 160, 20)
         self.screen.blit(title_surface, title_rect)
 
-    def draw_profiles_place(self, highscors:List[Dict[str, int]]) -> None:
+    def draw_profiles_place(self, highscors: List[Dict[str, int]]) -> None:
         """Renders the list of player high scores,
         profile avatars, ranks, and points.
 
@@ -89,19 +89,18 @@ class Draw_highscores:
             for name, level in highscore.items():
                 # border user info
                 pygame.draw.rect(self.screen,
-                                self.colors["yellow_dark"],
-                                (self.width // 2 - 350, 100 + step, 900, 70),
-                                border_radius=10)
+                                 self.colors["yellow_dark"],
+                                 (self.width // 2 - 350, 100 + step, 900, 70),
+                                 border_radius=10)
                 # ract to add user info
                 pygame.draw.rect(self.screen,
-                                self.colors["profile_bg"],
-                                (self.width // 2 - 345, 102 + step, 890, 65),
-                                border_radius=10)
+                                 self.colors["profile_bg"],
+                                 (self.width // 2 - 345, 102 + step, 890, 65),
+                                 border_radius=10)
 
                 # rank number
                 rank_surface: pygame.surface.Surface = self.rank_font.render(
-                    f"{rank}", True,
-                    self.colors["rank_number"])
+                    f"{rank}", True, self.colors["rank_number"])
 
                 rank_rect: pygame.rect.Rect = rank_surface.get_rect()
                 rank_rect.topleft = (self.width // 2 - 325, 100 + step + 25)
@@ -115,22 +114,22 @@ class Draw_highscores:
                     color_vip = self.colors["rank_2"]
                 elif rank == 3:
                     color_vip = self.colors["rank_3"]
-                pygame.draw.rect(self.screen,
-                                color_vip,
-                                (self.width // 2 - 300, 100 + step + 10, 52, 52),
-                                border_radius=7)
+                pygame.draw.rect(
+                    self.screen,
+                    color_vip,
+                    (self.width // 2 - 300, 100 + step + 10, 52, 52),
+                    border_radius=7)
                 profile: pygame.surface.Surface = pygame.image.load(
                     profiles[current_image])
 
-                profile = pygame.transform.scale(
-                    profile, (45, 45)).convert()
+                profile = pygame.transform.scale(profile, (45, 45)).convert()
 
-                self.screen.blit(profile, (self.width // 2 - 297, 100 + step + 13))
+                self.screen.blit(profile,
+                                 (self.width // 2 - 297, 100 + step + 13))
 
                 # add name
                 name_surface: pygame.surface.Surface = self.name_font.render(
-                    f"{name}", True,
-                    self.colors["white"])
+                    f"{name}", True, self.colors["white"])
 
                 name_rect: pygame.rect.Rect = name_surface.get_rect()
                 name_rect.topleft = (self.width // 2 - 240, 100 + step + 20)
@@ -138,8 +137,7 @@ class Draw_highscores:
 
                 # add pts
                 pts_surface: pygame.surface.Surface = self.pts_font.render(
-                    f"{level} - PTS", True,
-                    self.colors["white"])
+                    f"{level} - PTS", True, self.colors["white"])
 
                 pts_rect: pygame.rect.Rect = pts_surface.get_rect()
                 pts_rect.topleft = (self.width - 570, 100 + step + 21)
@@ -155,7 +153,7 @@ class Draw_highscores:
             mouse (Tuple[int, int]):
             Current (x, y) coordinates of the mouse cursor.
         """
-        
+
         is_hover: bool = False
         for button in self.buttons:
             if button.collidepoint(mouse):
@@ -175,15 +173,13 @@ class Draw_highscores:
         back_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 14)
         font_surface: pygame.surface.Surface = back_font.render(
-            message, True,
-            self.colors['deep_blue'])
+            message, True, self.colors['deep_blue'])
 
         font_rect: pygame.rect.Rect = font_surface.get_rect()
         font_rect.topleft = (18, 36)
         self.screen.blit(font_surface, font_rect)
 
-
-    def draw_high_score(self, highscors) -> int:
+    def draw_high_score(self, highscors: List[Dict[str, int]]) -> int:
         """Main loop for updating and rendering the high scores screen.
 
         Handles mouse interactions,

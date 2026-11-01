@@ -40,9 +40,9 @@ class Draw_main:
         if start + step >= self.width:
             return True
         custom_rect(self.screen, self.colors["blue_light"],
-                         (start + step, 0, start, self.height))
+                    (start + step, 0, start, self.height))
         custom_rect(self.screen, self.colors["blue_light"],
-                         (0 - step, 0, start, self.height))
+                    (0 - step, 0, start, self.height))
         return False
 
     def init_buttons(self) -> None:
@@ -74,13 +74,10 @@ class Draw_main:
             for button in self.buttons:
                 if button.collidepoint(mouse):
                     is_hover = True
-                    custom_rect(self.screen,
-                                     self.colors['yellow_dark'],
-                                     button)
+                    custom_rect(self.screen, self.colors['yellow_dark'],
+                                button)
                 else:
-                    custom_rect(self.screen,
-                                     self.colors['yellow'],
-                                     button)
+                    custom_rect(self.screen, self.colors['yellow'], button)
             if is_hover:
                 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             else:

@@ -1,17 +1,27 @@
-import random
-
-import pygame
-
 from src.engine.load_gifs import load_gif_frames
-from src.models.maze import  Maze_screen
-
-from typing import Tuple, List, Dict, Any, TYPE_CHECKING
+from src.models.maze import Maze_screen
+from typing import List, Dict, Any, Tuple, Set, Optional, TYPE_CHECKING
+import random
+import pygame
 
 if TYPE_CHECKING:
     from src.engine.game_engine import Engine
+
+
 class Ghosts(Maze_screen):
-    def __init__(self, screen_w, screen_h, maze_w, maze_h, screen, walls,data, engine,level):
-        super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data, engine, level)
+    """
+    Manage the ghosts in the maze.
+
+    This class controls ghost movement, images, paths, and behavior.
+    It also handles chasing Pac-Man and scared mode.
+    """
+
+    def __init__(self, screen_w: int, screen_h: int, maze_w: int, maze_h: int,
+                 screen: pygame.surface.Surface, walls: List[List[Dict[str,
+                                                                       bool]]],
+                 data: Dict[str, Any], engine: "Engine", level: int):
+        super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data,
+                         engine, level)
         self.screen_w = screen_w
         self.screen_h = screen_h
         self.maze_w = maze_w
@@ -22,21 +32,23 @@ class Ghosts(Maze_screen):
         self.old_cell = (0, 0)
 
         self.Scared_Mode = False
-        self.pacgums_pos = [(0, 0), (0 ,self.maze_h -1), (self.maze_w - 1, 0), (self.maze_w - 1, self.maze_h - 1)]
+        self.pacgums_pos = [(0, 0), (0, self.maze_h - 1), (self.maze_w - 1, 0),
+                            (self.maze_w - 1, self.maze_h - 1)]
 
         self.ghost_image = load_gif_frames("assists/images/redghost.gif")
-        self.pacman_image = pygame.image.load("assists/images/oacmn.gif").convert_alpha()
+        self.pacman_image = pygame.image.load(
+            "assists/images/oacmn.gif").convert_alpha()
 
-    def calculate_ghost_path(self, current_pos, goal_pos):
+    def calculate_ghost_path(
+            self, current_pos: Tuple[int, int],
+            goal_pos: Tuple[int, int]) -> List[Tuple[int, int]]:
         queue = []
-        visited = set()
+        visited: Set[Tuple[int, int]] = set()
         parrent = {}
         path = []
 
-
         queue.append((current_pos))
         visited.add((current_pos))
-
 
         while queue:
             (x, y) = queue.pop(0)
@@ -67,20 +79,22 @@ class Ghosts(Maze_screen):
                     parrent[(x + 1, y)] = (x, y)
                     visited.add((x + 1, y))
         pos = goal_pos
-        if not pos in parrent:
+        if pos not in parrent:
             return [current_pos]
         while pos != current_pos:
             path.append(pos)
             pos = parrent[pos]
         path.append(current_pos)
         return path[::-1]
-        
-    def update_ghost_image(self, current_pos , goal_pos, ghost_data):
+
+    def update_ghost_image(self, current_pos: Tuple[int, int],
+                           goal_pos: Tuple[int, int],
+                           ghost_data: Dict[str, Any]) -> str:
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
         if current_x > goal_x:
             return "right"
-        
+
         elif current_x < goal_x:
             return "left"
 
@@ -90,65 +104,118 @@ class Ghosts(Maze_screen):
         elif current_y < goal_y:
             return "down"
         else:
-            return ghost_data["final_mode"]
-    
-    def init_ghosts(self):
-        ghosts_data = {
+            return str(ghost_data["final_mode"])
 
-            "red": {"my_pos": (self.maze_w - 1, self.maze_h - 1),"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
-            "blue": {"my_pos": (0, 0),"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
-            "yellow": {"my_pos": (self.maze_w - 1, 0),"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
-            "pink": {"my_pos": (0, self.maze_h - 1), "pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False}
+    def init_ghosts(self) -> Dict[str, Dict[str, Any]]:
+        ghosts_data = {
+            "red": {
+                "my_pos": (self.maze_w - 1, self.maze_h - 1),
+                "pos": (self.maze_w - 1, self.maze_h - 1),
+                "current_pos": 0,
+                "move_now": 0,
+                "old_path": [],
+                "color": "red",
+                "current_frame": 0,
+                "final_mode": "right",
+                "total_speed": 30,
+                "remain": False,
+                "was_eaten": False
+            },
+            "blue": {
+                "my_pos": (0, 0),
+                "pos": (0, 0),
+                "current_pos": 0,
+                "move_now": 0,
+                "old_path": [],
+                "color": "blue",
+                "current_frame": 0,
+                "final_mode": "right",
+                "total_speed": 30,
+                "remain": False,
+                "was_eaten": False
+            },
+            "yellow": {
+                "my_pos": (self.maze_w - 1, 0),
+                "pos": (self.maze_w - 1, 0),
+                "current_pos": 0,
+                "move_now": 0,
+                "old_path": [],
+                "color": "yellow",
+                "current_frame": 0,
+                "final_mode": "right",
+                "total_speed": 30,
+                "remain": False,
+                "was_eaten": False
+            },
+            "pink": {
+                "my_pos": (0, self.maze_h - 1),
+                "pos": (0, self.maze_h - 1),
+                "current_pos": 0,
+                "move_now": 0,
+                "old_path": [],
+                "color": "pink",
+                "current_frame": 0,
+                "final_mode": "right",
+                "total_speed": 30,
+                "remain": False,
+                "was_eaten": False
             }
+        }
         return ghosts_data
 
-    def chase(self, current_pos, goal_pos, total_steps, specter):
+    def chase(self, current_pos: Tuple[int, int], goal_pos: Tuple[int, int],
+              total_steps: int, specter: Dict[str, Any]) -> None:
         specter["total_speed"] = 30
-        image_mode = self.update_ghost_image(current_pos , goal_pos, specter)
-        images = load_gif_frames(f"assists/images/ghosts/{specter["color"]}{image_mode}.gif")
+        image_mode = self.update_ghost_image(current_pos, goal_pos, specter)
+        images = load_gif_frames(
+            f"assists/images/ghosts/{specter['color']}{image_mode}.gif")
         specter["final_mode"] = image_mode
 
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
-        start_pixel_x = self.start_x + (current_x * self.cell_size) + self.cell_size // 2
-        start_pixel_y = self.start_y + (current_y * self.cell_size) + self.cell_size // 2
+        start_pixel_x = self.start_x + (current_x *
+                                        self.cell_size) + self.cell_size // 2
+        start_pixel_y = self.start_y + (current_y *
+                                        self.cell_size) + self.cell_size // 2
 
-        goal_pixel_x = self.start_x + (goal_x * self.cell_size) + self.cell_size // 2
-        goal_pixel_y = self.start_y + (goal_y * self.cell_size) + self.cell_size // 2
-
-
+        goal_pixel_x = self.start_x + (goal_x *
+                                       self.cell_size) + self.cell_size // 2
+        goal_pixel_y = self.start_y + (goal_y *
+                                       self.cell_size) + self.cell_size // 2
 
         progress = specter["move_now"] / total_steps
 
-        
-        self.pixel_x = start_pixel_x + (goal_pixel_x - start_pixel_x) * progress
-        self.pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * progress
+        self.pixel_x = start_pixel_x + (goal_pixel_x -
+                                        start_pixel_x) * progress
+        self.pixel_y = start_pixel_y + (goal_pixel_y -
+                                        start_pixel_y) * progress
         size = self.cell_size - 10
 
         if current_pos == goal_pos:
 
             specter["current_frame"] -= 1
-        if specter["current_frame"] >= len(images) or specter["current_frame"] < 0:
+        if specter["current_frame"] >= len(
+                images) or specter["current_frame"] < 0:
             specter["current_frame"] = 0
 
         specter["pos"] = current_pos
 
         self.screen.blit(
-            pygame.transform.scale(images[specter["current_frame"]], (size, size)),
-
-            (self.pixel_x - size // 2, self.pixel_y - size // 2)
-        )
+            pygame.transform.scale(images[specter["current_frame"]],
+                                   (size, size)),
+            (self.pixel_x - size // 2, self.pixel_y - size // 2))
         if self.old_cell != (start_pixel_x, start_pixel_y):
-            self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
+            self.current_frame = (self.current_frame + 1) % len(
+                self.ghost_image)
         self.old_cell = (start_pixel_x, start_pixel_y)
 
-
-    def ghosts_brain(self, specter, direction, pacman_pos):
+    def ghosts_brain(self, specter: Dict[str, Any], direction: Optional[str],
+                     pacman_pos: List[int]) -> Tuple[int, int]:
 
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         if specter["color"] == "pink" and direction:
-            g_x , g_y = specter["pos"]
+            g_x, g_y = specter["pos"]
             if abs(x - g_x) + abs(y - g_y) <= 3:
 
                 return (x, y)
@@ -166,7 +233,7 @@ class Ghosts(Maze_screen):
                 if x + 6 < self.maze_w:
                     x += 6
 
-            if (x , y) == specter["pos"]:
+            if (x, y) == specter["pos"]:
                 return (x, y)
         elif specter["color"] == "blue" and direction:
             X, Y = (x, y)
@@ -179,10 +246,10 @@ class Ghosts(Maze_screen):
                 if Y + 7 < self.maze_h:
                     Y += 7
                 else:
-                    Y = self.maze_h - 1 
+                    Y = self.maze_h - 1
             elif direction == "right":
                 if X + 7 < self.maze_w:
-                    X  += 7
+                    X += 7
                 else:
                     X = self.maze_w - 1
             elif direction == "left":
@@ -193,7 +260,7 @@ class Ghosts(Maze_screen):
             if (X, Y) != (x, y):
                 x, y = (X, Y)
         elif specter["color"] == "yellow" and direction:
-            g_x , g_y = specter["pos"]
+            g_x, g_y = specter["pos"]
             if abs(x - g_x) + abs(y - g_y) <= 1:
                 return (x, y)
             X = random.randint(0, self.maze_w - 1)
@@ -201,7 +268,8 @@ class Ghosts(Maze_screen):
             x, y = (X, Y)
         return (x, y)
 
-    def is_caught(self,data_ghosts, pacman_pos):
+    def is_caught(self, data_ghosts: Dict[str, Dict[str, Any]],
+                  pacman_pos: List[int]) -> int:
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         for color in data_ghosts.keys():
@@ -209,7 +277,7 @@ class Ghosts(Maze_screen):
                 return 1
         return 0
 
-    def is_eat_super_pacgums(self, pacman_pos):
+    def is_eat_super_pacgums(self, pacman_pos: List[int]) -> bool:
         x = int((pacman_pos[0] - self.start_x) // self.cell_size)
         y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         if (x, y) in self.pacgums_pos:
@@ -217,7 +285,9 @@ class Ghosts(Maze_screen):
             return True
         return False
 
-    def scared(self,current_pos, goal_pos, total_steps, specter, start_ticks):
+    def scared(self, current_pos: Tuple[int, int], goal_pos: Tuple[int, int],
+               total_steps: int, specter: Dict[str,
+                                               Any], start_ticks: int) -> None:
         goal_timestamp = 20
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
@@ -230,52 +300,56 @@ class Ghosts(Maze_screen):
             else:
                 specter["remain"] = True
         if specter["remain"]:
-            images = load_gif_frames(f"assists/images/ghosts/scard1.gif")
+            images = load_gif_frames("assists/images/ghosts/scard1.gif")
         else:
-            images = load_gif_frames(f"assists/images/ghosts/scard.gif")
+            images = load_gif_frames("assists/images/ghosts/scard.gif")
         if specter["was_eaten"]:
-            mode = self.update_ghost_image(current_pos , goal_pos, specter)
+            mode = self.update_ghost_image(current_pos, goal_pos, specter)
             images = load_gif_frames(f"assists/images/ghosts/eyes/{mode}.png")
             specter["total_speed"] = 5
         else:
             specter["total_speed"] = 20
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
-        start_pixel_x = self.start_x + (current_x * self.cell_size) + self.cell_size // 2
-        start_pixel_y = self.start_y + (current_y * self.cell_size) + self.cell_size // 2
+        start_pixel_x = self.start_x + (current_x *
+                                        self.cell_size) + self.cell_size // 2
+        start_pixel_y = self.start_y + (current_y *
+                                        self.cell_size) + self.cell_size // 2
 
-        goal_pixel_x = self.start_x + (goal_x * self.cell_size) + self.cell_size // 2
-        goal_pixel_y = self.start_y + (goal_y * self.cell_size) + self.cell_size // 2
-
+        goal_pixel_x = self.start_x + (goal_x *
+                                       self.cell_size) + self.cell_size // 2
+        goal_pixel_y = self.start_y + (goal_y *
+                                       self.cell_size) + self.cell_size // 2
 
         progress = specter["move_now"] / total_steps
-        
-        self.pixel_x = start_pixel_x + (goal_pixel_x - start_pixel_x) * progress
-        self.pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * progress
+
+        self.pixel_x = start_pixel_x + (goal_pixel_x -
+                                        start_pixel_x) * progress
+        self.pixel_y = start_pixel_y + (goal_pixel_y -
+                                        start_pixel_y) * progress
         size = self.cell_size - 10
 
         if current_pos == goal_pos:
             specter["current_frame"] -= 1
-        if specter["current_frame"] >= len(images) or specter["current_frame"] < 0:
+        if specter["current_frame"] >= len(
+                images) or specter["current_frame"] < 0:
             specter["current_frame"] = 0
 
         specter["pos"] = current_pos
 
         self.screen.blit(
-            pygame.transform.scale(images[specter["current_frame"]], (size, size)),
-            (self.pixel_x - size // 2, self.pixel_y - size // 2)
-        )
+            pygame.transform.scale(images[specter["current_frame"]],
+                                   (size, size)),
+            (self.pixel_x - size // 2, self.pixel_y - size // 2))
         if self.old_cell != (start_pixel_x, start_pixel_y):
-            self.current_frame = (self.current_frame + 1) % len(self.ghost_image)
+            self.current_frame = (self.current_frame + 1) % len(
+                self.ghost_image)
         self.old_cell = (start_pixel_x, start_pixel_y)
 
-    def was_eaten_ghosts(self, ghosts_data,pacman_pos):
-            x = int((pacman_pos[0] - self.start_x) // self.cell_size)
-            y = int((pacman_pos[1] - self.start_y) // self.cell_size)
-            for specter in ghosts_data:
-                if ghosts_data[specter]["pos"] ==  (x, y):
-                    ghosts_data[specter]["was_eaten"] = True
-    # def create_random_path(self, pac_man_pos):
-    #     x, y = pac_man_pos
-    #     if x + self
-
+    def was_eaten_ghosts(self, ghosts_data: Dict[str, Dict[str, Any]],
+                         pacman_pos: List[int]) -> None:
+        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
+        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
+        for specter in ghosts_data:
+            if ghosts_data[specter]["pos"] == (x, y):
+                ghosts_data[specter]["was_eaten"] = True

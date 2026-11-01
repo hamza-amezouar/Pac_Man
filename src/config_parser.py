@@ -74,7 +74,7 @@ class Validate(BaseModel):
         level: The list of game levels. It must contain at least 10 levels.
     """
     highscore_filename: str
-    lives: int = Field(gt=0, le = 7)
+    lives: int = Field(gt=0, le=7)
     pacgum: int = Field(gt=0)
     points_per_pacgum: int = Field(gt=0)
     points_per_super_pacgum: int = Field(gt=0)
@@ -181,7 +181,7 @@ class Parse:
                     e_key = str(error["loc"][0])
 
                 print(f"{yellow}⚠️  Warning: Level {i + 1}: {msg}\n"
-                      f"   Your input: {input_value }\n"
+                      f"   Your input: {input_value}\n"
                       f"   Invalid configuration for '{e_key}{white}'\n"
                       f"{green}→  Using default value: "
                       f"{e_key}={default_conf['level'][i][e_key]}\n{white}")
@@ -273,6 +273,12 @@ class Parse:
         return data_valid.model_dump()
 
     def get_data(self) -> Dict[str, Any]:
+        """
+        Get the game settings from the configuration file.
+
+        Returns:
+            Dict[str, Any]: The game settings loaded from the file.
+        """
         if len(sys.argv) <= 1:
             print(f"❌  {red}Error: Configuration file is required{white}")
             print(f"{green}->  Usage: python3 pac-man.py config.json{white}")
