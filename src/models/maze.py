@@ -77,6 +77,7 @@ class Maze_screen:
     
         pacgums_img = pygame.image.load("assists/images/pacgum.png")
         super_pacgum_img = pygame.image.load("assists/images/super_pacgum.png")
+
         heart_img = pygame.image.load("assists/images/heart.png")
         self.pacgums = pygame.transform.scale(pacgums_img, (self.pacgum_size, self.pacgum_size))
         self.super_pacgum = pygame.transform.scale(super_pacgum_img, (self.super_size, self.super_size))
@@ -184,6 +185,7 @@ class Maze_screen:
         goal_timestamp = self.engine.time
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
+
         remaining_time = goal_timestamp - (elapsed_time / 1000) 
         time_text = time_font.render(f"Time: {int(remaining_time)}", True ,(255, 176, 32))
         score_text = font.render(f"Score: {self.engine.score}", True, (255, 255, 255))

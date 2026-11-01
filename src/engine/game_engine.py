@@ -31,6 +31,7 @@ class Engine:
 
 
         self.info = res
+
         pygame.init()
         # pygame.mixer.init()
         pygame.font.init()
@@ -77,6 +78,7 @@ class Engine:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
             if flag == 0:
                 self.score = 0
+
                 score_flag = redraw_maze(self.width, self.height,self.data,self, self.screen)
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
