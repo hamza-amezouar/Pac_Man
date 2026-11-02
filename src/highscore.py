@@ -1,3 +1,4 @@
+import sys
 from typing import Dict, Tuple, List
 
 import pygame
@@ -203,7 +204,7 @@ class Draw_highscores:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    exit(0)
+                    sys.exit(0)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         for button in self.buttons:
@@ -211,7 +212,7 @@ class Draw_highscores:
                                 return 0
                 key = pygame.key.get_pressed()
                 if key[pygame.K_q]:
-                    exit(0)
+                    sys.exit(0)
             pygame.display.update()
             pygame.time.wait(100)
         return 0
