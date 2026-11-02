@@ -474,3 +474,62 @@ class Ghosts(Maze_screen):
         for specter in ghosts_data:
             if ghosts_data[specter]["pos"] == (x, y):
                 ghosts_data[specter]["was_eaten"] = True
+
+    def create_random_path(self, pacman_pos: List[int], ghosts_data):
+        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
+        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
+        my_list = []
+        if x > (self.maze_w // 2) and y > (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(0, self.maze_w // 2)
+                c_y = random.randint(0, self.maze_h // 2)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(0, self.maze_h // 2)
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))
+
+        elif x > (self.maze_w // 2) and y <= (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(0, self.maze_w // 2)
+                c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))
+
+        elif x < (self.maze_w // 2) and y > (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                c_y = random.randint(0, self.maze_h // 2)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(0, self.maze_h // 2)
+
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))
+
+        elif x < (self.maze_w // 2) and y < (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))

@@ -346,53 +346,59 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                     else:
                         start_cell = old_path[-1]
                         target_cell = old_path[-1]
-
-                    pacman_pos = ghost.ghosts_brain(specter, direction,
-                                                    maze.pacman_pos)
-
+                    pacman_pos = ghost.ghosts_brain(
+                        specter, direction, maze.pacman_pos)
                     if ghost.is_eat_super_pacgums(maze.pacman_pos):
                         ghost.Scared_Mode = True
                         start_eat = pygame.time.get_ticks()
-
                     if ghost.Scared_Mode:
                         ghost.was_eaten_ghosts(ghosts_data, maze.pacman_pos)
-                        ghost.scared(start_cell, target_cell,
-                                     specter["total_speed"], specter,
-                                     start_eat)
+                        ghost.scared(
+                            start_cell,
+                            target_cell,
+                            specter["total_speed"],
+                            specter, start_eat)
+
                         if specter["move_now"] >= specter["total_speed"]:
                             specter["move_now"] = 0
                             specter["current_frame"] += 1
                             if specter["current_pos"] + 1 < len(old_path):
-                                ghost_reached_cell = old_path[
-                                    specter["current_pos"] + 1]
+                                ghost_reached_cell = \
+                                    old_path[specter["current_pos"] + 1]
                             else:
                                 ghost_reached_cell = old_path[-1]
-                            new_path = ghost.calculate_ghost_path(
-                                ghost_reached_cell, specter["my_pos"])
+                            ghost.create_random_path(
+                                maze.pacman_pos, ghosts_data)
+                            if specter["was_eaten"]:
+                                new_path = ghost.calculate_ghost_path(
+                                    ghost_reached_cell,  specter["my_pos"])
+                            else:
+                                new_path = ghost.calculate_ghost_path(
+                                    ghost_reached_cell,  specter["scared_pos"])
                             specter["old_path"] = new_path
-
                     else:
                         specter["was_eaten"] = False
                         specter["remain"] = False
+                        ghost.chase(
+                            start_cell,
+                            target_cell,
+                            specter["total_speed"], specter)
                         if ghost.is_caught(ghosts_data, maze.pacman_pos):
                             game_over = True
-                        ghost.chase(start_cell, target_cell,
-                                    specter["total_speed"], specter)
-
+                            break
                         if specter["move_now"] >= specter["total_speed"]:
                             if specter["remain"]:
                                 specter["remain"] = False
                             specter["move_now"] = 0
                             specter["current_frame"] += 1
                             if specter["current_pos"] + 1 < len(old_path):
-                                ghost_reached_cell = old_path[
-                                    specter["current_pos"] + 1]
+                                ghost_reached_cell = \
+                                    old_path[specter["current_pos"] + 1]
                             else:
                                 ghost_reached_cell = old_path[-1]
                             new_path = ghost.calculate_ghost_path(
                                 ghost_reached_cell, pacman_pos)
                             specter["old_path"] = new_path
-
                     specter["move_now"] += 2
 
                 clock.tick(60)
