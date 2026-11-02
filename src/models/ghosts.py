@@ -90,10 +90,10 @@ class Ghosts(Maze_screen):
     
     def init_ghosts(self):
         ghosts_data = {
-            "red": {"my_pos": (self.maze_w - 1, self.maze_h - 1),"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
-            "blue": {"my_pos": (0, 0),"pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
-            "yellow": {"my_pos": (self.maze_w - 1, 0),"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
-            "pink": {"my_pos": (0, self.maze_h - 1), "pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False}
+            "red": {"my_pos": (self.maze_w - 1, self.maze_h - 1),"scared_pos": (0, 0),"pos": (self.maze_w - 1, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "red", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
+            "blue": {"my_pos": (0, 0), "scared_pos": (0, 0), "pos": (0, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "blue", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
+            "yellow": {"my_pos": (self.maze_w - 1, 0),"scared_pos": (0, 0) ,"pos": (self.maze_w - 1, 0), "current_pos": 0, "move_now": 0, "old_path": [], "color": "yellow", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False},
+            "pink": {"my_pos": (0, self.maze_h - 1), "scared_pos": (0, 0),"pos": (0, self.maze_h - 1), "current_pos": 0, "move_now": 0, "old_path": [], "color": "pink", "current_frame": 0, "final_mode": "right", "total_speed": 30, "remain": False, "was_eaten": False}
             }
         return ghosts_data
 
@@ -203,7 +203,7 @@ class Ghosts(Maze_screen):
         return False
 
     def scared(self,current_pos, goal_pos, total_steps, specter, start_ticks):
-        goal_timestamp = 20
+        goal_timestamp = 15
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
         remaining_time = goal_timestamp - (elapsed_time / 1000)
@@ -260,7 +260,65 @@ class Ghosts(Maze_screen):
             for specter in ghosts_data:
                 if ghosts_data[specter]["pos"] ==  (x, y):
                     ghosts_data[specter]["was_eaten"] = True
-    # def create_random_path(self, pac_man_pos):
-    #     x, y = pac_man_pos
-    #     if x + self
+
+    def create_random_path(self, pacman_pos, ghosts_data):
+        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
+        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
+        my_list = []
+        if x > (self.maze_w // 2) and y > (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(0, self.maze_w // 2)
+                c_y = random.randint(0, self.maze_h // 2)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(0, self.maze_h // 2)
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))
+
+        elif x > (self.maze_w // 2) and y <= (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(0, self.maze_w // 2)
+                c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))
+
+        elif x < (self.maze_w // 2) and y > (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                c_y = random.randint(0, self.maze_h // 2)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(0, self.maze_h // 2)
+
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))
+
+        elif x < (self.maze_w // 2) and y < (self.maze_h // 2):
+            c_x = 0
+            c_y = 0
+
+            for specter in ghosts_data:
+                c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+                while (c_x, c_y) in my_list:
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
+
+                ghosts_data[specter]["scared_pos"] = (c_x, c_y)
+                my_list.append((c_x, c_y))
+
+        
 

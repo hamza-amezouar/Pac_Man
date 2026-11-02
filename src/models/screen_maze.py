@@ -216,16 +216,19 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
                                     ghost_reached_cell = old_path[specter["current_pos"] + 1]
                                 else:
                                     ghost_reached_cell = old_path[-1]
-                                new_path = ghost.calculate_ghost_path(ghost_reached_cell,  specter["my_pos"])
+                                ghost.create_random_path(maze.pacman_pos, ghosts_data)
+                                if specter["was_eaten"]:
+                                    new_path = ghost.calculate_ghost_path(ghost_reached_cell,  specter["my_pos"])
+                                else:
+                                    new_path = ghost.calculate_ghost_path(ghost_reached_cell,  specter["scared_pos"])
                                 specter["old_path"] = new_path
 
 
                         else:
-                            specter["was_eaten"] = False
                             specter["remain"] = False
                             if ghost.is_caught(ghosts_data, maze.pacman_pos):
-                                print("Game Over11")
-                                game_over = True
+                                print()
+                                # game_over = True
                             ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
 
                             if specter["move_now"] >= specter["total_speed"]:
