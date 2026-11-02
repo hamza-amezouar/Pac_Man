@@ -225,7 +225,10 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
 
 
                         else:
+                            specter["was_eaten"] = False
                             specter["remain"] = False
+                            if ghost.is_caught(ghosts_data, (c_x, c_y)):
+                                game_over = True
                             ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
                             if ghost.is_caught(ghosts_data, (c_x, c_y)):
                                 game_over = True

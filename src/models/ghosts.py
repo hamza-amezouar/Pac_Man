@@ -188,6 +188,7 @@ class Ghosts(Maze_screen):
 
     def is_caught(self,data_ghosts, pacman_pos):
         for color in data_ghosts.keys():
+            print(pacman_pos, data_ghosts[color]["pos"])
             if data_ghosts[color]["pos"] == pacman_pos:
                 return 1
         return 0
