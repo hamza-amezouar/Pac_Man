@@ -3,19 +3,44 @@ from src.engine.splash_screen import DrawSplash
 from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
 from src.models.screen_maze import redraw_maze
-from src.config_parser import Parse
-
-
+from src.config_parser import Parse, yellow, white, green
+from typing import Dict, Any
+import json
 
 
 class Engine:
+    """Manage the main game engine."""
 
     def __init__(self, width: int, height: int):
+        """
+        Initialize the game engine and load game settings.
+
+        Args:
+            width: The width of the game window.
+            height: The height of the game window.
+
+        Returns:
+            None.
+        """
         self.width: int = width
         self.height: int = height
-        self.data:Parse = Parse().get_data()
-        self.score = 0
+        self.data: Dict[str, Any] = Parse().get_data()
         self.time = self.data["level_max_time"]
+        self.lives = self.data["lives"]
+        try:
+            with open(self.data["highscore_filename"], "r") as f:
+                res = json.load(f)
+        except FileNotFoundError as e:
+            res = []
+            print(f"{yellow}⚠️  Warning: {e}{white}")
+            print(f"{green}-> Using default: {res}\n{white}")
+        except json.JSONDecodeError as e:
+            res = []
+            print(f"{yellow}⚠️  Warning: {e}{white}")
+            print(f"{green}-> Using default: {res}\n{white}")
+
+        self.info = res
+
         pygame.init()
         # pygame.mixer.init()
         pygame.font.init()
@@ -48,34 +73,36 @@ class Engine:
         self.draw_splash: DrawSplash = DrawSplash(self.width, self.height,
                                                   self.screen, self.colors)
         self.draw_highscore: Draw_highscores = Draw_highscores(
-            self.screen, self.colors, self.width, self.height, {
-                "mas3oood": 110,
-                "cheb laarbi": 2900,
-                "chaba soad": 1011,
-                "hicham smati": 3434
-            })
+            self.screen, self.colors, self.width, self.height)
 
         self.draw_main: Draw_main = Draw_main(self.width, self.height,
                                               self.screen, self.colors)
-    
 
-        
     def run_engine(self) -> None:
-        #self.draw_splash.show_splash()
+        """
+        Run the game and handle the main menu and game events.
+
+        Returns:
+            None.
+        """
+        # self.draw_splash.show_splash()
         flag: int = self.draw_main.Draw_menu()
         while self.running:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
             if flag == 0:
-                score_flag = redraw_maze(self.width, self.height,self.data,self, self.screen)
+                self.score = 0
+
+                score_flag = redraw_maze(self.width, self.height, self.data,
+                                         self, self.screen)
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
 
             if flag == 1:
-                score_flag: int = self.draw_highscore.draw_high_score()
+                score_flag = self.draw_highscore.draw_high_score(self.info)
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
             if flag == 3:
                 exit(0)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                   self.running = False
+                    self.running = False

@@ -1,6 +1,21 @@
 import pygame
+from typing import Tuple, Any
 
-def custom_rect(surface, color, rect_coords):
+
+def custom_rect(surface: pygame.surface.Surface, color: Tuple[int, int, int],
+                rect_coords: Any) -> None:
+    """
+    Draw a filled rectangle on a surface.
+
+    Args:
+        surface: The surface where the rectangle is drawn.
+        color: The RGB color of the rectangle.
+        rect_coords: The rectangle position and size. It can be a
+            pygame.Rect object or a tuple (x, y, width, height).
+
+    Returns:
+        None.
+    """
 
     if isinstance(rect_coords, pygame.Rect):
         x_start = rect_coords.x

@@ -1,3 +1,5 @@
+FILE ?= .
+
 install:
 	@uv sync
 run:
@@ -8,8 +10,8 @@ clean:
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
 	@find . -type d \( -name ".mypy_cache" -o -name ".pytest_cache" \) -exec rm -rf {} +  
 lint:
-	@flake8 .
-	@mypy .	--warn-return-any \
+	@flake8 $(FILE)
+	@mypy $(FILE) --warn-return-any \
 			--warn-unused-ignores \
 			--ignore-missing-imports \
 			--disallow-untyped-defs \
