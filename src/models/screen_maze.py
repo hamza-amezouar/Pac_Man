@@ -201,7 +201,6 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
                             start_cell = old_path[-1]
                             target_cell = old_path[-1]
                         pacman_pos = ghost.ghosts_brain(specter, direction, maze.pacman_pos)
-
                         if ghost.is_eat_super_pacgums(maze.pacman_pos):
                             ghost.Scared_Mode = True
                             start_eat = pygame.time.get_ticks()
@@ -227,11 +226,11 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
                         else:
                             specter["was_eaten"] = False
                             specter["remain"] = False
-                            if ghost.is_caught(ghosts_data, (c_x, c_y)):
+                            
+                            ghost.chase(start_cell, target_cell, specter["total_speed"], specter, maze.pacman_pos)
+                            if ghost.is_caught(ghosts_data, maze.pacman_pos):
                                 game_over = True
-                            ghost.chase(start_cell, target_cell, specter["total_speed"], specter)
-                            if ghost.is_caught(ghosts_data, (c_x, c_y)):
-                                game_over = True
+                                break
 
                             if specter["move_now"] >= specter["total_speed"]:
                                 if specter["remain"]:
@@ -247,7 +246,7 @@ def game_level(width: int, height:int, data:Parse, engine:"Engine", screen:pygam
 
 
                         specter["move_now"] += 2
-                
+
                     clock.tick(60)
                     pygame.display.update()
                 else:
