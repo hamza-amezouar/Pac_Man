@@ -187,10 +187,8 @@ class Ghosts(Maze_screen):
         return (x, y)
 
     def is_caught(self,data_ghosts, pacman_pos):
-        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
-        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
         for color in data_ghosts.keys():
-            if data_ghosts[color]["pos"] == (x, y):
+            if data_ghosts[color]["pos"] == pacman_pos:
                 return 1
         return 0
 
