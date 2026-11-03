@@ -221,7 +221,7 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
     win_img = pygame.image.load("assists/images/win.png")
     win_img = pygame.transform.scale(win_img, (800, 200))
 
-    background_img = pygame.image.load("assists/images/background_maze.png")
+    background_img = pygame.image.load("assists/images/bg_maze.png")
 
     background_img = pygame.transform.scale(background_img, (width, height))
 
