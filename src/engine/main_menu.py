@@ -1,3 +1,4 @@
+import sys
 from typing import Dict, Tuple
 from src.helper_func.draw_rect import custom_rect
 
@@ -141,7 +142,7 @@ class Draw_main:
             self.screen.blit(self.background, (0, 0))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    exit(0)
+                    sys.exit(0)
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:

@@ -6,6 +6,7 @@ from typing import Tuple, Dict, Any, TYPE_CHECKING
 import pygame
 import time
 import json
+import sys
 
 if TYPE_CHECKING:
     from src.engine.game_engine import Engine
@@ -135,7 +136,7 @@ def receive_name_player(width: int, height: int,
 
         for even in pygame.event.get():
             if even.type == pygame.QUIT:
-                exit(0)
+                sys.exit(0)
 
             if even.type == pygame.KEYDOWN:
                 if even.key == pygame.K_RETURN:
@@ -151,7 +152,7 @@ def receive_name_player(width: int, height: int,
                     name += even.unicode
         keys = pygame.key.get_pressed()
         if keys[pygame.K_q]:
-            exit(0)
+            sys.exit(0)
 
         name_text = n_text.render(name, True, (255, 255, 255))
         new_width = (width - name_text.get_width()) // 2
@@ -220,7 +221,7 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
     win_img = pygame.image.load("assists/images/win.png")
     win_img = pygame.transform.scale(win_img, (800, 200))
 
-    background_img = pygame.image.load("assists/images/background_maze.png")
+    background_img = pygame.image.load("assists/images/bg_maze.png")
 
     background_img = pygame.transform.scale(background_img, (width, height))
 
@@ -239,7 +240,7 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit(0)
+                sys.exit(0)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     for button in engine.draw_highscore.buttons:
@@ -261,7 +262,7 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                     game_pause = True
                     pause = pause_menu(width, height, screen)
                     if pause == 0:
-                        exit(0)
+                        sys.exit(0)
                     if pause == 1 and game_pause:
                         start_ticks = pygame.time.get_ticks() - time_pause
                         game_pause = False
@@ -280,7 +281,7 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
 
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_q]:
-                    exit(0)
+                    sys.exit(0)
                 elif keys[pygame.K_UP] or keys[pygame.K_w]:
                     next_direction = "up"
                 elif keys[pygame.K_DOWN] or keys[pygame.K_s]:

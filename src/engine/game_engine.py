@@ -1,3 +1,4 @@
+
 import pygame
 from src.engine.splash_screen import DrawSplash
 from src.engine.main_menu import Draw_main
@@ -6,6 +7,7 @@ from src.models.screen_maze import redraw_maze
 from src.config_parser import Parse, yellow, white, green
 from typing import Dict, Any
 import json
+import sys
 
 
 class Engine:
@@ -102,7 +104,7 @@ class Engine:
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
             if flag == 3:
-                exit(0)
+                sys.exit(0)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
