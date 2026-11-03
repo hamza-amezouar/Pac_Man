@@ -475,7 +475,8 @@ class Ghosts(Maze_screen):
             if ghosts_data[specter]["pos"] == (x, y):
                 ghosts_data[specter]["was_eaten"] = True
 
-    def create_random_path(self, pacman_pos: List[int], ghosts_data):
+    def create_random_path(self, pacman_pos: List[int],
+                           ghosts_data: Dict) -> None:
         """Assigns random escape positions to ghosts
         based on Pac-Man's location.
 
