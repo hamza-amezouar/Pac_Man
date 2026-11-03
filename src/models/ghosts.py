@@ -258,7 +258,7 @@ class Ghosts(Maze_screen):
                 images) or specter["current_frame"] < 0:
             specter["current_frame"] = 0
 
-        specter["pos"] = current_pos
+        specter["pos"] = (int(self.pixel_x), int(self.pixel_y))
 
         self.screen.blit(
             pygame.transform.scale(images[specter["current_frame"]],
@@ -344,19 +344,14 @@ class Ghosts(Maze_screen):
     def is_caught(self, data_ghosts: Dict[str, Dict[str, Any]],
                   pacman_pos: List[int]) -> int:
         """
-        Check if a ghost catches Pac-Man.
-
-        Args:
-            data_ghosts: A dictionary containing information about all ghosts.
-            pacman_pos: The pixel position of Pac-Man.
-
-        Returns:
-            1 if a ghost is in the same maze cell as Pac-Man, otherwise 0.
+        Check if a ghost catches Pac-Man based on precise pixel distance.
         """
-        x = int((pacman_pos[0] - self.start_x) // self.cell_size)
-        y = int((pacman_pos[1] - self.start_y) // self.cell_size)
+        p_x, p_y = pacman_pos[0], pacman_pos[1]
+        collision_threshold = self.cell_size // 2
         for color in data_ghosts.keys():
-            if data_ghosts[color]["pos"] == (x, y):
+            g_x, g_y = data_ghosts[color]["pos"]
+            distance = ((g_x - p_x) ** 2 + (g_y - p_y) ** 2) ** 0.5
+            if distance < collision_threshold:
                 return 1
         return 0
 

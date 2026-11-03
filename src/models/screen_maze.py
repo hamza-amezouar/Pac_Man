@@ -385,7 +385,6 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                             specter["total_speed"], specter)
                         if ghost.is_caught(ghosts_data, maze.pacman_pos):
                             game_over = True
-                            break
                         if specter["move_now"] >= specter["total_speed"]:
                             if specter["remain"]:
                                 specter["remain"] = False
