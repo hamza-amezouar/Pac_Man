@@ -152,6 +152,8 @@ class Draw_main:
                                     return 0
                                 if button == self.buttons[1]:
                                     return 1
+                                if button == self.buttons[2]:
+                                    return 2
                                 if button == self.buttons[3]:
                                     return 3
             self.Draw_buttons_menu(mouse_pos)

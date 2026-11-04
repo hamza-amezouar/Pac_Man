@@ -5,6 +5,7 @@ from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
 from src.models.screen_maze import redraw_maze
 from src.config_parser import Parse, yellow, white, green
+from src.engine.instruction import game_instruction
 from typing import Dict, Any
 import json
 import sys
@@ -93,7 +94,6 @@ class Engine:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
             if flag == 0:
                 self.score = 0
-
                 score_flag = redraw_maze(self.width, self.height, self.data,
                                          self, self.screen)
                 if score_flag == 0:
@@ -101,6 +101,10 @@ class Engine:
 
             if flag == 1:
                 score_flag = self.draw_highscore.draw_high_score(self.info)
+                if score_flag == 0:
+                    flag = self.draw_main.Draw_menu()
+            if flag == 2:
+                score_flag = game_instruction(self.width, self.height, self.screen, self)
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
             if flag == 3:
