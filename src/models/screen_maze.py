@@ -352,14 +352,18 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                         ghost.Scared_Mode = True
                         start_eat = pygame.time.get_ticks()
                     if ghost.Scared_Mode:
+                        if ghost.add_score:
+                            ghost.add_score = False
+                            engine.score += engine.data["points_per_super_pacgum"]
                         ghost.was_eaten_ghosts(ghosts_data, maze.pacman_pos)
-                        ghost.scared(
+                        ghost.scared(ghosts_data,
                             start_cell,
                             target_cell,
                             specter["total_speed"],
                             specter, start_eat)
 
                         if specter["move_now"] >= specter["total_speed"]:
+                            ghost.create_random_path(maze.pacman_pos, specter)
                             specter["move_now"] = 0
                             specter["current_frame"] += 1
                             if specter["current_pos"] + 1 < len(old_path):
@@ -367,8 +371,6 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                                     old_path[specter["current_pos"] + 1]
                             else:
                                 ghost_reached_cell = old_path[-1]
-                            ghost.create_random_path(
-                                maze.pacman_pos, ghosts_data)
                             if specter["was_eaten"]:
                                 new_path = ghost.calculate_ghost_path(
                                     ghost_reached_cell,  specter["my_pos"])
@@ -377,6 +379,7 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                                     ghost_reached_cell,  specter["scared_pos"])
                             specter["old_path"] = new_path
                     else:
+                        ghost.add_score = True
                         specter["was_eaten"] = False
                         specter["remain"] = False
                         ghost.chase(
