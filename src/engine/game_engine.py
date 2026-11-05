@@ -1,4 +1,3 @@
-
 import pygame
 from src.engine.splash_screen import DrawSplash
 from src.engine.main_menu import Draw_main
@@ -104,7 +103,8 @@ class Engine:
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
             if flag == 2:
-                score_flag = game_instruction(self.width, self.height, self.screen, self)
+                score_flag = game_instruction(self.width, self.height,
+                                              self.screen, self)
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
             if flag == 3:

@@ -74,7 +74,7 @@ class Validate(BaseModel):
         level: The list of game levels. It must contain at least 10 levels.
     """
     highscore_filename: str
-    lives: int = Field(gt=0, le=7)
+    lives: int = Field(gt=2)
     pacgum: int = Field(gt=0)
     points_per_pacgum: int = Field(gt=0)
     points_per_super_pacgum: int = Field(gt=0)
