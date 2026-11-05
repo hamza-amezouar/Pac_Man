@@ -509,12 +509,15 @@ class Ghosts(Maze_screen):
             c_x = random.randint(0, self.maze_w // 2)
             c_y = random.randint(0, self.maze_h // 2)
             if not "scared_pos" in specter:
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(0, self.maze_h // 2)
                 specter["scared_pos"] = (c_x, c_y)
-
+            
             elif specter["scared_pos"] == specter["pos"]:
-                specter["scared_pos"] = (c_x, c_y)
-
-            if self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(0, self.maze_h // 2)
                 specter["scared_pos"] = (c_x, c_y)
 
         elif x > (self.maze_w // 2) and y <= (self.maze_h // 2):
@@ -522,12 +525,15 @@ class Ghosts(Maze_screen):
             c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
 
             if not "scared_pos" in specter:
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
                 specter["scared_pos"] = (c_x, c_y)
-
+            
             elif specter["scared_pos"] == specter["pos"]:
-                specter["scared_pos"] = (c_x, c_y)
-
-            if self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(0, self.maze_w // 2)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
                 specter["scared_pos"] = (c_x, c_y)
 
         elif x <= (self.maze_w // 2) and y > (self.maze_h // 2):
@@ -536,12 +542,15 @@ class Ghosts(Maze_screen):
             c_y = random.randint(0, self.maze_h // 2)
 
             if not "scared_pos" in specter:
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(0, self.maze_h // 2)
                 specter["scared_pos"] = (c_x, c_y)
 
             elif specter["scared_pos"] == specter["pos"]:
-                specter["scared_pos"] = (c_x, c_y)
-
-            if self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(0, self.maze_h // 2)
                 specter["scared_pos"] = (c_x, c_y)
 
         elif x <= (self.maze_w // 2) and y <= (self.maze_h // 2):
@@ -550,9 +559,14 @@ class Ghosts(Maze_screen):
             c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
 
             if not "scared_pos" in specter:
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
                 specter["scared_pos"] = (c_x, c_y)
+            
             elif specter["scared_pos"] == specter["pos"]:
+                while self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
+                    c_x = random.randint(self.maze_w // 2, self.maze_w - 1)
+                    c_y = random.randint(self.maze_h // 2, self.maze_h - 1)
                 specter["scared_pos"] = (c_x, c_y)
-
-            if self.calculate_ghost_path((current_x, current_y), (c_x, c_y)) == (current_x, current_y):
-                specter["scared_pos"] = (c_x, c_y)
+        
