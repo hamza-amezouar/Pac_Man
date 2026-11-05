@@ -19,7 +19,7 @@ default_conf: Dict[str, Any] = {
     "seed": 42,
     "level_max_time": 90,
     "level": [{
-        "width": 20,
+        "width": 15,
         "height": 15,
         "pacgum": 42
     } for _ in range(10)]
@@ -74,7 +74,7 @@ class Validate(BaseModel):
         level: The list of game levels. It must contain at least 10 levels.
     """
     highscore_filename: str
-    lives: int = Field(gt=0, le=7)
+    lives: int = Field(gt=2)
     pacgum: int = Field(gt=0)
     points_per_pacgum: int = Field(gt=0)
     points_per_super_pacgum: int = Field(gt=0)
@@ -155,7 +155,7 @@ class Parse:
         return data
 
     def check_levels(self, i: int, level: Dict[str, Any],
-                     data: Dict[str, Any]) -> Dict[str, Any]:
+                     data: Dict[str, Any]) -> None:
         """
         Validate one level and replace invalid values with defaults.
 
@@ -165,10 +165,10 @@ class Parse:
             data: Complete configuration data.
 
         Returns:
-            The validated level as a dictionary.
+            None.
         """
         try:
-            parce_level = Level(**level)
+            Level(**level)
 
         except ValidationError as e:
             for error in e.errors():
@@ -187,9 +187,9 @@ class Parse:
                       f"{e_key}={default_conf['level'][i][e_key]}\n{white}")
                 data['level'][i][e_key] = default_conf["level"][0][e_key]
 
-            parce_level = Level(**level)
+            Level(**level)
 
-        return parce_level.model_dump()
+        return None
 
     def parse_data(self, path: str) -> Dict[str, Any]:
         """
@@ -282,7 +282,7 @@ class Parse:
         if len(sys.argv) <= 1:
             print(f"❌  {red}Error: Configuration file is required{white}")
             print(f"{green}->  Usage: python3 pac-man.py config.json{white}")
-            exit(1)
+            sys.exit(1)
 
         else:
             data = self.parse_data(sys.argv[1])
