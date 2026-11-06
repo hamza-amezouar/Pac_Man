@@ -350,20 +350,21 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                         specter, direction, maze.pacman_pos)
                     if ghost.is_eat_super_pacgums(maze.pacman_pos):
                         ghost.Scared_Mode = True
+                        for g in ghosts_data.keys():
+                            ghosts_data[g]["add_score"] = False
+                            ghosts_data[g]["remain"] = False
+                            ghosts_data[g]["scared_pos"] = None
                         start_eat = pygame.time.get_ticks()
                     if ghost.Scared_Mode:
-                        if ghost.add_score:
-                            ghost.add_score = False
-                            engine.score += engine.data["points_per_super_pacgum"]
-                        ghost.was_eaten_ghosts(ghosts_data, maze.pacman_pos)
+                        ghost.was_eaten_ghosts(ghosts_data, maze.pacman_pos, engine)
                         ghost.scared(ghosts_data,
                             start_cell,
                             target_cell,
                             specter["total_speed"],
                             specter, start_eat)
 
+                        ghost.create_random_path(maze.pacman_pos, specter)
                         if specter["move_now"] >= specter["total_speed"]:
-                            ghost.create_random_path(maze.pacman_pos, specter)
                             specter["move_now"] = 0
                             specter["current_frame"] += 1
                             if specter["current_pos"] + 1 < len(old_path):
@@ -379,16 +380,20 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                                     ghost_reached_cell,  specter["scared_pos"])
                             specter["old_path"] = new_path
                     else:
-                        ghost.add_score = True
                         specter["was_eaten"] = False
                         specter["remain"] = False
+                        specter["add_score"] = False
+                        ghost.add_score = True
                         ghost.chase(
                             start_cell,
                             target_cell,
                             specter["total_speed"], specter)
                         if ghost.is_caught(ghosts_data, maze.pacman_pos):
-                            n = 10
-                            # game_over = True
+                            engine.lives -= 1
+                            # if engine.lives < 0:
+                            #     game_over = True
+                            # else:
+                            #     return 2
                         if specter["move_now"] >= specter["total_speed"]:
                             if specter["remain"]:
                                 specter["remain"] = False
@@ -445,6 +450,8 @@ def redraw_maze(width: int, height: int, data: Dict[str, Any],
             i += 1
         if game == 0:
             return 0
+        if game == 2:
+            game_level(width, height, data, engine, screen, i)
     game_level(width, height, data, engine, screen, i)
     receive_name_player(width, height, screen, engine, "win")
     engine.draw_highscore.draw_high_score(engine.info)
