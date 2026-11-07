@@ -130,6 +130,10 @@ class Maze_screen:
         self.super_pacgum = pygame.transform.scale(
             super_pacgum_img, (self.super_size, self.super_size))
         self.heart = pygame.transform.scale(heart_img, (60, 40))
+        self.font = pygame.font.Font(
+            "assists/fonts/PixeloidSansBold-1jpBg.ttf", 18)
+        self.time_font = pygame.font.Font(
+            "assists/fonts/PixeloidSansBold-1jpBg.ttf", 20)
 
     def draw_maze(self, walls: List[List[Dict[str, bool]]]) -> None:
         """
@@ -291,35 +295,29 @@ class Maze_screen:
             True if the remaining time is zero or less, otherwise False.
         """
 
-        font = pygame.font.Font("assists/fonts/PixeloidSansBold-1jpBg.ttf", 18)
-        time_font = pygame.font.Font(
-            "assists/fonts/PixeloidSansBold-1jpBg.ttf", 20)
         goal_timestamp: int = self.engine.time
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
 
         remaining_time = goal_timestamp - (elapsed_time / 1000)
-        time_text = time_font.render(f"Time: {int(remaining_time)}", True,
-                                     (255, 176, 32))
-        score_text = font.render(f"Score: {self.engine.score}", True,
-                                 (255, 255, 255))
-        level_text = font.render(
+        time_text = self.time_font.render(f"Time: {int(remaining_time)}", True,
+                                          (255, 176, 32))
+        score_text = self.font.render(f"Score: {self.engine.score}", True,
+                                      (255, 255, 255))
+        level_text = self.font.render(
             f"Level: {self.level} / {len(self.data['level'])}", True,
             (0, 245, 255))
         self.screen.blit(
             time_text,
             ((self.start_x + self.maze_pixel_w // 2) - 50, self.start_y - 120))
+        lives = self.engine.lives
+        x = self.start_x + (self.maze_pixel_w - self.heart.get_width()) // 2
+        y = self.start_y * 0.70
+        lives_text = self.font.render(f"/ {str(lives)}", True, (255, 255, 255))
         self.screen.blit(score_text, (self.start_x, self.start_y // 2 + 45))
         self.screen.blit(level_text,
                          (self.start_x + (self.cell_size * self.maze_w) - 150,
                           self.start_y // 2 + 45))
-        lives = self.engine.lives
-        dist = 50
-        width_lives = 60 + (lives - 1) * dist
-        start_width = self.start_x + (self.maze_pixel_w - width_lives) // 2
-
-        for h in range(lives):
-            x = start_width + h * dist
-            y = self.start_y // 2 + 35
-            self.screen.blit(self.heart, (x, y))
+        self.screen.blit(self.heart, (x, y))
+        self.screen.blit(lives_text, (x + 48, y + 15))
         return remaining_time <= 0
