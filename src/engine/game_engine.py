@@ -1,5 +1,4 @@
 import pygame
-from src.engine.splash_screen import DrawSplash
 from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
 from src.models.screen_maze import redraw_maze
@@ -70,8 +69,6 @@ class Engine:
             "rank_2": (167, 197, 237),
             "rank_3": (201, 151, 109)
         }
-        self.draw_splash: DrawSplash = DrawSplash(self.width, self.height,
-                                                  self.screen, self.colors)
         self.draw_highscore: Draw_highscores = Draw_highscores(
             self.screen, self.colors, self.width, self.height)
 
@@ -85,7 +82,6 @@ class Engine:
         Returns:
             None.
         """
-        # self.draw_splash.show_splash()
         flag: int = self.draw_main.Draw_menu()
         while self.running:
             if flag == 0:
