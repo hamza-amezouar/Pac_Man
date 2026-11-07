@@ -383,7 +383,6 @@ def game_level(width: int, height: int, data: Dict[str, Any], engine: "Engine",
                         specter["was_eaten"] = False
                         specter["remain"] = False
                         specter["add_score"] = False
-                        ghost.add_score = True
                         ghost.chase(start_cell, target_cell,
                                     specter["total_speed"], specter)
                         if ghost.is_caught(ghosts_data, maze.pacman_pos):

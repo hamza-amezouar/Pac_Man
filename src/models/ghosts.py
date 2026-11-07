@@ -462,7 +462,7 @@ class Ghosts(Maze_screen):
         self.old_cell = (start_pixel_x, start_pixel_y)
 
     def was_eaten_ghosts(self, ghosts_data: Dict[str, Dict[str, Any]],
-                         pacman_pos: List[int], engine) -> None:
+                         pacman_pos: List[int], engine: "Engine") -> None:
         """
         Check if Pac-Man eats a ghost.
 
