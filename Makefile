@@ -5,7 +5,7 @@ install:
 run:
 	@uv run python3 pac-man.py config.json
 debug:
-	@uv run python3 -m pdb
+	@uv run python3 -m pdb pac-man.py
 clean:
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
 	@find . -type d \( -name ".mypy_cache" -o -name ".pytest_cache" \) -exec rm -rf {} +  

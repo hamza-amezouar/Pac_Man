@@ -48,15 +48,12 @@ class Ghosts(Maze_screen):
         self.walls = walls
         self.current_frame = 0
         self.old_cell = (0, 0)
-        self.add_score = False
 
         self.Scared_Mode = False
         self.pacgums_pos = [(0, 0), (0, self.maze_h - 1), (self.maze_w - 1, 0),
                             (self.maze_w - 1, self.maze_h - 1)]
 
         self.ghost_image = load_gif_frames("assists/images/redghost.gif")
-        self.pacman_image = pygame.image.load(
-            "assists/images/oacmn.gif").convert_alpha()
 
     def calculate_ghost_path(
             self, current_pos: Tuple[int, int],

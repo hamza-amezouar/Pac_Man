@@ -25,7 +25,7 @@ class Draw_main:
         self.bg_image: pygame.surface.Surface = pygame.image.load(
             './assists/images/background.png')
         self.background: pygame.surface.Surface = pygame.transform.scale(
-            self.bg_image, (self.width, self.height)).convert()
+            self.bg_image, (self.width, self.height))
         self.menu_font: pygame.font.Font = pygame.font.Font(
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 30)
         self.buttons: list[pygame.rect.Rect] = []
