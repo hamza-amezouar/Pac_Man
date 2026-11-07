@@ -43,10 +43,7 @@ class Engine:
         self.info = res
 
         pygame.init()
-        # pygame.mixer.init()
         pygame.font.init()
-        # pygame.mixer.music.load("./assists/audios/background.mp3")
-        # pygame.mixer.music.play(-1)
         self.screen: pygame.surface.Surface = pygame.display.set_mode(
             (self.width, self.height))
         self.running = True
