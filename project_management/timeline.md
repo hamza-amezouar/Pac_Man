@@ -2,42 +2,54 @@
 
 ## Project Duration
 
-The Pac-Man project took approximately **one month (four weeks)**. Although the game's basic concept is familiar, its implementation involved multiple interconnected systems: maze rendering, player and ghost movement, game state management, menus, scoring, and persistent highscores.
+The Pac-Man project took approximately **one month (four weeks)** to complete. During this period, the work was divided between two team members, **Hamezoua** and **mbidlal**, with each member responsible for different parts of the game.
 
-We worked on different modules in parallel. The week-by-week breakdown below is a **phase-based approximation**, not a verified day-by-day history or original dated plan.
+The development process was organized into weekly phases, starting with the main interface and basic game components, followed by gameplay mechanics, additional features, and finally code integration and debugging.
 
 ## Development Timeline
 
-| Approximate period | Phase | Main activities |
-| --- | --- | --- |
-| Week 1 | Planning and setup | Reviewed requirements, discussed architecture, compared Pygame with MLX, chose Pygame with custom drawing primitives, created the GitHub repository and individual branches. |
-| Week 2 | Core gameplay | Developed maze drawing, Pac-Man movement, ghost behavior and game-loop components in parallel. |
-| Week 3 | Interfaces and features | Worked on menus, instructions, highscores, scared mode, visual assets, and ongoing feature integration. |
-| Week 4 | Integration and validation | Merged branches, learned to resolve Git conflicts, manually tested gameplay, fixed problems, and prepared documentation. |
+| Period | hamezoua Contributions | mbidlal Contributions |
+|---|---|---|
+| **Week 1** | Developed the main menu, including the High Score and Exit buttons. | Implemented maze parsing and maze rendering (drawing the maze). |
+| **Week 2** | Implemented the ghosts' normal mode and movement behavior. | Developed Pac-Man's movement system. |
+| **Week 3** | Implemented the ghosts' scared mode, allowing them to change behavior when Pac-Man collects a power-up. | Implemented the rendering of Pac-Gums and Super Pac-Gums inside the maze. |
+| **Week 4** | Worked together on merging the different modules, fixing errors, and handling edge cases. | Worked together on code integration, debugging, and testing the complete game. |
 
 ## Progress Tracking
 
-| Milestone | Status | Notes |
-| --- | --- | --- |
-| GitHub repository and individual branches | Completed | Shared repository and separate development branches |
-| Maze rendering and Pac-Man movement | Implemented | mbidlal's primary responsibility |
-| Ghost movement and scared mode | Implemented | hamezoua's primary responsibility |
-| Game engine, menus and highscores | Implemented | Feature development and integration |
-| Integration into `main` | Completed | Merge conflicts occurred and were resolved |
-| Manual testing | Performed | Both members tested the game manually |
-| Root README and project management | In progress / being finalized | Documentation prepared for review |
-| Packaging and Itch.io publication | Not yet confirmed | Update after deployment |
+| Milestone | Status | Responsible |
+|---|---|---|
+| Main menu, High Score and Exit buttons | Completed | hamezoua |
+| Maze parsing | Completed | mbidlal |
+| Maze rendering | Completed | mbidlal |
+| Ghost normal mode | Completed | hamezoua |
+| Pac-Man movement | Completed | mbidlal |
+| Ghost scared mode | Completed | hamezoua |
+| Pac-Gums and Super Pac-Gums rendering | Completed | mbidlal |
+| Code integration | Completed | Both members |
+| Bug fixing and edge-case handling | Completed | Both members |
+| Manual gameplay testing | Performed | Both members |
 
 ## Changes and Obstacles
 
-The main technical challenge in ghost movement was the abrupt jump between maze cells. We used **linear interpolation** to make movement appear smooth while retaining cell-based navigation. For scared mode, we selected escape targets in regions opposite Pac-Man.
+During development, we encountered several technical challenges, particularly when combining the different components of the game.
 
-Merging individual branches also caused **Git conflicts**. We spent additional time learning Git and resolving the conflicts before continuing integration.
+Since each member worked on separate features, integrating the code required adjustments to ensure that the maze, Pac-Man movement, ghost behavior, and collectible items worked correctly together.
+
+The final week was mainly dedicated to **merging our code, identifying and fixing bugs, and handling edge cases** that could affect gameplay.
+
+We also tested the game manually to identify unexpected behavior and improve the overall stability of the project.
 
 ## Validation
 
-We performed manual gameplay testing during development and after integrating work. We have not documented automated tests or individual test pass/fail records.
+During the fourth week, both team members participated in testing and debugging the integrated game.
+
+We focused on verifying that the main menu, maze rendering, Pac-Man movement, ghost modes, and collectible items functioned correctly together.
+
+The testing process was performed manually, and the issues identified during integration were addressed collaboratively.
 
 ## Schedule Accuracy
 
-Exact start/end dates, original estimates, and measured delays were not recorded here. The four-week table should be treated as a retrospective summary rather than a historical Gantt chart.
+The project was completed over approximately **four weeks**. The timeline represents the main tasks accomplished during each week and the contributions of each team member.
+
+Exact working hours were not recorded, so the timeline reflects the development period rather than the precise number of hours spent on each feature.

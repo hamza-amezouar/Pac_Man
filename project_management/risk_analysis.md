@@ -7,8 +7,7 @@ This register distinguishes **issues that actually occurred** from **potential r
 | Ghosts jumping visibly between cells | Unnatural movement | Use linear interpolation between grid-cell centers | **Occurred; addressed** |
 | Scared ghosts failing to flee dynamically | Less convincing scared behavior | Choose escape targets in regions opposite Pac-Man | **Design challenge; addressed** |
 | Git merge conflicts | Delays and difficulty combining changes | Learn Git conflict resolution and integrate branches carefully | **Occurred; resolved** |
-| Invalid configuration or missing files | Game may fail to start or behave unexpectedly | Review configuration validation and test error cases manually | **Potential risk; individual test results not recorded** |
-| Regressions after integration | Previously working features could break | Recheck gameplay manually after merges | **Potential risk; manual testing performed** |
+| Invalid configuration or missing files | Game may fail to start or behave unexpectedly | Review configuration validation and test error cases manually | **Potential risk; manual testing performed** |
 | Packaging or Itch.io publishing issues | Reviewers may not be able to run a distributed build | Verify packaging and release once ready | **Pending confirmation** |
 
 ## Risk Review
