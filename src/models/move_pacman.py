@@ -4,7 +4,7 @@ import pygame
 from typing import Tuple, List, Dict, Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.engine.game_engine import Engine
+    from src.models.screen_maze import Update_game
 
 
 class Pacman_face(Maze_screen):
@@ -14,7 +14,7 @@ class Pacman_face(Maze_screen):
 
     def __init__(self, screen_w: int, screen_h: int, maze_w: int, maze_h: int,
                  screen: pygame.surface.Surface, data: Dict[str, Any],
-                 engine: "Engine", level: int):
+                 update_game: "Update_game", level: int):
         """
         Initialize Pac-Man and load its animation frames.
 
@@ -25,7 +25,7 @@ class Pacman_face(Maze_screen):
             maze_h: The number of maze rows.
             screen: The Pygame surface used to draw the game.
             data: The game configuration data.
-            engine: The game engine instance.
+            update_game: Manage all game levels and show the final high scores.
             level: The current game level.
 
         Returns:
@@ -33,7 +33,7 @@ class Pacman_face(Maze_screen):
         """
 
         super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data,
-                         engine, level)
+                         update_game, level)
 
         self.pacman_up = load_gif_frames("assists/images/pacman/up.gif")
         self.pacman_down = load_gif_frames("assists/images/pacman/down.gif")

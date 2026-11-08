@@ -5,7 +5,7 @@ import pygame
 import random
 
 if TYPE_CHECKING:
-    from src.engine.game_engine import Engine
+    from src.models.screen_maze import Update_game
 
 
 class Maze(MazeGenerator):
@@ -77,7 +77,7 @@ class Maze_screen:
 
     def __init__(self, screen_w: int, screen_h: int, maze_w: int, maze_h: int,
                  screen: pygame.surface.Surface, data: Dict[str, Any],
-                 engine: "Engine", level: int):
+                 update_game: "Update_game", level: int):
         """
         Initialize the maze screen and load its images.
 
@@ -88,14 +88,14 @@ class Maze_screen:
             maze_h: The number of maze rows.
             screen: The Pygame surface used to draw the game.
             data: The game configuration data.
-            engine: The game engine instance.
+            update_game: Manage all game levels and show the final high scores.
             level: The current game level.
 
         Returns:
             None.
         """
 
-        self.engine = engine
+        self.update_game = update_game
         self.level = level
         self.data = data
         self.screen = screen
@@ -279,9 +279,9 @@ class Maze_screen:
                          (self.cell_size // 2))
             if self.pacman_pos == [cell_x, cell_y]:
                 if (c_x, c_y) in super_pacgum:
-                    self.engine.score += self.data["points_per_super_pacgum"]
+                    self.update_game.score += self.data["points_per_super_pacgum"]
                 else:
-                    self.engine.score += self.data["points_per_pacgum"]
+                    self.update_game.score += self.data["points_per_pacgum"]
                 pacgums.remove((c_x, c_y))
 
     def menu_maze(self, start_ticks: int) -> bool:
@@ -294,15 +294,14 @@ class Maze_screen:
         Returns:
             True if the remaining time is zero or less, otherwise False.
         """
-
-        goal_timestamp: int = self.engine.time
+        goal_timestamp: int = self.update_game.time
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
 
         remaining_time = goal_timestamp - (elapsed_time / 1000)
         time_text = self.time_font.render(f"Time: {int(remaining_time)}", True,
                                           (255, 176, 32))
-        score_text = self.font.render(f"Score: {self.engine.score}", True,
+        score_text = self.font.render(f"Score: {self.update_game.score}", True,
                                       (255, 255, 255))
         level_text = self.font.render(
             f"Level: {self.level} / {len(self.data['level'])}", True,
@@ -310,7 +309,7 @@ class Maze_screen:
         self.screen.blit(
             time_text,
             ((self.start_x + self.maze_pixel_w // 2) - 50, self.start_y - 120))
-        lives = self.engine.lives
+        lives = self.update_game.lives
         x = self.start_x + (self.maze_pixel_w - self.heart.get_width()) // 2
         y = self.start_y * 0.70
         lives_text = self.font.render(f"/ {str(lives)}", True, (255, 255, 255))

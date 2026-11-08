@@ -2,14 +2,14 @@
 {
     "highscore_filename": "highscore.json",
 
-    "lives": 30,
+    "lives": 5,
     "pacgum": 10,
     "points_per_pacgum": 10,
     "points_per_super_pacgum": 50,
     "points_per_ghost": 14,
     "seed": 55,
 
-    "level_max_time": 10,
+    "level_max_time": 90,
 
  
     "hello": "unknown key",
@@ -18,7 +18,7 @@
     
     "level": [
         {
-            "width": 30,
+            "width": 15,
             "height": 15,
             "pacgum": 20
         },

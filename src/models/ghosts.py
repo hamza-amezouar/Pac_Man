@@ -6,7 +6,7 @@ import pygame
 
 
 if TYPE_CHECKING:
-    from src.engine.game_engine import Engine
+    from src.models.screen_maze import Update_game
 
 
 class Ghosts(Maze_screen):
@@ -20,7 +20,7 @@ class Ghosts(Maze_screen):
     def __init__(self, screen_w: int, screen_h: int, maze_w: int, maze_h: int,
                  screen: pygame.surface.Surface, walls: List[List[Dict[str,
                                                                        bool]]],
-                 data: Dict[str, Any], engine: "Engine", level: int):
+                 data: Dict[str, Any], update_game: "Update_game", level: int):
         """
         Initialize the ghosts and load their images.
 
@@ -32,23 +32,18 @@ class Ghosts(Maze_screen):
             screen: The Pygame surface used to draw the ghosts.
             walls: The walls of the maze.
             data: The game settings.
-            engine: The main game engine.
+            update_game: Manage all game levels and show the final high scores.
             level: The current game level.
 
         Returns:
             None.
         """
         super().__init__(screen_w, screen_h, maze_w, maze_h, screen, data,
-                         engine, level)
-        self.screen_w = screen_w
-        self.screen_h = screen_h
-        self.maze_w = maze_w
-        self.maze_h = maze_h
-        self.screen = screen
-        self.walls = walls
+                         update_game, level)
+        
         self.current_frame = 0
         self.old_cell = (0, 0)
-
+        self.walls = walls
         self.Scared_Mode = False
         self.pacgums_pos = [(0, 0), (0, self.maze_h - 1), (self.maze_w - 1, 0),
                             (self.maze_w - 1, self.maze_h - 1)]
@@ -462,7 +457,7 @@ class Ghosts(Maze_screen):
         self.old_cell = (start_pixel_x, start_pixel_y)
 
     def was_eaten_ghosts(self, ghosts_data: Dict[str, Dict[str, Any]],
-                         pacman_pos: List[int], engine: "Engine") -> None:
+                         pacman_pos: List[int], update_game: "Update_game") -> None:
         """
         Check if Pac-Man eats a ghost.
 
@@ -486,7 +481,7 @@ class Ghosts(Maze_screen):
             if distance < collision_threshold:
                 ghosts_data[specter]["was_eaten"] = True
                 if not ghosts_data[specter]["add_score"]:
-                    engine.score += engine.data["points_per_ghost"]
+                    self.update_game.score += self.data["points_per_ghost"]
                     ghosts_data[specter]["add_score"] = True
 
     def create_random_path(self, pacman_pos: List[int],

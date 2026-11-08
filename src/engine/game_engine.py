@@ -1,13 +1,12 @@
 import pygame
 from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
-from src.models.screen_maze import redraw_maze
 from src.config_parser import Parse, yellow, white, green
 from src.engine.instruction import game_instruction
-from typing import Dict, Any
+from typing import Dict, Any, TYPE_CHECKING
 import json
 import sys
-
+from src.models.screen_maze import Update_game
 
 class Engine:
     """Manage the main game engine."""
@@ -26,8 +25,7 @@ class Engine:
         self.width: int = width
         self.height: int = height
         self.data: Dict[str, Any] = Parse().get_data()
-        self.time = self.data["level_max_time"]
-        self.lives = self.data["lives"]
+    
         try:
             with open(self.data["highscore_filename"], "r") as f:
                 res = json.load(f)
@@ -84,9 +82,8 @@ class Engine:
         flag: int = self.draw_main.Draw_menu()
         while self.running:
             if flag == 0:
-                self.score = 0
-                score_flag = redraw_maze(self.width, self.height, self.data,
-                                         self, self.screen)
+                score_flag = Update_game(self.width, self.height, self.data,
+                                         self, self.screen).redraw_maze()
                 if score_flag == 0:
                     flag = self.draw_main.Draw_menu()
 
