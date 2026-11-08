@@ -279,7 +279,8 @@ class Maze_screen:
                          (self.cell_size // 2))
             if self.pacman_pos == [cell_x, cell_y]:
                 if (c_x, c_y) in super_pacgum:
-                    self.update_game.score += self.data["points_per_super_pacgum"]
+                    self.update_game.score += self.data[
+                        "points_per_super_pacgum"]
                 else:
                     self.update_game.score += self.data["points_per_pacgum"]
                 pacgums.remove((c_x, c_y))

@@ -3,10 +3,11 @@ from src.engine.main_menu import Draw_main
 from src.highscore import Draw_highscores
 from src.config_parser import Parse, yellow, white, green
 from src.engine.instruction import game_instruction
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Dict, Any
 import json
 import sys
 from src.models.screen_maze import Update_game
+
 
 class Engine:
     """Manage the main game engine."""
@@ -25,7 +26,6 @@ class Engine:
         self.width: int = width
         self.height: int = height
         self.data: Dict[str, Any] = Parse().get_data()
-    
         try:
             with open(self.data["highscore_filename"], "r") as f:
                 res = json.load(f)
