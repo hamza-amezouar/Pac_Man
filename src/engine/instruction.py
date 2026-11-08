@@ -98,8 +98,8 @@ def game_instruction(width: int, height: int, screen: pygame.surface.Surface,
                                       source_y + source_size + 165))
                 screen.blit(t_cheat, (source_x + source_size + 300,
                                       source_y + source_size + 220))
-                screen.blit(g_cheat, (source_x + source_size + 200,
-                                      source_y + source_size + 265))
+                screen.blit(g_cheat, (source_x + source_size + 165,
+                                      source_y + source_size + 260))
                 source_size += 190
 
             lines = source.split('\n')

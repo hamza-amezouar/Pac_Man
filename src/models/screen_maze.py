@@ -198,7 +198,7 @@ class Update_game():
         high_score = pygame.image.load("assists/images/high_score.png")
         score_img = pygame.transform.scale(high_score, (700, 500))
         name = ""
-        n_text = pygame.font.Font("assists/fonts/AgentOrange.ttf", 32)
+        n_text = pygame.font.Font("assists/fonts/AGENTORANGE.TTF", 32)
         score_font = pygame.font.Font("./assists/fonts/ka1.ttf", 20)
         score_text = score_font.render(f"{str(self.score)} PTS", True,
                                        (255, 255, 255))
@@ -208,7 +208,6 @@ class Update_game():
                                     40)
         runing = True
         while runing:
-
             self.screen.blit(background_img, (0, 0))
             self.screen.blit(gamer_img, (500, 50))
             self.screen.blit(score_img, (610, 400))
@@ -275,7 +274,7 @@ class Update_game():
                    the game-over name-entry process.
                 1: The player completed the current level.
                 2: The player lost a life and must restart the level.
-                3: The game loop ended without another result.
+               -1: The game loop ended without another result.
         """
         game_over_img = pygame.image.load("assists/images/game_over.png")
         game_over_img = pygame.transform.scale(game_over_img, (800, 200))
@@ -509,7 +508,7 @@ class Update_game():
                         return 0
                     clock.tick(60)
                     pygame.display.update()
-        return 3
+        return -1
 
     def redraw_maze(self) -> int:
         """
