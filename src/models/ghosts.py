@@ -47,7 +47,7 @@ class Ghosts(Maze_screen):
         self.pacgums_pos = [(0, 0), (0, self.maze_h - 1), (self.maze_w - 1, 0),
                             (self.maze_w - 1, self.maze_h - 1)]
 
-        self.ghost_image = load_gif_frames("assists/images/redghost.gif")
+        self.ghost_image = load_gif_frames("assists/images/ghosts/blueup.gif")
 
     def calculate_ghost_path(
             self, current_pos: Tuple[int, int],

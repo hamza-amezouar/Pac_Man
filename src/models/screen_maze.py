@@ -13,9 +13,26 @@ if TYPE_CHECKING:
 
 
 class Update_game():
+    """
+    Manage the Pac-Man game state, gameplay mechanics, and level progression.
+
+    Initialize and coordinate the maze, Pac-Man, and ghosts. Handle player
+    input, movement, collisions, scoring, lives, pause menus, cheat modes,
+    high scores, and transitions between game levels.
+    """
 
     def __init__(self, width: int, height: int, data: Dict[str, Any],
-                 engine: "Engine", screen: pygame.surface.Surface):
+                 engine: "Engine", screen: pygame.surface.Surface) -> None:
+        """
+        Initialize the game manager and its initial configuration.
+
+        Args:
+            width (int): Width of the game window.
+            height (int): Height of the game window.
+            data (Dict[str, Any]): Game configuration and level settings.
+            engine (Engine): Main game engine instance.
+            screen (pygame.surface.Surface): Surface used to display the game.
+        """
         self.width = width
         self.height = height
         self.data = data
@@ -29,6 +46,19 @@ class Update_game():
         self.real_time = self.data["level_max_time"]
 
     def set_objects(self, level: int) -> None:
+        """
+        Initialize the maze, Pac-Man, and ghosts for the specified level.
+
+        Generate the maze, retrieve its walls, initialize the game objects,
+        and calculate the initial paths for all ghosts toward Pac-Man.
+
+        Args:
+            level (int): Zero-based index of the current level.
+
+        Returns:
+            None.
+        """
+
         maze_w = self.data["level"][level]['width']
         maze_h = self.data["level"][level]['height']
         seed = self.data['seed']
@@ -62,23 +92,35 @@ class Update_game():
         return None
 
     def get_pacgums(self, level: int) -> None:
+        """
+        Initialize the pacgums available in the current level.
+
+        Generate pacgum positions using the configured number of pacgums
+        and the maze walls.
+
+        Args:
+            level (int): Zero-based index of the current level.
+
+        Returns:
+            None.
+        """
+
         pacgum = self.data["level"][level]['pacgum']
         self.pacgums = self.maze.existing_pacgums(pacgum, self.walls)
 
     def pause_menu(self) -> int:
         """
-        Display the pause menu and handle button clicks.
+        Display the pause menu and handle player interactions.
 
-        Args:
-            width: The width of the game screen.
-            height: The height of the game screen.
-            screen: The Pygame surface used to draw the menu.
+        Show the available options and detect mouse clicks to determine
+        the player's selection.
 
         Returns:
-            1 if the player selects Play.
-            2 if the player selects Menu.
-            0 if the player selects Quit.
-            3 if the menu loop ends.
+            int:
+                1: Resume the game.
+                2: Return to the main menu.
+                0: Quit the game.
+                3: The menu loop ends without a selection.
         """
 
         pause_img = pygame.image.load("assists/images/pause_img.jpeg")
@@ -141,10 +183,6 @@ class Update_game():
         Ask the player for their name and save their score.
 
         Args:
-            width: The width of the game screen.
-            height: The height of the game screen.
-            screen: The Pygame surface used to draw the screen.
-            engine: The game engine instance.
             status: The game result, either game_over or win.
 
         Returns:
@@ -160,7 +198,7 @@ class Update_game():
         high_score = pygame.image.load("assists/images/high_score.png")
         score_img = pygame.transform.scale(high_score, (700, 500))
         name = ""
-        n_text = pygame.font.Font("assists/fonts/AgentOrange.ttf", 32)
+        n_text = pygame.font.Font("assists/fonts/AGENTORANGE.TTF", 32)
         score_font = pygame.font.Font("./assists/fonts/ka1.ttf", 20)
         score_text = score_font.render(f"{str(self.score)} PTS", True,
                                        (255, 255, 255))
@@ -170,7 +208,6 @@ class Update_game():
                                     40)
         runing = True
         while runing:
-
             self.screen.blit(background_img, (0, 0))
             self.screen.blit(gamer_img, (500, 50))
             self.screen.blit(score_img, (610, 400))
@@ -229,17 +266,15 @@ class Update_game():
         Run one game level and manage Pac-Man, ghosts, and game events.
 
         Args:
-            width: The width of the game screen.
-            height: The height of the game screen.
-            data: The game configuration data.
-            engine: The game engine instance.
-            screen: The Pygame surface used to draw the game.
             level: The index of the current level.
 
-        Returns:
-            1 if the player completes the level.
-            0 if the player returns to the menu or the game ends.
-        -1 if the game loop ends.
+          Returns:
+            int:
+                0: The player returned to the main menu or finished
+                   the game-over name-entry process.
+                1: The player completed the current level.
+                2: The player lost a life and must restart the level.
+               -1: The game loop ended without another result.
         """
         game_over_img = pygame.image.load("assists/images/game_over.png")
         game_over_img = pygame.transform.scale(game_over_img, (800, 200))
@@ -476,17 +511,15 @@ class Update_game():
 
     def redraw_maze(self) -> int:
         """
-        Manage all game levels and show the final high scores.
+        Manage game progression across all configured levels.
 
-        Args:
-            width: The width of the game screen.
-            height: The height of the game screen.
-            data: The game configuration data.
-            engine: The game engine instance.
-            screen: The Pygame surface used to draw the game.
+        Initialize each level, run its gameplay loop, handle level
+        transitions and restarts, and display the final high-score
+        screen when all levels are completed.
 
         Returns:
-            0 when the game returns to the menu or finishes.
+            int:
+                0: The game session ended or returned to the main menu.
         """
 
         level = 0
