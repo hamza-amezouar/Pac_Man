@@ -429,9 +429,10 @@ class Update_game():
                                         specter["scared_pos"])
                                 specter["old_path"] = new_path
                         else:
-                            specter["was_eaten"] = False
-                            specter["remain"] = False
                             specter["add_score"] = False
+                            specter["remain"] = False
+                            specter["scared_pos"] = None
+                            specter["was_eaten"] = False
                             self.ghost.chase(start_cell, target_cell,
                                              specter["total_speed"], specter)
                             if not self.is_invincibile:
@@ -444,8 +445,6 @@ class Update_game():
                                     else:
                                         return 2
                             if specter["move_now"] >= specter["total_speed"]:
-                                if specter["remain"]:
-                                    specter["remain"] = False
                                 specter["move_now"] = 0
                                 specter["current_frame"] += 1
                                 if specter["current_pos"] + 1 < len(old_path):

@@ -30,22 +30,6 @@ class Draw_main:
             "./assists/fonts/PixeloidSansBold-1jpBg.ttf", 30)
         self.buttons: list[pygame.rect.Rect] = []
 
-    def Draw_animation(self, step: int) -> bool:
-        """
-        Renders a sliding curtain animation
-        opening from the center outward.
-        Returns True when the curtain
-        fully clears the screen bounds, else False.
-        """
-        start = self.width // 2
-        if start + step >= self.width:
-            return True
-        custom_rect(self.screen, self.colors["blue_light"],
-                    (start + step, 0, start, self.height))
-        custom_rect(self.screen, self.colors["blue_light"],
-                    (0 - step, 0, start, self.height))
-        return False
-
     def init_buttons(self) -> None:
         """
         Creates and appends rectangular collision
@@ -122,19 +106,8 @@ class Draw_main:
         Runs the main menu loop: plays the opening transition animation first,
         then handles user input, button interactions, and display updates.
         """
-        x = 0
         self.init_buttons()
         clock = pygame.time.Clock()
-        while x < 35:
-            pygame.time.wait(10)
-            self.screen.fill(self.colors["dark"])
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return 3
-            self.screen.blit(self.background, (0, 0))
-            self.Draw_buttons_menu((0, 0))
-            pygame.display.update()
-            x += 1
         while True:
             mouse_pos = pygame.mouse.get_pos()
             self.screen.fill(self.colors["dark"])

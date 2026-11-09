@@ -9,7 +9,7 @@
     "points_per_ghost": 14,
     "seed": 55,
 
-    "level_max_time": 10,
+    "level_max_time": 999,
 
  
     "hello": "unknown key",

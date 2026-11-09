@@ -187,6 +187,7 @@ class Draw_highscores:
                  otherwise loops until an exit event occurs.
         """
         running: bool = True
+        clock = pygame.time.Clock()
         while running:
             mouse_pos: Tuple = pygame.mouse.get_pos()
             self.screen.fill(self.colors["dark"])
@@ -209,5 +210,5 @@ class Draw_highscores:
                 if key[pygame.K_q]:
                     sys.exit(0)
             pygame.display.update()
-            pygame.time.wait(100)
+            clock.tick(60)
         return 0
