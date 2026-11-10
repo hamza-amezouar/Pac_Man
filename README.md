@@ -4,7 +4,7 @@
 
 A Python recreation of the classic Pac-Man arcade game, developed for the 42 curriculum.
 
-> **Play the packaged game:** [Pac-Man on itch.io](YOUR_ITCH_IO_GAME_URL) *(replace this placeholder with the published game URL).* 
+> **Play the packaged game:** [Pac-Man on itch.io](https://mohamedbidlal.itch.io/pacman-1337)
 
 ## Description
 
@@ -211,7 +211,7 @@ This is a two-person 42 project developed by **hamezoua** and **mbidlal**. The w
 
 The project includes `pyinstaller` as a declared dependency, but the supplied repository snapshot does not contain a verified packaging script or specification. Add the final packaging configuration to the repository root and update this section once the build has been tested.
 
-**itch.io game page:** [Play Pac-Man](YOUR_ITCH_IO_GAME_URL) *(replace with the real page after publishing).* 
+**itch.io game page:** [Play Pac-Man](https://mohamedbidlal.itch.io/pacman-1337)
 
 ## Resources
 
