@@ -371,7 +371,7 @@ class Update_game():
                         next_direction = "left"
 
                     # pacman
-                    if not self.pacgums:
+                    if not self.pacgums[0] and not self.pacgums[1]:
                         time.sleep(1)
                         if level == len(self.data['level']) - 1:
                             x = self.maze.start_x + (
@@ -530,6 +530,7 @@ class Update_game():
             game = self.game_level(level)
             if game == 1:
                 level += 1
+                self.total_pacgums = []
                 self.set_objects(level)
                 self.get_pacgums(level)
             if game == 0:

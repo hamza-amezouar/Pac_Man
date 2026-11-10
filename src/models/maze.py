@@ -201,7 +201,6 @@ class Maze_screen:
         Returns:
             A list of cell positions containing normal and super pacgums.
         """
-
         valid_cells = []
         super_pacgum = [(0, 0), (self.maze_w - 1, 0), (0, self.maze_h - 1),
                         (self.maze_w - 1, self.maze_h - 1)]
@@ -220,7 +219,6 @@ class Maze_screen:
                     valid_cells.append((x, y))
         pacgum -= 4
         pacgums = random.sample(valid_cells, pacgum)
-
         self.update_game.total_pacgums.append(super_pacgum)
         self.update_game.total_pacgums.append(pacgums)
         return self.update_game.total_pacgums
@@ -235,6 +233,7 @@ class Maze_screen:
         Returns:
             None.
         """
+
         for c_x, c_y in pacgums[0] + pacgums[1]:
             offset = (self.cell_size - self.super_size) // 2
             if c_x == 0 and c_y == 0:
