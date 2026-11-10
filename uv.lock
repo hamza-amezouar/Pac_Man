@@ -131,7 +131,11 @@ wheels = [
 [[package]]
 name = "mazegenerator"
 version = "2.1.0"
+<<<<<<< HEAD
 source = { path = "assists/mazegenerator-2.1.0-py3-none-any.whl" }
+=======
+source = { path = "mazegenerator-2.1.0-py3-none-any.whl" }
+>>>>>>> github/main
 wheels = [
     { filename = "mazegenerator-2.1.0-py3-none-any.whl", hash = "sha256:98e12f7e989cef03dd4411657d7bee12653804aee87a568eddfaf21436ffd4aa" },
 ]
@@ -205,7 +209,11 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "flake8", specifier = ">=7.5.0" },
+<<<<<<< HEAD
     { name = "mazegenerator", path = "assists/mazegenerator-2.1.0-py3-none-any.whl" },
+=======
+    { name = "mazegenerator", path = "mazegenerator-2.1.0-py3-none-any.whl" },
+>>>>>>> github/main
     { name = "mypy", specifier = ">=2.3.1" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "pydantic", specifier = ">=2.13.5" },
