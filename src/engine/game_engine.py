@@ -1,0 +1,103 @@
+import pygame
+from src.engine.main_menu import Draw_main
+from src.highscore import Draw_highscores
+from src.config_parser import Parse, yellow, white, green
+from src.engine.instruction import game_instruction
+from typing import Dict, Any
+import json
+import sys
+from src.models.screen_maze import Update_game
+
+
+class Engine:
+    """Manage the main game engine."""
+
+    def __init__(self, width: int, height: int):
+        """
+        Initialize the game engine and load game settings.
+
+        Args:
+            width: The width of the game window.
+            height: The height of the game window.
+
+        Returns:
+            None.
+        """
+        self.width: int = width
+        self.height: int = height
+        self.data: Dict[str, Any] = Parse().get_data()
+        try:
+            with open(self.data["highscore_filename"], "r") as f:
+                res = json.load(f)
+        except FileNotFoundError as e:
+            res = []
+            print(f"{yellow}⚠️  Warning: {e}{white}")
+            print(f"{green}-> Using default: {res}\n{white}")
+        except json.JSONDecodeError as e:
+            res = []
+            print(f"{yellow}⚠️  Warning: {e}{white}")
+            print(f"{green}-> Using default: {res}\n{white}")
+
+        self.info = res
+
+        pygame.init()
+        pygame.font.init()
+        self.screen: pygame.surface.Surface = pygame.display.set_mode(
+            (self.width, self.height))
+        self.running = True
+        self.colors = {
+            "yellow": (255, 255, 0),
+            "dark": (0, 0, 0),
+            "deep_blue": (25, 25, 166),
+            "blue": (33, 33, 222),
+            "warm_peach": (222, 161, 133),
+            "red": (253, 1, 0),
+            "green": (0, 255, 1),
+            "yellow_dark": (223, 124, 0),
+            "main": (0, 0, 36),
+            "buttons": (0, 14, 90),
+            "gray": (142, 151, 160),
+            "white": (255, 255, 255),
+            "blue_light": (0, 0, 71),
+            "background": (0, 0, 26),
+            "profile_bg": (17, 26, 43),
+            "rank_number": (137, 151, 176),
+            "rank_1": (244, 211, 90),
+            "rank_2": (167, 197, 237),
+            "rank_3": (201, 151, 109)
+        }
+        self.draw_highscore: Draw_highscores = Draw_highscores(
+            self.screen, self.colors, self.width, self.height)
+
+        self.draw_main: Draw_main = Draw_main(self.width, self.height,
+                                              self.screen, self.colors)
+
+    def run_engine(self) -> None:
+        """
+        Run the game and handle the main menu and game events.
+
+        Returns:
+            None.
+        """
+        flag: int = self.draw_main.Draw_menu()
+        while self.running:
+            if flag == 0:
+                score_flag = Update_game(self.width, self.height, self.data,
+                                         self, self.screen).redraw_maze()
+                if score_flag == 0:
+                    flag = self.draw_main.Draw_menu()
+
+            if flag == 1:
+                score_flag = self.draw_highscore.draw_high_score(self.info)
+                if score_flag == 0:
+                    flag = self.draw_main.Draw_menu()
+            if flag == 2:
+                score_flag = game_instruction(self.width, self.height,
+                                              self.screen, self)
+                if score_flag == 0:
+                    flag = self.draw_main.Draw_menu()
+            if flag == 3:
+                sys.exit(0)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False

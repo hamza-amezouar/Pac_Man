@@ -1,0 +1,24 @@
+[project]
+name = "pac-man"
+version = "0.1.0"
+description = "A classic Pac-Man arcade game built with Python and Pygame, featuring maze generation, ghost enemies, and interactive gameplay."
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "flake8>=7.5.0",
+    "mazegenerator",
+    "mypy>=2.3.1",
+    "pillow>=12.3.0",
+    "pydantic>=2.13.5",
+    "pygame>=2.6.1",
+    "pyinstaller>=6.22.3",
+    "yapf>=0.43.0",
+]
+
+[tool.uv.sources]
+mazegenerator = { path = "assists/mazegenerator-2.1.0-py3-none-any.whl" }
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.22.3",
+]
