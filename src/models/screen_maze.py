@@ -2,7 +2,7 @@ from src.models.move_pacman import Pacman_face
 from src.models.maze import Maze, Maze_screen
 from src.models.ghosts import Ghosts
 from src.helper_func.draw_rect import custom_rect
-from typing import Tuple, Dict, Any, TYPE_CHECKING
+from typing import List, Tuple, Dict, Any, TYPE_CHECKING
 import pygame
 import time
 import json
@@ -44,6 +44,7 @@ class Update_game():
         self.is_invincibile = False
         self.cheat_time = False
         self.real_time = self.data["level_max_time"]
+        self.total_pacgums: List[List[Tuple[int, int]]] = []
 
     def set_objects(self, level: int) -> None:
         """
@@ -328,10 +329,10 @@ class Update_game():
                             self.is_invincibile = True
                     elif event.key == pygame.K_t:
                         if self.cheat_time:
-                            self.time = 9999
+                            self.time = self.real_time
                             self.cheat_time = False
                         else:
-                            self.time = self.real_time
+                            self.time = 9999
                             self.cheat_time = True
 
                     # pause_game

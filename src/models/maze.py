@@ -190,7 +190,7 @@ class Maze_screen:
 
     def existing_pacgums(
             self, pacgum: int,
-            walls: List[List[Dict[str, bool]]]) -> List[Tuple[int, int]]:
+            walls: List[List[Dict[str, bool]]]) -> List[List[Tuple[int, int]]]:
         """
         Choose the cells where Pac-Man gums will appear.
 
@@ -220,10 +220,12 @@ class Maze_screen:
                     valid_cells.append((x, y))
         pacgum -= 4
         pacgums = random.sample(valid_cells, pacgum)
-        total_pacgums = super_pacgum + pacgums
-        return total_pacgums
 
-    def draw_all_pacgums(self, pacgums: List[Tuple[int, int]]) -> None:
+        self.update_game.total_pacgums.append(super_pacgum)
+        self.update_game.total_pacgums.append(pacgums)
+        return self.update_game.total_pacgums
+
+    def draw_all_pacgums(self, pacgums: List[List[Tuple[int, int]]]) -> None:
         """
         Draw all normal and super pacgums on the maze.
 
@@ -233,7 +235,7 @@ class Maze_screen:
         Returns:
             None.
         """
-        for c_x, c_y in pacgums:
+        for c_x, c_y in pacgums[0] + pacgums[1]:
             offset = (self.cell_size - self.super_size) // 2
             if c_x == 0 and c_y == 0:
                 self.screen.blit(
@@ -259,7 +261,7 @@ class Maze_screen:
                     (self.start_x + c_x * self.cell_size + offset,
                      self.start_y + c_y * self.cell_size + offset))
 
-    def eats_pacgums(self, pacgums: List[Tuple[int, int]]) -> None:
+    def eats_pacgums(self, pacgums: List[List[Tuple[int, int]]]) -> None:
         """
         Check if Pac-Man eats a pacgum and update the score.
 
@@ -270,20 +272,26 @@ class Maze_screen:
             None.
         """
 
-        super_pacgum = [(0, 0), (self.maze_w - 1, 0), (0, self.maze_h - 1),
-                        (self.maze_w - 1, self.maze_h - 1)]
-        for c_x, c_y in pacgums:
+        for c_x, c_y in pacgums[0]:
             cell_x = int(self.start_x + c_x * self.cell_size +
                          (self.cell_size // 2))
             cell_y = int(self.start_y + c_y * self.cell_size +
                          (self.cell_size // 2))
             if self.pacman_pos == [cell_x, cell_y]:
-                if (c_x, c_y) in super_pacgum:
+                if (c_x, c_y) in pacgums[0]:
                     self.update_game.score += self.data[
                         "points_per_super_pacgum"]
-                else:
+                    pacgums[0].remove((c_x, c_y))
+
+        for c_x, c_y in pacgums[1]:
+            cell_x = int(self.start_x + c_x * self.cell_size +
+                         (self.cell_size // 2))
+            cell_y = int(self.start_y + c_y * self.cell_size +
+                         (self.cell_size // 2))
+            if self.pacman_pos == [cell_x, cell_y]:
+                if (c_x, c_y) in pacgums[1]:
                     self.update_game.score += self.data["points_per_pacgum"]
-                pacgums.remove((c_x, c_y))
+                    pacgums[1].remove((c_x, c_y))
 
     def menu_maze(self, start_ticks: int) -> bool:
         """

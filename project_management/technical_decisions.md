@@ -59,6 +59,38 @@ pixel_y = start_pixel_y + (goal_pixel_y - start_pixel_y) * t
 
 Each member worked on their own branch and merged changes into `main`. This enabled parallel work but also exposed us to merge conflicts. We learned how to inspect and resolve conflicts rather than abandoning either person's changes.
 
-## Additional Decisions — mbidlal
+## 6. Using Pydantic for Configuration Validation
 
-**To be completed by mbidlal:** Explain the actual reasoning behind maze rendering, Pac-Man movement, and any other choices they made. Avoid adding decisions that were not actually discussed or implemented.
+**Problem:** Parsing and validating configuration data with repeated `if/else` statements made the code lengthy and difficult to maintain.
+
+**Decision:** Use **Pydantic** models to describe the configuration structure and enforce validation rules. The `Level` and `Validate` models use typed fields and constraints, while a model validator checks that the number of Pac-Gums fits within a level.
+
+**Why:** Centralizing validation rules reduces repetitive conditional checks and makes invalid configuration values easier to detect and handle.
+
+**Relevant code:** `src/config_parser.py` (`Level`, `Validate`, and `Parse`).
+
+## 7. Using Bitwise Operations to Decode Maze Walls
+
+**Problem:** The maze generator represents each cell's walls as a number, while maze rendering needs to know whether a wall exists in each of the four directions.
+
+**Decision:** Decode the numerical wall representation using **bitwise AND (`&`)** and direction masks: North = 1, East = 2, South = 4, and West = 8. Convert each result to a Boolean value.
+
+```python
+directions = {"N": 1, "E": 2, "S": 4, "W": 8}
+for direction, value in directions.items():
+    cell_direction[direction] = bool(cell & value)
+```
+
+**Why:** A single numerical value can encode several walls. Bitwise checks extract each direction efficiently and produce the `True`/`False` values used by the drawing logic.
+
+**Relevant code:** `src/models/maze.py` (`get_walls()` and `draw_maze()`).
+
+## 8. Smooth Pac-Man Movement Using Incremental Pixel Updates
+
+**Problem:** Moving Pac-Man directly from one maze cell to the next would make its motion appear abrupt.
+
+**Decision:** Keep movement constrained by the maze grid, but move Pac-Man toward the next valid cell in **small pixel increments**. First, `target_pacman()` checks the walls and identifies an allowed destination. Then, `move_pacman()` updates the current pixel position by a specified speed, using `min()` and `max()` to avoid overshooting the target.
+
+**Why:** This keeps collision and navigation decisions cell-based while making the visible movement gradual. Unlike ghost movement, Pac-Man's implementation uses incremental position updates rather than an interpolation-progress fraction.
+
+**Relevant code:** `src/models/move_pacman.py` (`target_pacman()` and `move_pacman()`).

@@ -30,11 +30,30 @@
 
 ## mbidlal — Challenges and Resolutions
 
-> **To be completed by mbidlal.** Add real challenges from maze rendering, Pac-Man movement, the instructions screen, the Makefile, or other work. For each challenge, describe:
->
-> - What went wrong and why it mattered.
-> - What you tried or researched.
-> - The solution you actually implemented.
-> - The relevant file or function.
->
-> Do not invent issues merely to fill this section.
+## mbidlal — Simplifying Data Parsing with Pydantic
+
+**Challenge:** Initially, data parsing was implemented using multiple `if/else` conditions. This made the code very long, repetitive, and difficult to maintain, since the same validation logic was repeated several times.
+
+**Investigation:** After looking for a cleaner way to handle data parsing and validation, mbidlal discovered Pydantic, a Python library that simplifies data validation using models.
+
+**Solution:** Replace the repetitive `if/else` logic with **Pydantic models** to organize and validate the data more efficiently. This reduced code duplication and made the implementation cleaner, more readable, and easier to maintain.
+
+## mbidlal — Maze Wall Rendering Using Bitwise Operations
+
+**Challenge:** While implementing maze rendering, mbidlal discovered that the `mazegenerator-2.1.0-py3-none-any` library represented walls using numerical values rather than simple Boolean values. However, the rendering logic needed `True` when a wall existed and `False` when there was no wall.
+
+**Investigation:** mbidlal explored how the library encoded wall information and researched bitwise operations to extract individual wall states from the numerical values.
+
+**Solution:** Use **bitwise operations** to check whether specific walls exist. By applying bitwise AND (`&`) with the appropriate wall masks, the numerical values could be converted into Boolean conditions: `True` for an existing wall and `False` for an absent wall.
+
+**Outcome:** This made it possible to correctly identify and render the maze walls while keeping the wall detection logic simple and efficient.
+
+## mbidlal — Smooth Pac-Man Movement
+
+**Challenge:** Pac-Man initially moved directly from one maze cell to another, making the movement look abrupt instead of smooth.
+
+**Investigation:** mbidlal explored how to separate grid-based movement logic from the visual position of Pac-Man to achieve smoother movement between cells.
+
+**Solution:** Use **linear interpolation** between adjacent maze cells to calculate intermediate pixel positions. This allowed Pac-Man to move smoothly on the screen while keeping the movement logic based on the maze grid.
+
+**Outcome:** Pac-Man's movement became more fluid and visually consistent with the game's animation.

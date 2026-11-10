@@ -44,8 +44,12 @@ class Ghosts(Maze_screen):
         self.old_cell = (0, 0)
         self.walls = walls
         self.Scared_Mode = False
-        self.pacgums_pos = [(0, 0), (0, self.maze_h - 1), (self.maze_w - 1, 0),
-                            (self.maze_w - 1, self.maze_h - 1)]
+        if not self.update_game.total_pacgums:
+            self.pacgums_pos = [(0, 0), (0, self.maze_h - 1),
+                                (self.maze_w - 1, 0),
+                                (self.maze_w - 1, self.maze_h - 1)]
+        else:
+            self.pacgums_pos = self.update_game.total_pacgums[0]
 
         self.ghost_image = load_gif_frames("assists/images/ghosts/blueup.gif")
 
@@ -226,7 +230,7 @@ class Ghosts(Maze_screen):
         Returns:
             None.
         """
-        specter["total_speed"] = 20
+        specter["total_speed"] = 15
         image_mode = self.update_ghost_image(current_pos, goal_pos, specter)
         images = load_gif_frames(
             f"assists/images/ghosts/{specter['color']}{image_mode}.gif")
@@ -395,7 +399,7 @@ class Ghosts(Maze_screen):
             None.
         """
 
-        goal_timestamp = 12
+        goal_timestamp = 13
         current_ticks = pygame.time.get_ticks()
         elapsed_time = current_ticks - start_ticks
         remaining_time = goal_timestamp - (elapsed_time / 1000)
@@ -415,7 +419,7 @@ class Ghosts(Maze_screen):
             images = load_gif_frames(f"assists/images/ghosts/eyes/{mode}.png")
             specter["total_speed"] = 5
         else:
-            specter["total_speed"] = 20
+            specter["total_speed"] = 22
         current_x, current_y = current_pos
         goal_x, goal_y = goal_pos
         start_pixel_x = self.start_x + (current_x *

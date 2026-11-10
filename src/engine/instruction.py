@@ -54,14 +54,14 @@ def game_instruction(width: int, height: int, screen: pygame.surface.Surface,
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)
-            if event.type == pygame.KEYDOWN:
-                if pygame.K_q:
-                    sys.exit(0)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     for button in engine.draw_highscore.buttons:
                         if button.collidepoint(event.pos):
                             return 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_q]:
+            sys.exit(0)
         mouse_pos = pygame.mouse.get_pos()
         engine.draw_highscore.draw_back_button(mouse_pos, "BACK TO HOME")
         source_size = 0
